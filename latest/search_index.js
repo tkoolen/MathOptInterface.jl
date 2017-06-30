@@ -269,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.getconstraintconstant",
     "category": "Function",
-    "text": "getconstraintconstant(m::AbstractModel, c::ConstraintReference, i::Int)\n\nReturn the constant term of the ith row of the constraint corresponding to c.\n\n\n\n"
+    "text": "getconstraintconstant(m::AbstractModel, c::ConstraintReference)\n\nReturn the b vector of the constraint corresponding to c.\n\ngetconstraintconstant(m::AbstractModel, c::ConstraintReference, i::Int)\n\nReturn the constant term of the ith row of the constraint corresponding to c.\n\n\n\n"
 },
 
 {
