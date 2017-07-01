@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Introduction",
     "title": "MathOptInterface",
     "category": "section",
-    "text": "MathOptInterface.jl is a standardized API for Mathematical Optimization solvers.Pages = [\"apimanual.md\",\"apireference.md\"]\nDepth = 3"
+    "text": "MathOptInterface.jl is a standardized API for Mathematical Optimization solvers.Pages = [\"apimanual.md\", \"apireference.md\"]\nDepth = 3"
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Concepts",
     "category": "section",
-    "text": "We define the standard form problem as:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignAt the moment all functions are described compactly with lists, vectors, and matrices. NLP is a special case discussed later. An objective function f_0 can be affine or quadratic. The constraint functions f_i can be variablewise, affine, or quadratic (to be defined)."
+    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:objective function f_0 is affine or quadratic\nconstraint functions f_i is variable-wise, affine, or quadratic\nconstraint sets mathcalS_i are pre-defined real scalar or vector setsThis API defines some commonly-used sets, but is extensible to other sets recognized by the solver. Currently, all functions are described compactly with lists, vectors, and matrices. The function types are:variable-wise: x_j, a (scalar) variable\naffine: A_i x + b_i, where A_i is a matrix and b_i is a vector\nquadratic: q_i(x) + A_i x + b_i, where q_i(x) is a scalar quadratic expression of the form frac12 x^T Q_i x (for objective or constraints) with symmetric matrix Q_i, or a vector of such quadratic expressions (for constraints only) with symmetric matrices Q_i1 ldots Q_iK_i"
 },
 
 {
@@ -45,7 +45,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Duals",
     "category": "section",
-    "text": "So far, we define a convention for duals for conic representable problems. We do not define behavior for duals involving quadratic constraints. We take the convention that duals on lower bounds (GreaterThan) should be nonnegative, duals on upper bounds (LessThan) should be nonpositive, and duals on closed convex cones should belong to the dual cone.For minimization problems in conic form, we can define the primal  as:beginalign\n min_x in mathbbR^n  b_0^Tx\n\n textst  A_ix + b_i  in mathcalC_i  forall i\nendalignand the dual as:beginalign\n max_y_i forall i  -sum_i b_i^T y_i\n\n textst  b_0 - sum_i A_i^T y_i = 0\n\n  y_i in mathcalC_i^*  forall i\nendaligna^Tx + b ge c should be interpreted (for the purposes of duals) as a^Tx + b - c in mathbbR_+, and similarly a^Tx + b le c should be interpreted (for the purposes of duals) as a^Tx + b - c in mathbbR_-. Variablewise constraints should be interpreted as affine constraints with the appropriate identity mapping in place of A_i."
+    "text": "Currently, a convention for duals is not defined for problems with non-conic sets mathcalS_i or quadratic functions f_0 f_i. Note that bound constraints are supported by re-interpretation in terms of the nonnegative or nonpositive cones. An affine constraint a^T x + b ge c should be interpreted as a^T x + b - c in mathbbR_+, and similarly a^T x + b le c should be interpreted as a^T x + b - c in mathbbR_-. Variable-wise constraints should be interpreted as affine constraints with the appropriate identity mapping in place of A_i.For such conic form minimization problems, the primal is:beginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n max_y_1 ldots y_m  -sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 - sum_i=1^m A_i^T y_i  in 0^n\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignwhere each mathcalC_i is a closed convex cone and mathcalC_i is its dual cone.Note:lower bounds have nonnegative duals\nupper bounds have nonpositive duals\nclosed convex cones have duals belonging to the corresponding dual cones"
 },
 
 {
@@ -54,6 +54,86 @@ var documenterSearchIndex = {"docs": [
     "title": "Reference",
     "category": "page",
     "text": "CurrentModule = MathOptInterface"
+},
+
+{
+    "location": "apireference.html#API-1",
+    "page": "Reference",
+    "title": "API",
+    "category": "section",
+    "text": "[Some introduction to API. List basic standalone methods.]"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractSolverOrModelAttribute",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractSolverOrModelAttribute",
+    "category": "Type",
+    "text": "AbstractSolverOrModelAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the model or solver.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractVariableAttribute",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractVariableAttribute",
+    "category": "Type",
+    "text": "AbstractVariableAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of variables in the model.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractConstraintAttribute",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractConstraintAttribute",
+    "category": "Type",
+    "text": "AbstractConstraintAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of constraints in the model.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.cangetattribute",
+    "page": "Reference",
+    "title": "MathOptInterface.cangetattribute",
+    "category": "Function",
+    "text": "cangetattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to query attribute attr from the solver s.\n\ncangetattribute(m::AbstractModel, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{VariablewiseConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{AffineConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{QuadraticConstraintReference{T})::Bool\n\nReturn a Bool indicating whether the model m currently has a value for the attributed specified by attribute type attr applied to the reference type R.\n\nExamples\n\ncangetattribute(GurobiSolver(), SupportsAffineConstraint{Zero}())\ncangetattribute(m, ObjectiveValue())\ncangetattribute(m, VariablePrimalStart(), varref)\ncangetattribute(m, ConstraintPrimal(), conref)\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getattribute",
+    "page": "Reference",
+    "title": "MathOptInterface.getattribute",
+    "category": "Function",
+    "text": "getattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)\n\nReturn an attribute attr of the solver s.\n\ngetattribute(m::AbstractModel, attr::AbstractSolverOrModelAttribute)\n\nReturn an attribute attr of the model m.\n\ngetattribute(m::AbstractModel, attr::AbstractVariableAttribute, v::VariableReference)\n\nReturn an attribute attr of the variable v in model m.\n\ngetattribute(m::AbstractModel, attr::AbstractVariableAttribute, v::Vector{VariableReference})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the model m.\n\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::ConstraintReference)\n\nReturn an attribute attr of the constraint c in model m.\n\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{VariablewiseConstraintReference{T}})\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{AffineConstraintReference{T}})\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{QuadraticConstraintReference{T}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the model m.\n\nExamples\n\ngetattribute(m, ObjectiveValue())\ngetattribute(m, VariableResult(), ref)\ngetattribute(m, VariableResult(5), [ref1, ref2])\ngetattribute(m, OtherAttribute(\"something specific to cplex\"))\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getattribute!",
+    "page": "Reference",
+    "title": "MathOptInterface.getattribute!",
+    "category": "Function",
+    "text": "getattribute!(output, m::AbstractModel, args...)\n\nAn in-place version of getattribute. The signature matches that of getattribute except that the the result is placed in the vector output.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.cansetattribute",
+    "page": "Reference",
+    "title": "MathOptInterface.cansetattribute",
+    "category": "Function",
+    "text": "cansetattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr in the solver s.\n\ncansetattribute(m::AbstractModel, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncansetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{VariablewiseConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{AffineConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{QuadraticConstraintReference{T})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the reference type R in the model m.\n\nExamples\n\ncansetattribute(GurobiSolver(), SupportsAffineConstraint{Zero}())\ncansetattribute(m, ObjectiveValue())\ncansetattribute(m, VariablePrimalStart(), VariableReference)\ncansetattribute(m, ConstraintPrimal(), AffineConstraintReference{NonNegative})\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.setattribute!",
+    "page": "Reference",
+    "title": "MathOptInterface.setattribute!",
+    "category": "Function",
+    "text": "setattribute!(s::AbstractSolver, attr::AbstractSolverOrModelAttribute, value)\n\nAssign value to the attribute attr of the solver s.\n\nsetattribute!(m::AbstractModel, attr::AbstractSolverOrModelAttribute, value)\n\nAssign value to the attribute attr of the model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractVariableAttribute, v::VariableReference, value)\n\nAssign value to the attribute attr of variable v in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractVariableAttribute, v::Vector{VariableReference}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::ConstraintReference, value)\n\nAssign a value to the attribute attr of constraint c in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{VariablewiseConstraintReference{T}})\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{AffineConstraintReference{T}})\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{QuadraticConstraintReference{T}})\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in model m.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Attributes-1",
+    "page": "Reference",
+    "title": "Attributes",
+    "category": "section",
+    "text": "List of attribute categories.AbstractSolverOrModelAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.cangetattribute\ngetattribute\ngetattribute!\ncansetattribute\nsetattribute!"
 },
 
 {
@@ -77,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Model",
     "category": "Function",
-    "text": "Model(solver::AbstractMathProgSolver)\n\nCreate an instance of AbstractModel using the given solver.\n\n\n\n"
+    "text": "Model(solver::AbstractSolver)\n\nCreate an instance of AbstractModel using the given solver.\n\n\n\n"
 },
 
 {
@@ -97,203 +177,267 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#API-1",
+    "location": "apireference.html#MathOptInterface.ReturnsDuals",
     "page": "Reference",
-    "title": "API",
-    "category": "section",
-    "text": "Some introduction to API. List basic standalone methods.AbstractModel\nAbstractSolverModel\noptimize!\nfreemodel!"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.VariableReference",
-    "page": "Reference",
-    "title": "MathOptInterface.VariableReference",
+    "title": "MathOptInterface.ReturnsDuals",
     "category": "Type",
-    "text": "VariableReference\n\nA lightweight object used to reference variables in a model.\n\n\n\n"
+    "text": "ReturnsDuals()\n\nA Bool indicating if the solver should be expected to return dual solutions when appropriate. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
+    "location": "apireference.html#MathOptInterface.SupportsAddConstraintAfterSolve",
     "page": "Reference",
-    "title": "MathOptInterface.candelete",
-    "category": "Method",
-    "text": "candelete(m::AbstractModel, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this variable can be removed from the model m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
-    "page": "Reference",
-    "title": "MathOptInterface.isvalid",
-    "category": "Method",
-    "text": "isvalid(m::AbstractModel, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active variable in the model m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
-    "page": "Reference",
-    "title": "Base.delete!",
-    "category": "Method",
-    "text": "delete!(m::AbstractModel, ref::VariableReference)\n\nDelete the referenced variable from the model.\n\ndelete!(m::AbstractModel, refs::Vector{VariableReference})\n\nDelete the referenced variables in the vector refs from the model.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.addvariables!",
-    "page": "Reference",
-    "title": "MathOptInterface.addvariables!",
-    "category": "Function",
-    "text": "addvariables!(m::AbstractModel, N::Int)::Vector{VariableReference}\n\nAdd N scalar variables to the model, returning a vector of variable references.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.addvariable!",
-    "page": "Reference",
-    "title": "MathOptInterface.addvariable!",
-    "category": "Function",
-    "text": "addvariable!(m::AbstractModel)::VariableReference\n\nAdd a scalar variable to the model, returning a variable reference.\n\nIn addition, there is a special case for adding variables to existing linear problems.\n\naddvariable!(m::AbstractModel,\n    cref::Vector{Union{\n            AffineConstraintRef{NonPositive},\n            AffineConstraintRef{NonNegative},\n            AffineConstraintRef{Zero},\n            AffineConstraintRef{Interval}\n        }},\n    coefs)::VariableReference\n\nAdd a variable with coefficients specified by coefs in the existing affine constraints given by the constraint references cref. If you want to add a variable with coefficients in a constraint that is not listed here (such as a quadratic term, or in the SOC), use addvariable!(m) and then modifyconstraint! instead.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Variables-1",
-    "page": "Reference",
-    "title": "Variables",
-    "category": "section",
-    "text": "VariableReference\ncandelete(::AbstractModel,::VariableReference)\nisvalid(::AbstractModel,::VariableReference)\ndelete!(::AbstractModel,::VariableReference)\naddvariables!\naddvariable!"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.setobjective!",
-    "page": "Reference",
-    "title": "MathOptInterface.setobjective!",
-    "category": "Function",
-    "text": "setobjective!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, N::Int=1)\n\nSet the N'th objective in the model m to be\n\na^Tx + b + frac12x^TQx\n\nwhere a is a sparse vector specified in tuple form by a_varref, and a_coef; b is a scalar; and the symmetric matrix Q is defined by the triplets in Q_vari, Q_varj, Q_coef.\n\nDuplicate indices in either the a vector or the Q matrix are accepted and will be summed together. Off-diagonal entries of Q will be mirrored, so either the upper triangular or lower triangular entries of Q should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_varref, Q_vari, Q_varj should be collections of VariableReference objects.\n\nsetobjective!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, N::Int=1)\n\nSet the N'th objective in the model m to be\n\na^Tx + b\n\nwhere a is a sparse vector specified in tuple form by a_varref and a_coef and b is a scalar.\n\nDuplicate indices in either the a vector are accepted and will be summed together.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.modifyobjective!",
-    "page": "Reference",
-    "title": "MathOptInterface.modifyobjective!",
-    "category": "Function",
-    "text": "modifyobjective!(m::AbstractModel, i::Int, args...)\n\nModify elements of the i'th objective depending on the arguments args. The i'th objective will have the form:\n\n    a_i^Tx + b_i + frac12x^TQ_ix\n\nThere are three cases.\n\nModify Constant term\n\nmodifyobjective!(m::AbstractModel, i::Int, b)\n\nSet the constant term of the i'th row objective to b.\n\nExamples\n\nmodifyobjective!(m, 1, 1.0)\n\nModify Linear term\n\nmodifyobjective!(m::AbstractModel, i::Int, a_varidx, a_coef)\n\nSet elements given by a_varidx in the linear term of the i'th objective to a_coef. Either a_varidx and a_coef are both singletons, or they should be collections with equal length.\n\nThe behaviour of duplicate entries in a_varidx is undefined.\n\nExamples\n\nmodifyobjective!(m, 1, v, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyobjective!(m::AbstractModel, i::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the i'th objective specified by the triplets Q_vari, Q_varj, and Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects.\n\nThe behaviour of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyobjective!(m, 1, v1, v2, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [v1, v1], [1.0, 2.0])\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getobjectiveconstant",
-    "page": "Reference",
-    "title": "MathOptInterface.getobjectiveconstant",
-    "category": "Function",
-    "text": "getobjectiveconstant(m, i::Int=1)\n\nReturn the constant term in the i'th objective.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getobjectiveaffine",
-    "page": "Reference",
-    "title": "MathOptInterface.getobjectiveaffine",
-    "category": "Function",
-    "text": "getobjectiveaffine(m, i::Int=1)\n\nReturn the affine part of the i'th objective in tuple form (varref,coef) where varref is a VariableReference, and coef is a coefficient. Output is a tuple of two vectors.\n\ngetobjectiveaffine(m, v::VariableReference, i::Int=1)\n\nReturn the coefficient for the variable v in the affine part of the i'th objective.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Objectives-1",
-    "page": "Reference",
-    "title": "Objectives",
-    "category": "section",
-    "text": "How to add and set objectives.setobjective!\nmodifyobjective!\ngetobjectiveconstant\ngetobjectiveaffine"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.VariablewiseConstraintReference",
-    "page": "Reference",
-    "title": "MathOptInterface.VariablewiseConstraintReference",
+    "title": "MathOptInterface.SupportsAddConstraintAfterSolve",
     "category": "Type",
-    "text": "VariablewiseConstraintReference{T}\n\nA lightweight object used to reference variablewise constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+    "text": "SupportsAddConstraintAfterSolver()\n\nA Bool indicating if the solver supports adding constraints after a solve. If false, then a new model should be constructed instead. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.AffineConstraintReference",
+    "location": "apireference.html#MathOptInterface.SupportsDeleteConstraint",
     "page": "Reference",
-    "title": "MathOptInterface.AffineConstraintReference",
+    "title": "MathOptInterface.SupportsDeleteConstraint",
     "category": "Type",
-    "text": "AffineConstraintReference{T}\n\nA lightweight object used to reference affine-in-set constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+    "text": "SupportsDeleteConstraint()\n\nA Bool indicating if the solver supports deleting constraints from a model. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.QuadraticConstraintReference",
+    "location": "apireference.html#MathOptInterface.SupportsAddVariableAfterSolver",
     "page": "Reference",
-    "title": "MathOptInterface.QuadraticConstraintReference",
+    "title": "MathOptInterface.SupportsAddVariableAfterSolver",
     "category": "Type",
-    "text": "QuadraticConstraintReference{T}\n\nA lightweight object used to reference quadratic-in-set constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+    "text": "SupportsAddVariableAfterSolve()\n\nA Bool indicating if the solver supports adding variables after a solve. In the context of linear programming, this is known as column generation. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "location": "apireference.html#MathOptInterface.SupportsQuadraticObjective",
     "page": "Reference",
-    "title": "MathOptInterface.candelete",
-    "category": "Method",
-    "text": "candelete(m::AbstractModel, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this constraint can be removed from the model m.\n\n\n\n"
+    "title": "MathOptInterface.SupportsQuadraticObjective",
+    "category": "Type",
+    "text": "SupportsQuadraticObjective()\n\nA Bool indicating if the solver supports quadratic objectives. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "location": "apireference.html#MathOptInterface.SupportsConicThroughQuadratic",
     "page": "Reference",
-    "title": "MathOptInterface.isvalid",
-    "category": "Method",
-    "text": "isvalid(m::AbstractModel, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active constraint in the model m.\n\n\n\n"
+    "title": "MathOptInterface.SupportsConicThroughQuadratic",
+    "category": "Type",
+    "text": "SupportsConicThroughQuadratic()\n\nA Bool indicating if the solver interprets certain quadratic constraints as second-order cone constraints. A solver attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "location": "apireference.html#MathOptInterface.ObjectiveValue",
     "page": "Reference",
-    "title": "Base.delete!",
-    "category": "Method",
-    "text": "delete!(m::AbstractModel, ref::ConstraintReference)\n\nDelete the referenced constraint from the model.\n\ndelete!(m::AbstractModel, refs::Vector{ConstraintReference})\n\nDelete the referenced constraints in the vector refs from the model.\n\n\n\n"
+    "title": "MathOptInterface.ObjectiveValue",
+    "category": "Type",
+    "text": "ObjectiveValue(resultidx::Int=1, objectiveindex::Int=1)\n\nThe objective value of the resultindexth primal result of the objectiveindexth objective. A model attribute.\n\nBoth resultindex and objectiveindex default to 1.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.addconstraint!",
+    "location": "apireference.html#MathOptInterface.ObjectiveBound",
     "page": "Reference",
-    "title": "MathOptInterface.addconstraint!",
-    "category": "Function",
-    "text": "addconstraint!(m::AbstractModel, b, a_constridx, a_varref::Vector{VariableReference}, a_coef, Q_constridx, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nAdd the quadratic-in-set constraint\n\nAx + b + q(x) in S\n\nwhere A is a sparse matrix specified in triplet form by a_constridx, a_varref, and a_coef; b is a vector; q(x) is a vector with component (q(x))_k defined to be frac12x^TQ_kx where the symmetric matrix Q_k is defined by the triplets in Q_vari, Q_varj, Q_coef for which Q_constridx equals k; and the set S is defined by S.\n\nDuplicate indices in either the A or the Q matrix are accepted and will be summed together. Off-diagonal entries of Q will be mirrored, so either the upper triangular or lower triangular entries of Q should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_varref, Q_vari, Q_varj should be collections of VariableReference objects.\n\naddconstraint!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nA specialized version of addconstraint! for one-dimensional sets. Add the constraint\n\na^Tx + b + frac12x^TQx in S\n\nwhere a is a sparse vector specified in tuple form by a_varref, and a_coef; b is a scalar; the symmetric matrix Q is defined by the triplets in Q_vari, Q_varj, Q_coef; and the set S is defined by S.\n\naddconstraint!(m::AbstractModel, b, a_constridx, a_varref::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nAdd the affine-in-set constraint\n\nAx + b in S\n\nwhere A is a sparse matrix specified in triplet form by a_constridx, a_varref, and a_coef; b is a vector; and the set S is defined by S.\n\nDuplicate indices either A are accepted and will be summed together.\n\naddconstraint!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nA specialized version of addconstraint! for one-dimensional sets. Add the constraint\n\na^Tx + b in S\n\nwhere a is a sparse vector specified in tuple form by a_varref, and a_coef; b is a scalar; and the set S is defined by S.\n\naddconstraint!(m::AbstractModel, varref::Vector{VariableReference}, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nA specialized version of addconstraint! for variablewise constraints. Add the constraint\n\nx_varref in S\n\nwhere varref is a vector of variable references to specifiy the subset of the subvector of x.\n\naddconstraint!(m::AbstractModel, varref::VariableReference, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nA specialized version of addconstraint! for one-dimensional variablewise constraints. Add the constraint\n\nx_varref in S\n\nwhere varref is a single variable references to specifiy the index of x.\n\n\n\n"
+    "title": "MathOptInterface.ObjectiveBound",
+    "category": "Type",
+    "text": "ObjectiveBound()\n\nThe best known bound on the optimal objective value. A model attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.modifyconstraint!",
+    "location": "apireference.html#MathOptInterface.RelativeGap",
     "page": "Reference",
-    "title": "MathOptInterface.modifyconstraint!",
-    "category": "Function",
-    "text": "modifyconstraint!(m::AbstractModel, c::ConstraintReference, i::Int, args...)\n\nModify elements of the i'th row of the constraint c depending on the arguments args. The i'th row will have the form\n\n    a_i^Tx + b_i + frac12x^TQ_ix in S\n\nThere are three cases.\n\nModify Constant term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, i::Int, b)\n\nSet the constant term of the i'th row in the constraint c to b.\n\nExamples\n\nmodifyconstraint!(m, c, 1, 1.0)\n\nModify Linear term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, i::Int, a_varref::Vector{VariableReference}, a_coef)\n\nSet elements given by a_varref in the linear term of the i'th element in the constraint c to a_coef. Either a_varref and a_coef are both singletons, or they should be collections with equal length.\n\nThe behaviour of duplicate entries in a_varref is undefined.\n\nExamples\n\nmodifyconstraint!(m, c, v, 1.0)\nmodifyconstraint!(m, c, [v1, v2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, i::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the i'th element of the constraint c specified by the triplets Q_vari, Q_varj, and Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects.\n\nThe behaviour of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyconstraint!(m, c, v1, v2, 1.0)\nmodifyconstraint!(m, c, [v1, v2], [v1, v1], [1.0, 2.0])\n\nModify Set\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference{S}, set::S)\n\nChange the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositive) # errors\n\n\n\n"
+    "title": "MathOptInterface.RelativeGap",
+    "category": "Type",
+    "text": "RelativeGap()\n\nThe final relative optimality gap, defined as fracb-ff, where b is the best bound and f is the best feasible objective value. A model attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.getconstraintconstant",
+    "location": "apireference.html#MathOptInterface.SolveTime",
     "page": "Reference",
-    "title": "MathOptInterface.getconstraintconstant",
-    "category": "Function",
-    "text": "getconstraintconstant(m::AbstractModel, c::ConstraintReference, i::Int)\n\nReturn the constant term of the ith row of the constraint corresponding to c.\n\n\n\n"
+    "title": "MathOptInterface.SolveTime",
+    "category": "Type",
+    "text": "SolveTime()\n\nThe total elapsed solution time (in seconds) as reported by the solver. A model attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.getconstraintaffine",
+    "location": "apireference.html#MathOptInterface.Sense",
     "page": "Reference",
-    "title": "MathOptInterface.getconstraintaffine",
-    "category": "Function",
-    "text": "getconstraintaffine(m::AbstractModel, c::ConstraintReference)\n\nReturn the A matrix of the constraint corresponding to c in triplet form (row,varref,coef) where row is an integer, varref is a VariableReference, and coef is a coefficient. Output is a tuple of three vectors.\n\ngetconstraintaffine(m::AbstractModel, c::ConstraintReference, i::Int)\n\nReturn the ith row of the A matrix of the constraint corresponding to c in tuple form (varref,coef) where varref is a VariableReference, and coef is a coefficient. Output is a tuple of two vectors.\n\ngetconstraintaffine(m::AbstractModel, c::ConstraintReference, i::Int, v::VariableReference)\n\nReturn the element of the A matrix of the constraint corresponding to c in row i and variable v.\n\n\n\n"
+    "title": "MathOptInterface.Sense",
+    "category": "Type",
+    "text": "Sense()\n\nThe optimization sense of the model, an OptimizationSense with value MinSense or MaxSense. A model attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.getconstraintquadratic",
+    "location": "apireference.html#MathOptInterface.SimplexIterations",
     "page": "Reference",
-    "title": "MathOptInterface.getconstraintquadratic",
-    "category": "Function",
-    "text": "getconstraintquadratic(m::AbstractModel, c::ConstraintReference, i::Int)\n\nReturn the Q matrix of the ith row of the constraint corresponding to c in triplet form (varref_a,varref_b,coef) where varref_a is a VariableReference, varref_b is a VariableReference, and coef is a coefficient. Output is a tuple of three vectors. The Q matrix must be symmetric, and only one of the two symmetric elements is returned.\n\ngetconstraintquadratic(m::AbstractModel, c::ConstraintReference, i::Int, v1::VariableReference, v2::VariableReference)\n\nReturn the element (v1,v2) of the Q matrix of the ith row of the constraint corresponding to c.\n\n\n\n"
+    "title": "MathOptInterface.SimplexIterations",
+    "category": "Type",
+    "text": "SimplexIterations()\n\nThe cumulative number of simplex iterations during the optimization process. In particular, for a mixed-integer program (MIP), the total simplex iterations for all nodes. A model attribute.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Constraints-1",
+    "location": "apireference.html#MathOptInterface.BarrierIterations",
     "page": "Reference",
-    "title": "Constraints",
+    "title": "MathOptInterface.BarrierIterations",
+    "category": "Type",
+    "text": "BarrierIterations()\n\nThe cumulative number of barrier iterations while solving a problem. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NodeCount",
+    "page": "Reference",
+    "title": "MathOptInterface.NodeCount",
+    "category": "Type",
+    "text": "NodeCount()\n\nThe total number of branch-and-bound nodes explored while solving a mixed-integer program (MIP). A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.RawSolver",
+    "page": "Reference",
+    "title": "MathOptInterface.RawSolver",
+    "category": "Type",
+    "text": "RawSolver()\n\nAn object that may be used to access a solver-specific API for this model. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ResultCount",
+    "page": "Reference",
+    "title": "MathOptInterface.ResultCount",
+    "category": "Type",
+    "text": "ResultCount()\n\nThe number of results available. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NumberOfVariables",
+    "page": "Reference",
+    "title": "MathOptInterface.NumberOfVariables",
+    "category": "Type",
+    "text": "NumberOfVariables()\n\nThe number of variables in the model. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NumberOfVariablewiseConstraints",
+    "page": "Reference",
+    "title": "MathOptInterface.NumberOfVariablewiseConstraints",
+    "category": "Type",
+    "text": "NumberOfVariablewiseConstraints{T}()\n\nThe number of variablewise constraints of type T in the model. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NumberOfAffineConstraints",
+    "page": "Reference",
+    "title": "MathOptInterface.NumberOfAffineConstraints",
+    "category": "Type",
+    "text": "NumberOfAffineConstraints{T}()\n\nThe number of affine constraints of type T in the model. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NumberOfQuadraticConstraints",
+    "page": "Reference",
+    "title": "MathOptInterface.NumberOfQuadraticConstraints",
+    "category": "Type",
+    "text": "NumberOfQuadraticConstraints{T}()\n\nThe number of quadratic constraints of type T in the model. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.SupportsVariablewiseConstraint",
+    "page": "Reference",
+    "title": "MathOptInterface.SupportsVariablewiseConstraint",
+    "category": "Type",
+    "text": "SupportsVariablewiseConstraint{T}()\n\nA Bool indicating whether the solver or model supports a variable-wise constraint in the set s of type T. A solver and model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.SupportsAffineConstraint",
+    "page": "Reference",
+    "title": "MathOptInterface.SupportsAffineConstraint",
+    "category": "Type",
+    "text": "SupportsAffineConstraint{T}()\n\nA Bool indicating whether the solver or model supports an affine constraint in the set s of type T. A solver and model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.SupportsQuadraticConstraint",
+    "page": "Reference",
+    "title": "MathOptInterface.SupportsQuadraticConstraint",
+    "category": "Type",
+    "text": "SupportsQuadraticConstraint{T}()\n\nA Bool indicating whether the solver or model supports a quadratic constraint in the set s of type T. A solver and model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.TerminationStatus",
+    "page": "Reference",
+    "title": "MathOptInterface.TerminationStatus",
+    "category": "Type",
+    "text": "TerminationStatus()\n\nA TerminationStatusCode explaining why the solver stopped. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.PrimalStatus",
+    "page": "Reference",
+    "title": "MathOptInterface.PrimalStatus",
+    "category": "Type",
+    "text": "PrimalStatus(N)\nPrimalStatus()\n\nThe ResultStatusCode of the primal result N. If N is omitted, it defaults to 1. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.DualStatus",
+    "page": "Reference",
+    "title": "MathOptInterface.DualStatus",
+    "category": "Type",
+    "text": "DualStatus(N)\nDualStatus()\n\nThe ResultStatusCode of the dual result N. If N is omitted, it defaults to 1. A model attribute.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Solver-and-Model-1",
+    "page": "Reference",
+    "title": "Solver and Model",
     "category": "section",
-    "text": "How to add and modify constraints.VariablewiseConstraintReference\nAffineConstraintReference\nQuadraticConstraintReference\ncandelete(::AbstractModel,::ConstraintReference)\nisvalid(::AbstractModel,::ConstraintReference)\ndelete!(::AbstractModel,::ConstraintReference)\naddconstraint!\nmodifyconstraint!\ngetconstraintconstant\ngetconstraintaffine\ngetconstraintquadratic"
+    "text": "[separate solver and model?]AbstractModel\nAbstractSolverModel\noptimize!\nfreemodel!List of solver or model attributes. [category AbstractSolverOrModelAttribute]ReturnsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolver\nSupportsQuadraticObjective\nSupportsConicThroughQuadratic\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSense\nSimplexIterations\nBarrierIterations\nNodeCount\nRawSolver\nResultCount\nNumberOfVariables\nNumberOfVariablewiseConstraints\nNumberOfAffineConstraints\nNumberOfQuadraticConstraints\nSupportsVariablewiseConstraint\nSupportsAffineConstraint\nSupportsQuadraticConstraint\nTerminationStatus\nPrimalStatus\nDualStatus"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.TerminationStatusCode",
+    "page": "Reference",
+    "title": "MathOptInterface.TerminationStatusCode",
+    "category": "Type",
+    "text": "TerminationStatusCode\n\nAn Enum of possible values for the TerminationStatus attribute. This attribute is meant to explain the reason why the solver stopped executing.\n\nOK\n\nThese are generally OK statuses.\n\nSuccess: the algorithm ran successfully and has a result; this includes cases where the algorithm converges to an infeasible point (NLP) or converges to a solution of a homogeneous self-dual problem and has a certificate of primal/dual infeasibility\nAlmostSuccess: the algorithm almost ran successfully (e.g., to relaxed convergence tolerances) and has a result\nInfeasibleNoResult: the algorithm stopped because it decided that the problem is infeasible but does not have a result to return\nUnboundedNoResult: the algorithm stopped because it decided that the problem is unbounded but does not have a result to return\nInfeasibleOrUnbounded: the algorithm stopped because it decided that the problem is infeasible or unbounded (no result is available); this occasionally happens during MIP presolve\n\nLimits\n\nThe solver stopped because of some user-defined limit. To be documented: IterationLimit, TimeLimit, NodeLimit, SolutionLimit, MemoryLimit, ObjectiveLimit, NormLimit, OtherLimit.\n\nProblematic\n\nThis group of statuses means that something unexpected or problematic happened.\n\nSlowProgress: the algorithm stopped because it was unable to continue making progress towards the solution\nAlmostSuccess should be used if there is additional information that relaxed convergence tolerances are satisfied\n\nTo be documented: NumericalError, InvalidModel, InvalidOption, Interrupted, OtherError.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Termination-Status-1",
+    "page": "Reference",
+    "title": "Termination Status",
+    "category": "section",
+    "text": "The TerminationStatus attribute indicates why the solver stopped executing. The value of the attribute is of type TerminationStatusCode.TerminationStatusCode"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ResultStatusCode",
+    "page": "Reference",
+    "title": "MathOptInterface.ResultStatusCode",
+    "category": "Type",
+    "text": "ResultStatusCode\n\nAn Enum of possible values for the PrimalStatus and DualStatus attributes. The values indicate how to interpret the result vector.\n\nFeasiblePoint\nNearlyFeasiblePoint\nInfeasiblePoint\nInfeasibilityCertificate\nNearlyInfeasibilityCertificate\nReductionCertificate\nNearlyReductionCertificate\nUnknown\nOther\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Result-Status-1",
+    "page": "Reference",
+    "title": "Result Status",
+    "category": "section",
+    "text": "The PrimalStatus and DualStatus attributes indicate how to interpret the result returned by the solver. The value of the attribute is of type ResultStatusCode.ResultStatusCode"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.BasisStatusCode",
+    "page": "Reference",
+    "title": "MathOptInterface.BasisStatusCode",
+    "category": "Type",
+    "text": "BasisStatusCode\n\nAn Enum of possible values for the VariableBasisStatus and ConstraintBasisStatus attribute. This explains the status of a given element with respect to an optimal solution basis. Possible values are:\n\nBasic: element is in the basis\nNonbasic: element is not in the basis\nNonbasicAtLower: element is not in the basis and is at its lower bound\nNonbasicAtUpper: element is not in the basis and is at its upper bound\nSuperBasic: element is not in the basis but is also not at one of its bounds\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Basis-Status-1",
+    "page": "Reference",
+    "title": "Basis Status",
+    "category": "section",
+    "text": "[what? BasisStatus]BasisStatusCode"
 },
 
 {
@@ -397,7 +541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.DualPowerCone",
     "category": "Type",
-    "text": "DualPowerCone(a)\n\nThe 3-dimensional power cone  (uvw) in mathbbR^3  (ua)^a (v(1-a))^1-a = w u ge 0 v ge 0  with parameter a.\n\n\n\n"
+    "text": "DualPowerCone(a)\n\nThe 3-dimensional power cone  (uvw) in mathbbR^3  (fracua)^a (fracv1-a)^1-a = w u ge 0 v ge 0  with parameter a.\n\n\n\n"
 },
 
 {
@@ -437,7 +581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SOS1",
     "category": "Type",
-    "text": "SOS1(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 1. Of the variables in the set, at most one can be nonzero. The weights induce an ordering of the variables; as such, they should be unique values. The k-th element in the set corresponds to the k-th weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
+    "text": "SOS1(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 1. Of the variables in the set, at most one can be nonzero. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
 },
 
 {
@@ -445,7 +589,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SOS2",
     "category": "Type",
-    "text": "SOS2(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 2. Of the variables in the set, at most two can be nonzero, and if two are nonzero, they must be adjacent in the ordering of the set. The weights induce an ordering of the variables; as such, they should be unique values. The k-th element in the set corresponds to the k-th weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
+    "text": "SOS2(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 2. Of the variables in the set, at most two can be nonzero, and if two are nonzero, they must be adjacent in the ordering of the set. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
 },
 
 {
@@ -461,295 +605,55 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Sets",
     "category": "section",
-    "text": "List of sets.AbstractSet\nReals\nZeros\nNonNegatives\nNonPositives\nGreaterThan\nLessThan\nInterval\nSecondOrderCone\nExponentialCone\nDualExponentialCone\nPowerCone\nDualPowerCone\nPositiveSemidefiniteConeTriangle\nPositiveSemidefiniteConeScaled\nIntegers\nZeroOne\nSOS1\nSOS2Functions for getting and setting properties of sets.dimension"
+    "text": "List of recognized sets.AbstractSet\nReals\nZeros\nNonNegatives\nNonPositives\nGreaterThan\nLessThan\nInterval\nSecondOrderCone\nExponentialCone\nDualExponentialCone\nPowerCone\nDualPowerCone\nPositiveSemidefiniteConeTriangle\nPositiveSemidefiniteConeScaled\nIntegers\nZeroOne\nSOS1\nSOS2Functions for getting and setting properties of sets.dimension"
 },
 
 {
-    "location": "apireference.html#Attributes-1",
+    "location": "apireference.html#MathOptInterface.VariableReference",
     "page": "Reference",
-    "title": "Attributes",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ReturnsDuals",
-    "page": "Reference",
-    "title": "MathOptInterface.ReturnsDuals",
+    "title": "MathOptInterface.VariableReference",
     "category": "Type",
-    "text": "ReturnsDuals()\n\nA Bool indicating if the solver should be expected to return dual solutions when appropriate. A solver attribute.\n\n\n\n"
+    "text": "VariableReference\n\nA lightweight object used to reference variables in a model.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.SupportsAddConstraintAfterSolve",
+    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
     "page": "Reference",
-    "title": "MathOptInterface.SupportsAddConstraintAfterSolve",
-    "category": "Type",
-    "text": "SupportsAddConstraintAfterSolver()\n\nA Bool indicating if the solver supports adding constraints after a solve. If false, then a new model should be constructed instead. A solver attribute.\n\n\n\n"
+    "title": "MathOptInterface.candelete",
+    "category": "Method",
+    "text": "candelete(m::AbstractModel, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this variable can be removed from the model m.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.SupportsDeleteConstraint",
+    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
     "page": "Reference",
-    "title": "MathOptInterface.SupportsDeleteConstraint",
-    "category": "Type",
-    "text": "SupportsDeleteConstraint()\n\nA Bool indicating if the solver supports deleting constraints from a model. A solver attribute.\n\n\n\n"
+    "title": "MathOptInterface.isvalid",
+    "category": "Method",
+    "text": "isvalid(m::AbstractModel, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active variable in the model m.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.SupportsAddVariableAfterSolver",
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractModel,MathOptInterface.VariableReference}",
     "page": "Reference",
-    "title": "MathOptInterface.SupportsAddVariableAfterSolver",
-    "category": "Type",
-    "text": "SupportsAddVariableAfterSolve()\n\nA Bool indicating if the solver supports adding variables after a solve. In the context of linear programming, this is known as column generation. A solver attribute.\n\n\n\n"
+    "title": "Base.delete!",
+    "category": "Method",
+    "text": "delete!(m::AbstractModel, ref::VariableReference)\n\nDelete the referenced variable from the model.\n\ndelete!(m::AbstractModel, refs::Vector{VariableReference})\n\nDelete the referenced variables in the vector refs from the model.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.SupportsQuadraticObjective",
+    "location": "apireference.html#MathOptInterface.addvariables!",
     "page": "Reference",
-    "title": "MathOptInterface.SupportsQuadraticObjective",
-    "category": "Type",
-    "text": "SupportsQuadraticObjective()\n\nA Bool indicating if the solver supports quadratic objectives. A solver attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SupportsConicThroughQuadratic",
-    "page": "Reference",
-    "title": "MathOptInterface.SupportsConicThroughQuadratic",
-    "category": "Type",
-    "text": "SupportsConicThroughQuadratic()\n\nA Bool indicating if the solver interprets certain quadratic constraints as second-order cone constraints. A solver attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ObjectiveValue",
-    "page": "Reference",
-    "title": "MathOptInterface.ObjectiveValue",
-    "category": "Type",
-    "text": "ObjectiveValue(resultidx::Int=1, objectiveindex::Int=1)\n\nThe objective value of the resultindex'th primal result of the objectiveindex'th objective. A model attribute.\n\nBoth resultindex and objectiveindex default to 1.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ObjectiveBound",
-    "page": "Reference",
-    "title": "MathOptInterface.ObjectiveBound",
-    "category": "Type",
-    "text": "ObjectiveBound()\n\nThe best known bound on the optimal objective value. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.RelativeGap",
-    "page": "Reference",
-    "title": "MathOptInterface.RelativeGap",
-    "category": "Type",
-    "text": "RelativeGap()\n\nThe final relative optimality gap as optimization terminated. That is, fracb-ff, where b is the best bound and f is the best feasible objective value. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SolveTime",
-    "page": "Reference",
-    "title": "MathOptInterface.SolveTime",
-    "category": "Type",
-    "text": "SolveTime()\n\nThe total elapsed solution time (in seconds) as reported by the solver. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.Sense",
-    "page": "Reference",
-    "title": "MathOptInterface.Sense",
-    "category": "Type",
-    "text": "Sense()\n\nThe optimization sense of the model, an OptimizationSense with value MinSense or MaxSense. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SimplexIterations",
-    "page": "Reference",
-    "title": "MathOptInterface.SimplexIterations",
-    "category": "Type",
-    "text": "SimplexIterations()\n\nThe cumulative number of simplex iterations during the optimization process. In particular, for a MIP the total simplex iterations for all nodes. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.BarrierIterations",
-    "page": "Reference",
-    "title": "MathOptInterface.BarrierIterations",
-    "category": "Type",
-    "text": "BarrierIterations()\n\nThe cumulative number of barrier iterations during the optimization process. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NodeCount",
-    "page": "Reference",
-    "title": "MathOptInterface.NodeCount",
-    "category": "Type",
-    "text": "NodeCount()\n\nThe total number of branch-and-bound nodes explored. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.RawSolver",
-    "page": "Reference",
-    "title": "MathOptInterface.RawSolver",
-    "category": "Type",
-    "text": "RawSolver()\n\nAn object that may be used to access a solver-specific API for this model. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ResultCount",
-    "page": "Reference",
-    "title": "MathOptInterface.ResultCount",
-    "category": "Type",
-    "text": "ResultCount()\n\nThe number of results available. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NumberOfVariables",
-    "page": "Reference",
-    "title": "MathOptInterface.NumberOfVariables",
-    "category": "Type",
-    "text": "NumberOfVariables()\n\nThe number of variables in the model. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NumberOfVariablewiseConstraints",
-    "page": "Reference",
-    "title": "MathOptInterface.NumberOfVariablewiseConstraints",
-    "category": "Type",
-    "text": "NumberOfVariablewiseConstraints{T}()\n\nThe number of variablewise constraints of type T in the model. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NumberOfAffineConstraints",
-    "page": "Reference",
-    "title": "MathOptInterface.NumberOfAffineConstraints",
-    "category": "Type",
-    "text": "NumberOfAffineConstraints{T}()\n\nThe number of affine constraints of type T in the model. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NumberOfQuadraticConstraints",
-    "page": "Reference",
-    "title": "MathOptInterface.NumberOfQuadraticConstraints",
-    "category": "Type",
-    "text": "NumberOfQuadraticConstraints{T}()\n\nThe number of quadratic constraints of type T in the model. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SupportsVariablewiseConstraint",
-    "page": "Reference",
-    "title": "MathOptInterface.SupportsVariablewiseConstraint",
-    "category": "Type",
-    "text": "SupportsVariablewiseConstraint{T}()\n\nA Bool indicating whether the solver or model supports a variablewise constraint in the set S which is a set of type T. A solver and model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SupportsAffineConstraint",
-    "page": "Reference",
-    "title": "MathOptInterface.SupportsAffineConstraint",
-    "category": "Type",
-    "text": "SupportsAffineConstraint{T}()\n\nA Bool indicating whether the solver or model supports a constraint of of the form \"affine expression\" in S where S is a set of type T. A solver and model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.SupportsQuadraticConstraint",
-    "page": "Reference",
-    "title": "MathOptInterface.SupportsQuadraticConstraint",
-    "category": "Type",
-    "text": "SupportsQuadraticConstraint{T}()\n\nA Bool indicating whether the solver or model supports a constraint of of the form \"quadratic expression\" in S where S is a set of type T. A solver and model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.TerminationStatus",
-    "page": "Reference",
-    "title": "MathOptInterface.TerminationStatus",
-    "category": "Type",
-    "text": "TerminationStatus()\n\nA TerminationStatusCode explaining why the solver stopped. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.PrimalStatus",
-    "page": "Reference",
-    "title": "MathOptInterface.PrimalStatus",
-    "category": "Type",
-    "text": "PrimalStatus(N)\nPrimalStatus()\n\nThe ResultStatusCode of the primal result N. If N is omitted, it defaults to 1. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.DualStatus",
-    "page": "Reference",
-    "title": "MathOptInterface.DualStatus",
-    "category": "Type",
-    "text": "DualStatus(N)\nDualStatus()\n\nThe ResultStatusCode of the dual result N. If N is omitted, it defaults to 1. A model attribute.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AbstractSolverOrModelAttribute",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractSolverOrModelAttribute",
-    "category": "Type",
-    "text": "AbstractSolverOrModelAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the model or solver.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AbstractVariableAttribute",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractVariableAttribute",
-    "category": "Type",
-    "text": "AbstractVariableAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of variables in the model.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AbstractConstraintAttribute",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractConstraintAttribute",
-    "category": "Type",
-    "text": "AbstractConstraintAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of constraints in the model.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.cangetattribute",
-    "page": "Reference",
-    "title": "MathOptInterface.cangetattribute",
+    "title": "MathOptInterface.addvariables!",
     "category": "Function",
-    "text": "cangetattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to query attribute attr from the solver s.\n\ncangetattribute(m::AbstractModel, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{VariablewiseConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{AffineConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{QuadraticConstraintReference{T})::Bool\n\nReturn a Bool indicating whether the model m currently has a value for the attributed specified by attribute type attr applied to the reference type R.\n\nExamples\n\n```julia cangetattribute(GurobiSolver(), SupportsAffineConstraint{Zero}()) cangetattribute(m, ObjectiveValue()) cangetattribute(m, VariablePrimalStart(), varref) cangetattribute(m, ConstraintPrimal(), conref)\n\n\n\n"
+    "text": "addvariables!(m::AbstractModel, n::Int)::Vector{VariableReference}\n\nAdd n scalar variables to the model, returning a vector of variable references.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.getattribute",
+    "location": "apireference.html#MathOptInterface.addvariable!",
     "page": "Reference",
-    "title": "MathOptInterface.getattribute",
+    "title": "MathOptInterface.addvariable!",
     "category": "Function",
-    "text": "getattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)\n\nReturn an attribute attr of the solver s.\n\ngetattribute(m::AbstractModel, attr::AbstractSolverOrModelAttribute)\n\nReturn an attribute attr of the model m.\n\ngetattribute(m::AbstractModel, attr::AbstractVariableAttribute, v::VariableReference)\n\nReturn an attribute attr of the variable v in model m.\n\ngetattribute(m::AbstractModel, attr::AbstractVariableAttribute, v::Vector{VariableReference})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the model m.\n\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::ConstraintReference)\n\nReturn an attribute attr of the constraint c in model m.\n\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{VariablewiseConstraintReference{T}})\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{AffineConstraintReference{T}})\ngetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{QuadraticConstraintReference{T}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the model m.\n\nExamples\n\ngetattribute(m, ObjectiveValue())\ngetattribute(m, VariableResult(), ref)\ngetattribute(m, VariableResult(5), [ref1,ref2])\ngetattribute(m, OtherAttribute(\"something specific to cplex\"))\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getattribute!",
-    "page": "Reference",
-    "title": "MathOptInterface.getattribute!",
-    "category": "Function",
-    "text": "getattribute!(output, m::AbstractModel, args...)\n\nAn in-place version of getattribute. The signature matches that of getattribute except that the the result is placed in the vector output.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.cansetattribute",
-    "page": "Reference",
-    "title": "MathOptInterface.cansetattribute",
-    "category": "Function",
-    "text": "cansetattribute(s::AbstractSolver, attr::AbstractSolverOrModelAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr in the solver s.\n\ncansetattribute(m::AbstractModel, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncansetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{VariablewiseConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{AffineConstraintReference{T})::Bool\ncangetattribute(m::AbstractModel, attr::AbstractConstraintAttribute, R::Type{QuadraticConstraintReference{T})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the reference type R in the model m.\n\nExamples\n\n```julia cansetattribute(GurobiSolver(), SupportsAffineConstraint{Zero}()) cansetattribute(m, ObjectiveValue()) cansetattribute(m, VariablePrimalStart(), VariableReference) cansetattribute(m, ConstraintPrimal(), AffineConstraintReference{NonNegative})\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.setattribute!",
-    "page": "Reference",
-    "title": "MathOptInterface.setattribute!",
-    "category": "Function",
-    "text": "setattribute!(s::AbstractSolver, attr::AbstractSolverOrModelAttribute, value)\n\nAssign value to the attribute attr of the solver s.\n\nsetattribute!(m::AbstractModel, attr::AbstractSolverOrModelAttribute, value)\n\nAssign value to the attribute attr of the model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractVariableAttribute, v::VariableReference, value)\n\nAssign value to the attribute attr of variable v in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractVariableAttribute, v::Vector{VariableReference}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::ConstraintReference, value)\n\nAssign a value to the attribute attr of constraint c in model m.\n\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{VariablewiseConstraintReference{T}})\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{AffineConstraintReference{T}})\nsetattribute!(m::AbstractModel, attr::AbstractConstraintAttribute, c::Vector{QuadraticConstraintReference{T}})\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in model m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Solver-or-Model-Attributes-1",
-    "page": "Reference",
-    "title": "Solver or Model Attributes",
-    "category": "section",
-    "text": "List of solver or model attributes.ReturnsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolver\nSupportsQuadraticObjective\nSupportsConicThroughQuadratic\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSense\nSimplexIterations\nBarrierIterations\nNodeCount\nRawSolver\nResultCount\nNumberOfVariables\nNumberOfVariablewiseConstraints\nNumberOfAffineConstraints\nNumberOfQuadraticConstraints\nSupportsVariablewiseConstraint\nSupportsAffineConstraint\nSupportsQuadraticConstraint\nTerminationStatus\nPrimalStatus\nDualStatusFunctions for getting and setting model or solver attributes.AbstractSolverOrModelAttribute\nAbstractVariableAttribute\nAbstractConstraintAttribute\ncangetattribute\ngetattribute\ngetattribute!\ncansetattribute\nsetattribute!"
+    "text": "addvariable!(m::AbstractModel)::VariableReference\n\nAdd a scalar variable to the model, returning a variable reference. In addition, there is a special case for adding variables to existing linear problems.\n\naddvariable!(m::AbstractModel, cref::Vector{Union{AffineConstraintRef{NonPositive}, AffineConstraintRef{NonNegative}, AffineConstraintRef{Zero}, AffineConstraintRef{Interval}}}, coefs)::VariableReference\n\nAdd a variable with coefficients specified by coefs in the existing affine constraints given by the constraint references cref. To add a variable with coefficients in a constraint that is not listed here, use addvariable!(m) and then modifyconstraint! instead.\n\n\n\n"
 },
 
 {
@@ -777,11 +681,139 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Variable-Attributes-1",
+    "location": "apireference.html#Variables-1",
     "page": "Reference",
-    "title": "Variable Attributes",
+    "title": "Variables",
     "category": "section",
-    "text": "List of attributes associated with variables. Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+    "text": "Variable references and functions for adding and deleting variables.[attribute that points to the (scalar) variable domain??? eg GreaterThan, NonNegatives, ZeroOne, SemiInteger]VariableReference\ncandelete(::AbstractModel,::VariableReference)\nisvalid(::AbstractModel,::VariableReference)\ndelete!(::AbstractModel,::VariableReference)\naddvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.setobjective!",
+    "page": "Reference",
+    "title": "MathOptInterface.setobjective!",
+    "category": "Function",
+    "text": "setobjective!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, N::Int=1)\n\nSet the Nth objective in the model m to be frac12 x^T Q_0 x + a_0^T x + b_0, where:\n\na_0 is a sparse vector specified in tuple form by a_varref, a_coef\nb_0 is a scalar\nthe symmetric matrix Q_0 is defined by the triplets in Q_vari, Q_varj, Q_coef\n\nDuplicate indices (sparse) in either the a_0 vector or the Q_0 matrix are accepted and will be summed together. Off-diagonal entries of Q_0 will be mirrored, so either the upper triangular or lower triangular entries of Q_0 should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_varref, Q_vari, Q_varj should be collections of VariableReference objects.\n\nsetobjective!(m::AbstractModel, b, a_varref::Vector{VariableReference}, a_coef, N::Int=1)\n\nSet the Nth objective in the model m to be a_0^T x + b_0, where:\n\na_0 is a sparse vector specified in tuple form by a_varref, a_coef\nb_0 is a scalar\n\nDuplicate indices (sparse) in either the a_0 vector or the Q_0 matrix are accepted and will be summed together.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.modifyobjective!",
+    "page": "Reference",
+    "title": "MathOptInterface.modifyobjective!",
+    "category": "Function",
+    "text": "modifyobjective!(m::AbstractModel, N::Int, args...)\n\nModify elements of the Nth objective depending on the arguments args. The Nth objective has the form frac12 x^T Q_0 x + a_0^T x + b_0.\n\nThere are three cases, below.\n\nModify Constant term\n\nmodifyobjective!(m::AbstractModel, N::Int, b)\n\nSet the constant term b_0 of the Nth objective to b.\n\nExamples\n\nmodifyobjective!(m, 1, 1.0)\n\nModify Linear term\n\nmodifyobjective!(m::AbstractModel, N::Int, a_varidx, a_coef)\n\nSet elements given by a_varidx in the linear term of the Nth objective to a_coef. Either a_varidx and a_coef are both singletons, or they should be collections with equal length. The behavior of duplicate entries in a_varidx is undefined.\n\nExamples\n\nmodifyobjective!(m, 1, v, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyobjective!(m::AbstractModel, N::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the Nth objective specified by the triplets Q_vari, Q_varj, Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects. The behavior of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyobjective!(m, 1, v1, v2, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [v1, v1], [1.0, 2.0])\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getobjectiveconstant",
+    "page": "Reference",
+    "title": "MathOptInterface.getobjectiveconstant",
+    "category": "Function",
+    "text": "getobjectiveconstant(m, N::Int=1)\n\nReturn the constant term in the Nth objective.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getobjectiveaffine",
+    "page": "Reference",
+    "title": "MathOptInterface.getobjectiveaffine",
+    "category": "Function",
+    "text": "getobjectiveaffine(m, N::Int=1)\n\nReturn the affine part of the Nth objective in tuple form (varref, coef) where varref is a VariableReference and coef is a coefficient. Output is a tuple of two vectors.\n\ngetobjectiveaffine(m, v::VariableReference, N::Int=1)\n\nReturn the coefficient for the variable v in the affine part of the Nth objective.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Objectives-1",
+    "page": "Reference",
+    "title": "Objectives",
+    "category": "section",
+    "text": "Functions for adding and modifying objectives.setobjective!\nmodifyobjective!\ngetobjectiveconstant\ngetobjectiveaffine"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.VariablewiseConstraintReference",
+    "page": "Reference",
+    "title": "MathOptInterface.VariablewiseConstraintReference",
+    "category": "Type",
+    "text": "VariablewiseConstraintReference{T}\n\nA lightweight object used to reference variablewise constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AffineConstraintReference",
+    "page": "Reference",
+    "title": "MathOptInterface.AffineConstraintReference",
+    "category": "Type",
+    "text": "AffineConstraintReference{T}\n\nA lightweight object used to reference affine-in-set constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.QuadraticConstraintReference",
+    "page": "Reference",
+    "title": "MathOptInterface.QuadraticConstraintReference",
+    "category": "Type",
+    "text": "QuadraticConstraintReference{T}\n\nA lightweight object used to reference quadratic-in-set constraints in a model. The parameter T is the type of set constraint referenced.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "page": "Reference",
+    "title": "MathOptInterface.candelete",
+    "category": "Method",
+    "text": "candelete(m::AbstractModel, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this constraint can be removed from the model m.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "page": "Reference",
+    "title": "MathOptInterface.isvalid",
+    "category": "Method",
+    "text": "isvalid(m::AbstractModel, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active constraint in the model m.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractModel,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "page": "Reference",
+    "title": "Base.delete!",
+    "category": "Method",
+    "text": "delete!(m::AbstractModel, ref::ConstraintReference)\n\nDelete the referenced constraint from the model.\n\ndelete!(m::AbstractModel, refs::Vector{ConstraintReference})\n\nDelete the referenced constraints in the vector refs from the model.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.addconstraint!",
+    "page": "Reference",
+    "title": "MathOptInterface.addconstraint!",
+    "category": "Function",
+    "text": "addconstraint!(m::AbstractModel, b, a_constridx, a_v::Vector{VariableReference}, a_coef, Q_constridx, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nAdd the vector quadratic-in-set constraint q_i(x) + A_i^T x + b_i in mathcalS_i, where:\n\nA_i is a sparse matrix specified in triplet form by a_constridx, a_v, a_coef\nb_i is a vector specified by b\nq_i(x) is a vector with component (q_i(x))_k defined as frac12 x^T Q_ik x, where each symmetric matrix Q_ik has Q_constridx equal to k and is specified in triplet form by Q_vari, Q_varj, Q_coef\nmathcalS_i is a pre-defined set specified as S\n\nDuplicate indices in either the A_i matrix or any Q_ik matrix are accepted and will be summed together. Off-diagonal entries of Q_ik will be mirrored, so either the upper triangular or lower triangular entries of Q_ik should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_v, Q_vari, Q_varj should be collections of VariableReference objects.\n\naddconstraint!(m::AbstractModel, b, a_v::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nAdd the scalar quadratic-in-set constraint q_i(x) + a_i^T x + b_i in mathcalS_i, where:\n\na_i is a sparse vector specified in tuple form by a_v, a_coef\nb_i is a scalar specified by b\nq_i(x) is defined as frac12 x^T Q_i x, where the symmetric matrix Q_i is specified in triplet form by Q_vari, Q_varj, Q_coef\nmathcalS_i is a pre-defined scalar set specified as S\n\nDuplicate indices in the a_i or the Q_ik are accepted and will be summed together.\n\naddconstraint!(m::AbstractModel, b, a_constridx, a_v::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nAdd the vector affine-in-set constraint A_i^T x + b_i in mathcalS_i, where:\n\nA_i is a sparse matrix specified in triplet form by a_constridx, a_v, a_coef\nb_i is a vector specified by b\nmathcalS_i is a pre-defined set specified as S\n\nDuplicate indices in the A_i are accepted and will be summed together.\n\naddconstraint!(m::AbstractModel, b, a_v::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nAdd the scalar affine-in-set constraint a_i^T x + b_i in mathcalS_i, where:\n\na_i is a sparse vector specified in tuple form by a_v, a_coef\nb_i is a scalar specified by b\nmathcalS_i is a pre-defined scalar set specified as S\n\nDuplicate indices in the a_i are accepted and will be summed together.\n\naddconstraint!(m::AbstractModel, vs::Vector{VariableReference}, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nAdd the vector variable-wise constraint (x_j)_j in v_i in mathcalS_i, where:\n\nv_i is a list of variable indices specified as a vector of variable references vs\nmathcalS_i is a pre-defined set specified as S\n\nBehavior is not defined for duplicate indices in the v_i.\n\naddconstraint!(m::AbstractModel, v::VariableReference, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nAdd the scalar variable-wise constraint x_j in mathcalS_i, where:\n\nx_j is variable specified as a variable reference v\nmathcalS_i is a pre-defined scalar set specified as S\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.modifyconstraint!",
+    "page": "Reference",
+    "title": "MathOptInterface.modifyconstraint!",
+    "category": "Function",
+    "text": "modifyconstraint!(m::AbstractModel, c::ConstraintReference, k::Int, args...)\n\nModify elements of the kth row of the constraint c depending on the arguments args. The kth row will have the form q_ik(x) + A_ik^T x + b_ik. There are four cases.\n\nModify Constant term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, k::Int, b)\n\nSet the constant term of the kth row in the constraint c to b.\n\nExamples\n\nmodifyconstraint!(m, c, 1, 1.0)\n\nModify Linear term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, k::Int, a_v::Vector{VariableReference}, a_coef)\n\nSet elements given by a_v in the linear term of the kth row in the constraint c to a_coef. Either a_v and a_coef are both singletons, or they should be collections with equal length. The behavior of duplicate entries in a_v is undefined.\n\nExamples\n\nmodifyconstraint!(m, c, v, 1.0)\nmodifyconstraint!(m, c, [v_1, v_2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference, k::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the kth row of the constraint c specified by the triplets Q_vari, Q_varj, Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects. The behavior of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyconstraint!(m, c, v_1, v_2, 1.0)\nmodifyconstraint!(m, c, [v_1, v_2], [v_1, v_1], [1.0, 2.0])\n\nModify Set\n\nmodifyconstraint!(m::AbstractModel, c::ConstraintReference{Set}, S::Set)\n\nChange the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositives) # errors\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getconstraintconstant",
+    "page": "Reference",
+    "title": "MathOptInterface.getconstraintconstant",
+    "category": "Function",
+    "text": "getconstraintconstant(m::AbstractModel, c::ConstraintReference)\n\nReturn the b vector of the constraint c.\n\ngetconstraintconstant(m::AbstractModel, c::ConstraintReference, k::Int)\n\nReturn the constant term of the kth row of the constraint c.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getconstraintaffine",
+    "page": "Reference",
+    "title": "MathOptInterface.getconstraintaffine",
+    "category": "Function",
+    "text": "getconstraintaffine(m::AbstractModel, c::ConstraintReference)\n\nReturn the A_i matrix of the constraint corresponding to c in triplet form (i, v, coef), where v is a VariableReference, and coef is a coefficient value. Output is a tuple of three vectors.\n\ngetconstraintaffine(m::AbstractModel, c::ConstraintReference, k::Int)\n\nReturn the kth row of the A_k matrix of the constraint corresponding to c in tuple form (v, coef), where v is a VariableReference, and coef is a coefficient value. Output is a tuple of two vectors.\n\ngetconstraintaffine(m::AbstractModel, c::ConstraintReference, k::Int, v::VariableReference)\n\nReturn the element of the A_k matrix of the constraint corresponding to c in row k and variable v.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.getconstraintquadratic",
+    "page": "Reference",
+    "title": "MathOptInterface.getconstraintquadratic",
+    "category": "Function",
+    "text": "getconstraintquadratic(m::AbstractModel, c::ConstraintReference, k::Int)\n\nReturn the Q_ik matrix of the kth row of the constraint corresponding to c in triplet form (v_1, v_2, coef), where v_1, v_2 are VariableReferences, and coef is a coefficient value. Output is a tuple of three vectors. The Q_ik matrix must be symmetric, and only one element is returned.\n\ngetconstraintquadratic(m::AbstractModel, c::ConstraintReference, k::Int, v_1::VariableReference, v_2::VariableReference)\n\nReturn the element corresponding to (v_1, v_2) of the Q_ik matrix of the kth row of the constraint corresponding to c.\n\n\n\n"
 },
 
 {
@@ -825,67 +857,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Constraint-Attributes-1",
+    "location": "apireference.html#Constraints-1",
     "page": "Reference",
-    "title": "Constraint Attributes",
+    "title": "Constraints",
     "category": "section",
-    "text": "List of attributes associated with constraints. Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstriaintReference{T} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus"
-},
-
-{
-    "location": "apireference.html#Status-Codes-1",
-    "page": "Reference",
-    "title": "Status Codes",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "apireference.html#MathOptInterface.TerminationStatusCode",
-    "page": "Reference",
-    "title": "MathOptInterface.TerminationStatusCode",
-    "category": "Type",
-    "text": "TerminationStatusCode\n\nAn Enum of possible values for the TerminationStatus attribute. This attribute is meant to explain the reason why the solver stopped executing.\n\nOK\n\nThese are generally OK statuses.\n\nSuccess: the algorithm ran successfully and has a result. This includes cases where the algorithm converges to an infeasible point (NLP) or converges to a solution of a homogeneous self-dual problem and has a certificate of primal/dual infeasibility.\nAlmostSuccess: the algorithm almost ran successfully (e.g., to relaxed convergence tolerances) and has a result.\nInfeasibleNoResult: the algorithm stopped because it decided that the problem is infeasible but does not have a result to return.\nUnboundedNoResult: the algorithm stopped because it decided that the problem is unbounded but does not have a result to return.\nInfeasibleOrUnbounded: the algorithm stopped because it decided that the problem is infeasible or unbounded; no result is available. This occasionally happens during MIP presolve.\n\nLimits\n\nThe solver stopped because of some user-defined limit. To be documented: IterationLimit, TimeLimit, NodeLimit, SolutionLimit, MemoryLimit, ObjectiveLimit, NormLimit, OtherLimit.\n\nProblematic\n\nThis group of statuses means that something unexpected or problematic happened.\n\nSlowProgress: the algorithm stopped because it was unable to continue making progress towards the solution. AlmostSuccess should be used if there is additional information that relaxed convergence tolerances are satisfied.\n\nTo be documented: NumericalError, InvalidModel, InvalidOption, Interrupted, OtherError.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Termination-Status-1",
-    "page": "Reference",
-    "title": "Termination Status",
-    "category": "section",
-    "text": "The TerminationStatus attribute is meant to explain the reason why the solver stopped executing. The value of the attribute is of type TerminationStatusCode.TerminationStatusCode"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ResultStatusCode",
-    "page": "Reference",
-    "title": "MathOptInterface.ResultStatusCode",
-    "category": "Type",
-    "text": "ResultStatusCode\n\nAn Enum of possible values for the PrimalStatus and DualStatus attributes. The values indicate how to interpret the result vector.\n\nFeasiblePoint\nNearlyFeasiblePoint\nInfeasiblePoint\nInfeasibilityCertificate\nNearlyInfeasibilityCertificate\nReductionCertificate\nNearlyReductionCertificate\nUnknown\nOther\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Result-Status-1",
-    "page": "Reference",
-    "title": "Result Status",
-    "category": "section",
-    "text": "The PrimalStatus and DualStatus attributes are meant to explain how to interpret the result returned by the solver. The value of the attributes are of type ResultStatusCode.ResultStatusCode"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.BasisStatusCode",
-    "page": "Reference",
-    "title": "MathOptInterface.BasisStatusCode",
-    "category": "Type",
-    "text": "BasisStatusCode\n\nAn Enum of possible values for the VariableBasisStatus and ConstraintBasisStatus attribute. This explains the status of a given element with respect to an optimal solution basis. Possible values are:     * Basic: element is in the basis.     * Nonbasic: element is not in the basis.     * NonbasicAtLower: element is not in the basis and is at its lower bound.     * NonbasicAtUpper: element is not in the basis and is at its upper bound.     * SuperBasic: element is not in the basis but is also not at one of its bounds.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Basis-Status-1",
-    "page": "Reference",
-    "title": "Basis Status",
-    "category": "section",
-    "text": "BasisStatusCode"
+    "text": "Constraint references and functions for adding, modifying, and removing constraints.VariablewiseConstraintReference\nAffineConstraintReference\nQuadraticConstraintReference\ncandelete(::AbstractModel,::ConstraintReference)\nisvalid(::AbstractModel,::ConstraintReference)\ndelete!(::AbstractModel,::ConstraintReference)\naddconstraint!\nmodifyconstraint!\ngetconstraintconstant\ngetconstraintaffine\ngetconstraintquadraticList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{T} objects.[why is ConstraintBasisStatus under constraint attributes but below we have a basis status attribute separately??]ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus"
 },
 
 ]}
