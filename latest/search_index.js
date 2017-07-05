@@ -153,6 +153,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.supportsproblem",
+    "page": "Reference",
+    "title": "MathOptInterface.supportsproblem",
+    "category": "Function",
+    "text": "supportsproblem(s::AbstractSolver, objective_type::F, constriant_types::Vector)::Bool\n\nReturn true if the solver supports optimizing a problem with objective type F and constraints of the types specified by constraint_types which is a list of tuples (F,S) for F-in-S constraints. Return false if the solver does not support this problem class.\n\nExamples\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan)])\n\nshould be true for a linear programming solver s.\n\nsupportsproblem(s, ScalarQuadraticFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan)])\n\nshould be true for a quadratic programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan),\n    (ScalarVariablewiseFunction{Float64},ZeroOne)])\n\nshould be true for a mixed-integer linear programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan),\n    (VectorAffineFunction{Float64},SecondOrderCone)])\n\nshould be true for a second-order cone solver s.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ReturnsDuals",
     "page": "Reference",
     "title": "MathOptInterface.ReturnsDuals",
@@ -185,14 +193,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.SupportsQuadraticObjective",
-    "page": "Reference",
-    "title": "MathOptInterface.SupportsQuadraticObjective",
-    "category": "Type",
-    "text": "SupportsQuadraticObjective()\n\nA Bool indicating if the solver supports quadratic objectives.\n\n\n\n"
-},
-
-{
     "location": "apireference.html#MathOptInterface.SupportsConicThroughQuadratic",
     "page": "Reference",
     "title": "MathOptInterface.SupportsConicThroughQuadratic",
@@ -205,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver",
     "category": "section",
-    "text": "AbstractSolverList of solver attributesReturnsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolve\nSupportsQuadraticObjective\nSupportsConicThroughQuadratic"
+    "text": "AbstractSolver\nsupportsproblemList of solver attributesReturnsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolve\nSupportsConicThroughQuadratic"
 },
 
 {
@@ -221,7 +221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SolverInstance",
     "category": "Function",
-    "text": "SolverInstance(solver::AbstractSolver)\n\nCreate a solver instance of AbstractSolverInstance using the given solver.\n\n\n\n"
+    "text": "SolverInstance(solver::AbstractSolver)\n\nCreate a solver instance from the given solver.\n\n\n\n"
 },
 
 {
@@ -265,27 +265,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.NumberOfVariablewiseConstraints",
+    "location": "apireference.html#MathOptInterface.NumberOfConstraints",
     "page": "Reference",
-    "title": "MathOptInterface.NumberOfVariablewiseConstraints",
+    "title": "MathOptInterface.NumberOfConstraints",
     "category": "Type",
-    "text": "NumberOfVariablewiseConstraints{T}()\n\nThe number of variablewise constraints of type T in the solver instance.\n\n\n\n"
+    "text": "NumberOfConstraints{F,S}()\n\nThe number of constraints of the type F-in-S present in the solver instance.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.NumberOfAffineConstraints",
+    "location": "apireference.html#MathOptInterface.ListOfPresentConstraints",
     "page": "Reference",
-    "title": "MathOptInterface.NumberOfAffineConstraints",
+    "title": "MathOptInterface.ListOfPresentConstraints",
     "category": "Type",
-    "text": "NumberOfAffineConstraints{T}()\n\nThe number of affine constraints of type T in the solver instance.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.NumberOfQuadraticConstraints",
-    "page": "Reference",
-    "title": "MathOptInterface.NumberOfQuadraticConstraints",
-    "category": "Type",
-    "text": "NumberOfQuadraticConstraints{T}()\n\nThe number of quadratic constraints of type T in the solver instance.\n\n\n\n"
+    "text": "ListOfPresentConstraints()\n\nA list of tuples of the form (F,S), where F is a function type and S is a set type indicating that the attribute NumberOfConstraints{F,S}() has value greater than zero.\n\n\n\n"
 },
 
 {
@@ -297,11 +289,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.ObjectiveFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.ObjectiveFunction",
+    "category": "Type",
+    "text": "ObjectiveFunction()\n\nAn AbstractFunction instance which represents the objective function.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ObjectiveValue",
     "page": "Reference",
     "title": "MathOptInterface.ObjectiveValue",
     "category": "Type",
-    "text": "ObjectiveValue(resultidx::Int=1, objectiveindex::Int=1)\n\nThe objective value of the resultindexth primal result of the objectiveindexth objective.\n\nBoth resultindex and objectiveindex default to 1.\n\n\n\n"
+    "text": "ObjectiveValue(resultidx::Int=1)\n\nThe objective value of the resultindexth primal result.\n\n\n\n"
 },
 
 {
@@ -381,7 +381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver Instance",
     "category": "section",
-    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nSense\nNumberOfVariables\nNumberOfVariablewiseConstraints\nNumberOfAffineConstraints\nNumberOfQuadraticConstraints\nResultCount\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
+    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nSense\nNumberOfVariables\nNumberOfConstraints\nListOfPresentConstraints\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
 },
 
 {
@@ -449,27 +449,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.VariableReference}",
+    "location": "apireference.html#MathOptInterface.ConstraintReference",
+    "page": "Reference",
+    "title": "MathOptInterface.ConstraintReference",
+    "category": "Type",
+    "text": "ConstraintReference{F,S}\n\nA lightweight object used to reference F-in-S constraints in a solver instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.candelete",
     "page": "Reference",
     "title": "MathOptInterface.candelete",
-    "category": "Method",
-    "text": "candelete(m::AbstractSolverInstance, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this variable can be removed from the solver instance m.\n\n\n\n"
+    "category": "Function",
+    "text": "candelete(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the solver instance m.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.VariableReference}",
+    "location": "apireference.html#MathOptInterface.isvalid",
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
-    "category": "Method",
-    "text": "isvalid(m::AbstractSolverInstance, ref::VariableReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active variable in the solver instance m.\n\n\n\n"
+    "category": "Function",
+    "text": "isvalid(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the solver instance m.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.VariableReference}",
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintReference, MathOptInterface.VariableReference}}",
     "page": "Reference",
     "title": "Base.delete!",
     "category": "Method",
-    "text": "delete!(m::AbstractSolverInstance, ref::VariableReference)\n\nDelete the referenced variable from the solver instance.\n\ndelete!(m::AbstractSolverInstance, refs::Vector{VariableReference})\n\nDelete the referenced variables in the vector refs from the solver instance.\n\n\n\n"
+    "text": "delete!(m::AbstractSolverInstance, ref::AnyReference)\n\nDelete the referenced object from the solver instance.\n\ndelete!(m::AbstractSolverInstance, refs::Vector{<:AnyReference})\n\nDelete the referenced objects in the vector refs from the solver instance. It may be assumed that R is a concrete type.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#References-1",
+    "page": "Reference",
+    "title": "References",
+    "category": "section",
+    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)"
 },
 
 {
@@ -517,55 +533,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Variables",
     "category": "section",
-    "text": "Variable references and functions for adding and deleting variables.[attribute that points to the (scalar) variable domain??? eg GreaterThan, NonNegatives, ZeroOne, SemiInteger]VariableReference\ncandelete(::AbstractSolverInstance,::VariableReference)\nisvalid(::AbstractSolverInstance,::VariableReference)\ndelete!(::AbstractSolverInstance,::VariableReference)\naddvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+    "text": "Functions for adding variables. For deleting, see references section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.VariablewiseConstraintReference",
-    "page": "Reference",
-    "title": "MathOptInterface.VariablewiseConstraintReference",
-    "category": "Type",
-    "text": "VariablewiseConstraintReference{T}\n\nA lightweight object used to reference variablewise constraints in a solver instance. The parameter T is the type of set constraint referenced.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AffineConstraintReference",
-    "page": "Reference",
-    "title": "MathOptInterface.AffineConstraintReference",
-    "category": "Type",
-    "text": "AffineConstraintReference{T}\n\nA lightweight object used to reference affine-in-set constraints in a solver instance. The parameter T is the type of set constraint referenced.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.QuadraticConstraintReference",
-    "page": "Reference",
-    "title": "MathOptInterface.QuadraticConstraintReference",
-    "category": "Type",
-    "text": "QuadraticConstraintReference{T}\n\nA lightweight object used to reference quadratic-in-set constraints in a solver instance. The parameter T is the type of set constraint referenced.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.candelete-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
-    "page": "Reference",
-    "title": "MathOptInterface.candelete",
-    "category": "Method",
-    "text": "candelete(m::AbstractSolverInstance, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this constraint can be removed from the solver instance m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
+    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.ConstraintReference}",
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Method",
-    "text": "isvalid(m::AbstractSolverInstance, ref::ConstraintReference)::Bool\n\nReturn a Bool indicating whether this reference is valid for an active constraint in the solver instance m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.AffineConstraintReference, MathOptInterface.QuadraticConstraintReference, MathOptInterface.VariablewiseConstraintReference}}",
-    "page": "Reference",
-    "title": "Base.delete!",
-    "category": "Method",
-    "text": "delete!(m::AbstractSolverInstance, ref::ConstraintReference)\n\nDelete the referenced constraint from the solver instance.\n\ndelete!(m::AbstractSolverInstance, refs::Vector{ConstraintReference})\n\nDelete the referenced constraints in the vector refs from the solver instance.\n\n\n\n"
+    "text": "isvalid(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the solver instance m.\n\n\n\n"
 },
 
 {
@@ -573,7 +549,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraint!",
     "category": "Function",
-    "text": "addconstraint!(m::AbstractSolverInstance, b, a_constridx, a_v::Vector{VariableReference}, a_coef, Q_constridx, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nAdd the vector quadratic-in-set constraint q_i(x) + A_i^T x + b_i in mathcalS_i, where:\n\nA_i is a sparse matrix specified in triplet form by a_constridx, a_v, a_coef\nb_i is a vector specified by b\nq_i(x) is a vector with component (q_i(x))_k defined as frac12 x^T Q_ik x, where each symmetric matrix Q_ik has Q_constridx equal to k and is specified in triplet form by Q_vari, Q_varj, Q_coef\nmathcalS_i is a pre-defined set specified as S\n\nDuplicate indices in either the A_i matrix or any Q_ik matrix are accepted and will be summed together. Off-diagonal entries of Q_ik will be mirrored, so either the upper triangular or lower triangular entries of Q_ik should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_v, Q_vari, Q_varj should be collections of VariableReference objects.\n\naddconstraint!(m::AbstractSolverInstance, b, a_v::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, S::AbstractSet)::QuadraticConstraintReference{typeof(S)}\n\nAdd the scalar quadratic-in-set constraint q_i(x) + a_i^T x + b_i in mathcalS_i, where:\n\na_i is a sparse vector specified in tuple form by a_v, a_coef\nb_i is a scalar specified by b\nq_i(x) is defined as frac12 x^T Q_i x, where the symmetric matrix Q_i is specified in triplet form by Q_vari, Q_varj, Q_coef\nmathcalS_i is a pre-defined scalar set specified as S\n\nDuplicate indices in the a_i or the Q_ik are accepted and will be summed together.\n\naddconstraint!(m::AbstractSolverInstance, b, a_constridx, a_v::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nAdd the vector affine-in-set constraint A_i^T x + b_i in mathcalS_i, where:\n\nA_i is a sparse matrix specified in triplet form by a_constridx, a_v, a_coef\nb_i is a vector specified by b\nmathcalS_i is a pre-defined set specified as S\n\nDuplicate indices in the A_i are accepted and will be summed together.\n\naddconstraint!(m::AbstractSolverInstance, b, a_v::Vector{VariableReference}, a_coef, S::AbstractSet)::AffineConstraintReference{typeof(S)}\n\nAdd the scalar affine-in-set constraint a_i^T x + b_i in mathcalS_i, where:\n\na_i is a sparse vector specified in tuple form by a_v, a_coef\nb_i is a scalar specified by b\nmathcalS_i is a pre-defined scalar set specified as S\n\nDuplicate indices in the a_i are accepted and will be summed together.\n\naddconstraint!(m::AbstractSolverInstance, vs::Vector{VariableReference}, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nAdd the vector variable-wise constraint (x_j)_j in v_i in mathcalS_i, where:\n\nv_i is a list of variable indices specified as a vector of variable references vs\nmathcalS_i is a pre-defined set specified as S\n\nBehavior is not defined for duplicate indices in the v_i.\n\naddconstraint!(m::AbstractSolverInstance, v::VariableReference, S::AbstractSet)::VariablewiseConstraintReference{typeof(S)}\n\nAdd the scalar variable-wise constraint x_j in mathcalS_i, where:\n\nx_j is variable specified as a variable reference v\nmathcalS_i is a pre-defined scalar set specified as S\n\n\n\n"
+    "text": "addconstraint!(m::AbstractSolverInstance, func::F, set::S)::ConstraintReference{F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\n\n\n"
 },
 
 {
@@ -581,31 +557,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyconstraint!",
     "category": "Function",
-    "text": "modifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, k::Int, args...)\n\nModify elements of the kth row of the constraint c depending on the arguments args. The kth row will have the form q_ik(x) + A_ik^T x + b_ik. There are four cases.\n\nModify Constant term\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, k::Int, b)\n\nSet the constant term of the kth row in the constraint c to b.\n\nExamples\n\nmodifyconstraint!(m, c, 1, 1.0)\n\nModify Linear term\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, k::Int, a_v::Vector{VariableReference}, a_coef)\n\nSet elements given by a_v in the linear term of the kth row in the constraint c to a_coef. Either a_v and a_coef are both singletons, or they should be collections with equal length. The behavior of duplicate entries in a_v is undefined.\n\nExamples\n\nmodifyconstraint!(m, c, v, 1.0)\nmodifyconstraint!(m, c, [v_1, v_2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, k::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the kth row of the constraint c specified by the triplets Q_vari, Q_varj, Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects. The behavior of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyconstraint!(m, c, v_1, v_2, 1.0)\nmodifyconstraint!(m, c, [v_1, v_2], [v_1, v_1], [1.0, 2.0])\n\nModify Set\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference{Set}, S::Set)\n\nChange the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositives) # errors\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getconstraintconstant",
-    "page": "Reference",
-    "title": "MathOptInterface.getconstraintconstant",
-    "category": "Function",
-    "text": "getconstraintconstant(m::AbstractSolverInstance, c::ConstraintReference)\n\nReturn the b vector of the constraint c.\n\ngetconstraintconstant(m::AbstractSolverInstance, c::ConstraintReference, k::Int)\n\nReturn the constant term of the kth row of the constraint c.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getconstraintaffine",
-    "page": "Reference",
-    "title": "MathOptInterface.getconstraintaffine",
-    "category": "Function",
-    "text": "getconstraintaffine(m::AbstractSolverInstance, c::ConstraintReference)\n\nReturn the A_i matrix of the constraint corresponding to c in triplet form (i, v, coef), where v is a VariableReference, and coef is a coefficient value. Output is a tuple of three vectors.\n\ngetconstraintaffine(m::AbstractSolverInstance, c::ConstraintReference, k::Int)\n\nReturn the kth row of the A_k matrix of the constraint corresponding to c in tuple form (v, coef), where v is a VariableReference, and coef is a coefficient value. Output is a tuple of two vectors.\n\ngetconstraintaffine(m::AbstractSolverInstance, c::ConstraintReference, k::Int, v::VariableReference)\n\nReturn the element of the A_k matrix of the constraint corresponding to c in row k and variable v.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getconstraintquadratic",
-    "page": "Reference",
-    "title": "MathOptInterface.getconstraintquadratic",
-    "category": "Function",
-    "text": "getconstraintquadratic(m::AbstractSolverInstance, c::ConstraintReference, k::Int)\n\nReturn the Q_ik matrix of the kth row of the constraint corresponding to c in triplet form (v_1, v_2, coef), where v_1, v_2 are VariableReferences, and coef is a coefficient value. Output is a tuple of three vectors. The Q_ik matrix must be symmetric, and only one element is returned.\n\ngetconstraintquadratic(m::AbstractSolverInstance, c::ConstraintReference, k::Int, v_1::VariableReference, v_2::VariableReference)\n\nReturn the element corresponding to (v_1, v_2) of the Q_ik matrix of the kth row of the constraint corresponding to c.\n\n\n\n"
+    "text": "Modify Function\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\nmodifyconstraint!(m, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(m, c, ScalarVariablewiseFunction(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, S::S)\n\nChange the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositives) # Error\n\n## Partial Modifications\n\n    modifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, change::AbstractFunctionModification)\n\nApply the modification specified by `change` to the function of constraint `c`.\n\n### Examples\n\n\njulia modifyconstraint!(m, c, ScalarConstantChange(10.0)) ```\n\n\n\n"
 },
 
 {
@@ -649,11 +601,99 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.ConstraintFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.ConstraintFunction",
+    "category": "Type",
+    "text": "ConstraintFunction()\n\nReturn the AbstractFunction object used to define the constraint.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ConstraintSet",
+    "page": "Reference",
+    "title": "MathOptInterface.ConstraintSet",
+    "category": "Type",
+    "text": "ConstraintSet()\n\nReturn the AbstractSet object used to define the constraint.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#Constraints-1",
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Constraint references and functions for adding, modifying, and removing constraints.VariablewiseConstraintReference\nAffineConstraintReference\nQuadraticConstraintReference\ncandelete(::AbstractSolverInstance,::ConstraintReference)\nisvalid(::AbstractSolverInstance,::ConstraintReference)\ndelete!(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\nmodifyconstraint!\ngetconstraintconstant\ngetconstraintaffine\ngetconstraintquadraticList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{T} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\nmodifyconstraint!List of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractFunction",
+    "category": "Type",
+    "text": "AbstractFunction\n\nAbstract supertype for function objects.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarVariablewiseFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarVariablewiseFunction",
+    "category": "Type",
+    "text": "ScalarVariablewiseFunction(variable)\n\nThe function that extracts the scalar variable referenced by variable, a VariableReference. This function would naturally be used for single variable bounds or integrality constraints.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.VectorVariablewiseFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.VectorVariablewiseFunction",
+    "category": "Type",
+    "text": "VectorVariablewiseFunction(variables)\n\nThe function that extracts the vector of variables referenced by variables, a Vector{VariableReference}. This function would naturally be used for constraints that apply to groups of variables, such as an \"all different\" constraint, an indicator constraint, or a complementarity constraint.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarAffineFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarAffineFunction",
+    "category": "Type",
+    "text": "ScalarAffineFunction{T}(variables, coefficients, constant)\n\nThe scalar-valued affine function a^T x + b, where:\n\na is a sparse vector specified in tuple form by variables::Vector{VariableReference} and coefficients::Vector{T}\nb is a scalar specified by constant::T\n\nDuplicate variable references in variables are accepted, and the corresponding coefficients are summed together.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.VectorAffineFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.VectorAffineFunction",
+    "category": "Type",
+    "text": "VectorAffineFunction{T}(outputindex, variables, coefficients, constant)\n\nThe vector-valued affine function A x + b, where:\n\nA is a sparse matrix specified in triplet form by outputindex, variables, coefficients\nb is a vector specified by constant\n\nDuplicate indices in the A are accepted, and the corresponding coefficients are summed together.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarQuadraticFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarQuadraticFunction",
+    "category": "Type",
+    "text": "ScalarQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe scalar-valued quadratic function frac12x^TQx + a^T x + b, where:\n\na is a sparse vector specified in tuple form by affine_variables, affine_coefficients\nb is a scalar specified by constant\nQ is a symmetric matrix is specified in triplet form by quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients\n\nDuplicate indices in a or Q are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (r,q) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.VectorQuadraticFunction",
+    "page": "Reference",
+    "title": "MathOptInterface.VectorQuadraticFunction",
+    "category": "Type",
+    "text": "VectorQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe vector-valued quadratic function with ith component (\"output index\") defined as frac12x^TQ_ix + a_i^T x + b_i, where:\n\na_i is a sparse vector specified in tuple form by the subset of affine_variables, affine_coefficients for the indices k where affine_outputindex[k] == i.\nb_i is a scalar specified by constant[i]\nQ_i is a symmetric matrix is specified in triplet form by the subset of quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients for the indices k where quadratic_outputindex[k] == i\n\nDuplicate indices in a_i or Q_i are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarConstantChange",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarConstantChange",
+    "category": "Type",
+    "text": "ScalarConstantChange{T}(new_constant)\n\nA struct used to request a change in the constant term of a scalar-valued function. Applicable to ScalarAffineFunction and ScalarQuadraticFunction.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Functions-1",
+    "page": "Reference",
+    "title": "Functions",
+    "category": "section",
+    "text": "List of recognized functions.AbstractFunction\nScalarVariablewiseFunction\nVectorVariablewiseFunction\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange"
 },
 
 {
@@ -829,7 +869,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.setobjective!",
     "category": "Function",
-    "text": "setobjective!(m::AbstractSolverInstance, b, a_varref::Vector{VariableReference}, a_coef, Q_vari::Vector{VariableReference}, Q_varj::Vector{VariableReference}, Q_coef, N::Int=1)\n\nSet the Nth objective in the solver instance m to be frac12 x^T Q_0 x + a_0^T x + b_0, where:\n\na_0 is a sparse vector specified in tuple form by a_varref, a_coef\nb_0 is a scalar\nthe symmetric matrix Q_0 is defined by the triplets in Q_vari, Q_varj, Q_coef\n\nDuplicate indices (sparse) in either the a_0 vector or the Q_0 matrix are accepted and will be summed together. Off-diagonal entries of Q_0 will be mirrored, so either the upper triangular or lower triangular entries of Q_0 should be provided. If entries for both (ij) and (ji) are provided, these are considered duplicate terms. a_varref, Q_vari, Q_varj should be collections of VariableReference objects.\n\nsetobjective!(m::AbstractSolverInstance, b, a_varref::Vector{VariableReference}, a_coef, N::Int=1)\n\nSet the Nth objective in the solver instance m to be a_0^T x + b_0, where:\n\na_0 is a sparse vector specified in tuple form by a_varref, a_coef\nb_0 is a scalar\n\nDuplicate indices (sparse) in either the a_0 vector or the Q_0 matrix are accepted and will be summed together.\n\n\n\n"
+    "text": "setobjective!(m::AbstractSolverInstance, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func.\n\n\n\n"
 },
 
 {
@@ -837,23 +877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyobjective!",
     "category": "Function",
-    "text": "modifyobjective!(m::AbstractSolverInstance, N::Int, args...)\n\nModify elements of the Nth objective depending on the arguments args. The Nth objective has the form frac12 x^T Q_0 x + a_0^T x + b_0.\n\nThere are three cases, below.\n\nModify Constant term\n\nmodifyobjective!(m::AbstractSolverInstance, N::Int, b)\n\nSet the constant term b_0 of the Nth objective to b.\n\nExamples\n\nmodifyobjective!(m, 1, 1.0)\n\nModify Linear term\n\nmodifyobjective!(m::AbstractSolverInstance, N::Int, a_varidx, a_coef)\n\nSet elements given by a_varidx in the linear term of the Nth objective to a_coef. Either a_varidx and a_coef are both singletons, or they should be collections with equal length. The behavior of duplicate entries in a_varidx is undefined.\n\nExamples\n\nmodifyobjective!(m, 1, v, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [1.0, 2.0])\n\nModify Quadratic term\n\nmodifyobjective!(m::AbstractSolverInstance, N::Int, Q_vari, Q_varj, Q_coef)\n\nSet the elements in the quadratic term of the Nth objective specified by the triplets Q_vari, Q_varj, Q_coef. Off-diagonal entries will be mirrored. Q_vari, Q_varj should be collections of VariableReference objects. The behavior of duplicate entries is undefined. If entries for both (ij) and (ji) are provided, these are considered duplicate terms.\n\nExamples\n\nmodifyobjective!(m, 1, v1, v2, 1.0)\nmodifyobjective!(m, 1, [v1, v2], [v1, v1], [1.0, 2.0])\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getobjectiveconstant",
-    "page": "Reference",
-    "title": "MathOptInterface.getobjectiveconstant",
-    "category": "Function",
-    "text": "getobjectiveconstant(m, N::Int=1)\n\nReturn the constant term in the Nth objective.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.getobjectiveaffine",
-    "page": "Reference",
-    "title": "MathOptInterface.getobjectiveaffine",
-    "category": "Function",
-    "text": "getobjectiveaffine(m, N::Int=1)\n\nReturn the affine part of the Nth objective in tuple form (varref, coef) where varref is a VariableReference and coef is a coefficient. Output is a tuple of two vectors.\n\ngetobjectiveaffine(m, v::VariableReference, N::Int=1)\n\nReturn the coefficient for the variable v in the affine part of the Nth objective.\n\n\n\n"
+    "text": "modifyobjective!(m::AbstractSolverInstance, change::AbstractFunctionModification)\n\nApply the modification specified by change to the objective function of m. To change the function completely, call setobjective! instead.\n\nExamples\n\nmodifyobjective!(m, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -861,7 +885,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Objectives",
     "category": "section",
-    "text": "Functions for adding and modifying objectives.setobjective!\nmodifyobjective!\ngetobjectiveconstant\ngetobjectiveaffine"
+    "text": "Functions for adding and modifying objectives.setobjective!\nmodifyobjective!"
 },
 
 ]}
