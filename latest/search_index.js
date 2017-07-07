@@ -33,11 +33,75 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apimanual.html#Concepts-1",
+    "location": "apimanual.html#Purpose-1",
     "page": "Manual",
-    "title": "Concepts",
+    "title": "Purpose",
     "category": "section",
-    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:objective function f_0 is affine or quadratic\nconstraint functions f_i is variable-wise, affine, or quadratic\nconstraint sets mathcalS_i are pre-defined real scalar or vector setsThis API defines some commonly-used sets, but is extensible to other sets recognized by the solver. Currently, all functions are described compactly with lists, vectors, and matrices. The function types are:variable-wise: x_j, a (scalar) variable\naffine: A_i x + b_i, where A_i is a matrix and b_i is a vector\nquadratic: q_i(x) + A_i x + b_i, where q_i(x) is a scalar quadratic expression of the form frac12 x^T Q_i x (for objective or constraints) with symmetric matrix Q_i, or a vector of such quadratic expressions (for constraints only) with symmetric matrices Q_i1 ldots Q_iK_i"
+    "text": "Each mathematical optimization solver API has its own concepts and data structures for representing optimization instances and obtaining results. However, it is often desirable to represent an instance of an optimization problem at a higher level so that it is easy to try using different solvers. MathOptInterface (MOI) is an abstraction layer designed to provide a unified interface to mathematical optimization solvers so that users do not need to understand multiple solver-specific APIs. MOI can be used directly, or through a higher-level modeling interface like JuMP.MOI has been designed to replace MathProgBase, which has been used by modeling packages such as JuMP and Convex.jl. This second-generation abstraction layer addresses a number of limitations of MathProgBase. MOI is designed to:Be simple and extensible, unifying linear, quadratic, and conic optimization, and seamlessly facilitate extensions to essentially arbitrary constraints and functions (e.g., indicator constraints, complementarity constraints, and piecewise linear functions)\nBe fast by allowing access to a solver's in-memory representation of a problem without writing intermediate files (when possible) and by using multiple dispatch and concrete types\nAllow a solver to return multiple results (e.g., a pool of solutions)\nAllow a solver to return extra arbitrary information via attributes (e.g., variable- and constraint-wise membership in an irreducible inconsistent subset for infeasibility analysis)\nProvide a greatly expanded set of status codes explaining what happened during the optimization procedure\nEnable a solver to more precisely specify which problem classes it supports\nEnable both primal and dual warm starts\nEnable adding and removing both variables and constraints by using reference objects instead of integer indices\nEnable any modification that the solver supports to an existing instanceThis manual introduces the concepts needed to understand MOI and give a high-level picture of how all of the pieces fit together. The primary focus is on MOI from the perspective of a user of the interface. At the end of the manual we have a section on Implementing a solver interface. The reference page lists the complete API."
+},
+
+{
+    "location": "apimanual.html#Standard-form-problem-1",
+    "page": "Manual",
+    "title": "Standard form problem",
+    "category": "section",
+    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:the functions f_0 f_1 ldots f_m are specified by AbstractFunction objects\nthe sets mathcalS_1 ldots mathcalS_m are specified by AbstractSet objectsThe current function types are:scalar-valued variable-wise: x_j, a scalar variable defined by a variable reference\nvector-valued variable-wise: a vector of variables defined by a list of variable references\nscalar-valued affine: a^T x + b, where a is a vector and b scalar\nvector-valued affine: A x + b, where A is a matrix and b is a vector\nscalar-valued quadratic: frac12 x^T Q x + a^T x + b, where Q is a symmetric matrix, a is a vector, and b is a constant\nvector-valued quadratic: a vector of scalar-valued quadratic expressionsIn a future version, MOI could be extended to cover functions defined by evaluation oracles (e.g., for nonlinear derivative-based optimization).MOI defines some commonly used sets, but the interface is extensible to other sets recognized by the solver. [Describe currently supported sets.]"
+},
+
+{
+    "location": "apimanual.html#Solvers-and-solver-instances-1",
+    "page": "Manual",
+    "title": "Solvers and solver instances",
+    "category": "section",
+    "text": "Solvers are \"factories\" used to specify solver-specific parameters and create new instances of a solver API. Solver instances should be understood as the representation of the problem in the solver's API, just as if one were using its API directly. When possible, the MOI wrapper for a solver should avoid storing an extra copy of the problem data.Through the rest of the manual, m is used as a generic solver instance."
+},
+
+{
+    "location": "apimanual.html#Variables-1",
+    "page": "Manual",
+    "title": "Variables",
+    "category": "section",
+    "text": "MOI has a concept of a scalar variable (only). New scalar variables are created with addvariable! or addvariables!, which return a VariableReference or Vector{VariableReference} respectively. Integer indices are never used to reference variables.One uses VariableReference objects to set and get variable attributes. For example, the VariablePrimalStart attribute is used to provide an initial starting point for a variable or collection of variables:v = addvariable!(m)\nsetattribute!(m, VariablePrimalStart(), v, 10.5)\nv2 = addvariables!(m, 3)\nsetattribute!(m, VariablePrimalStart(), v2, [1.3,6.8,-4.6])A variable can be deleted from a model with delete!(::AbstractSolverInstance, ::VariableReference), if this functionality is supported by the solver."
+},
+
+{
+    "location": "apimanual.html#Functions-1",
+    "page": "Manual",
+    "title": "Functions",
+    "category": "section",
+    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is ScalarVariablewiseFunction defined as:struct ScalarVariablewiseFunction <: AbstractFunction\n    variable::VariableReference\nendIf v is a VariableReference object, then ScalarVariablewiseFunction(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. This function is useful for defining variablewise constraints.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    varables::Vector{VariableReference}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableReference objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by calling setobjective!. For example,x = addvariables!(m, 2)\nsetobjective!(m, ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nsetattribute!(m, Sense, MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
+},
+
+{
+    "location": "apimanual.html#Sets-1",
+    "page": "Manual",
+    "title": "Sets",
+    "category": "section",
+    "text": "[Examples of sets and how to use them. How to add constraints.]"
+},
+
+{
+    "location": "apimanual.html#Solving-and-retrieving-the-results-1",
+    "page": "Manual",
+    "title": "Solving and retrieving the results",
+    "category": "section",
+    "text": "[Example of calling optimize! and getting the status and results back.]"
+},
+
+{
+    "location": "apimanual.html#A-complete-example:-mixintprog-1",
+    "page": "Manual",
+    "title": "A complete example: mixintprog",
+    "category": "section",
+    "text": "[Showcase of how to go from data to MOI instance to optimize! to results, by implementing the mixintprog function]"
+},
+
+{
+    "location": "apimanual.html#Advanced-1",
+    "page": "Manual",
+    "title": "Advanced",
+    "category": "section",
+    "text": ""
 },
 
 {
@@ -46,6 +110,22 @@ var documenterSearchIndex = {"docs": [
     "title": "Duals",
     "category": "section",
     "text": "Currently, a convention for duals is not defined for problems with non-conic sets mathcalS_i or quadratic functions f_0 f_i. Note that bound constraints are supported by re-interpretation in terms of the nonnegative or nonpositive cones. An affine constraint a^T x + b ge c should be interpreted as a^T x + b - c in mathbbR_+, and similarly a^T x + b le c should be interpreted as a^T x + b - c in mathbbR_-. Variable-wise constraints should be interpreted as affine constraints with the appropriate identity mapping in place of A_i.For such conic form minimization problems, the primal is:beginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n max_y_1 ldots y_m  -sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 - sum_i=1^m A_i^T y_i  in 0^n\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignwhere each mathcalC_i is a closed convex cone and mathcalC_i is its dual cone.Note:lower bounds have nonnegative duals\nupper bounds have nonpositive duals\nclosed convex cones have duals belonging to the corresponding dual cones"
+},
+
+{
+    "location": "apimanual.html#Modifying-an-instance-1",
+    "page": "Manual",
+    "title": "Modifying an instance",
+    "category": "section",
+    "text": "[Explain modifyconstraint! and modifyobjective!.]"
+},
+
+{
+    "location": "apimanual.html#Implementing-a-solver-interface-1",
+    "page": "Manual",
+    "title": "Implementing a solver interface",
+    "category": "section",
+    "text": "[Discussion for potential authors of solver interfaces]"
 },
 
 {
@@ -557,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyconstraint!",
     "category": "Function",
-    "text": "Modify Function\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\nmodifyconstraint!(m, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(m, c, ScalarVariablewiseFunction(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, S::S)\n\nChange the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositives) # Error\n\n## Partial Modifications\n\n    modifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, change::AbstractFunctionModification)\n\nApply the modification specified by `change` to the function of constraint `c`.\n\n### Examples\n\n\njulia modifyconstraint!(m, c, ScalarConstantChange(10.0)) ```\n\n\n\n"
+    "text": "Modify Function\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\nmodifyconstraint!(m, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(m, c, ScalarVariablewiseFunction(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, S::S)\n\nChange the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\nmodifyconstraint!(m, c, Interval(0, 5))\nmodifyconstraint!(m, c, NonPositives) # Error\n\nPartial Modifications\n\nmodifyconstraint!(m::AbstractSolverInstance, c::ConstraintReference, change::AbstractFunctionModification)\n\nApply the modification specified by change to the function of constraint c.\n\nExamples\n\nmodifyconstraint!(m, c, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -669,7 +749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ScalarQuadraticFunction",
     "category": "Type",
-    "text": "ScalarQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe scalar-valued quadratic function frac12x^TQx + a^T x + b, where:\n\na is a sparse vector specified in tuple form by affine_variables, affine_coefficients\nb is a scalar specified by constant\nQ is a symmetric matrix is specified in triplet form by quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients\n\nDuplicate indices in a or Q are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (r,q) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
+    "text": "ScalarQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe scalar-valued quadratic function frac12x^TQx + a^T x + b, where:\n\na is a sparse vector specified in tuple form by affine_variables, affine_coefficients\nb is a scalar specified by constant\nQ is a symmetric matrix is specified in triplet form by quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients\n\nDuplicate indices in a or Q are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
 },
 
 {
@@ -689,9 +769,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Functions-1",
+    "location": "apireference.html#Functions-and-function-modifications-1",
     "page": "Reference",
-    "title": "Functions",
+    "title": "Functions and function modifications",
     "category": "section",
     "text": "List of recognized functions.AbstractFunction\nScalarVariablewiseFunction\nVectorVariablewiseFunction\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange"
 },
