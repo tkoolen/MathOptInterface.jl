@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Functions",
     "category": "section",
-    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is ScalarVariablewiseFunction defined as:struct ScalarVariablewiseFunction <: AbstractFunction\n    variable::VariableReference\nendIf v is a VariableReference object, then ScalarVariablewiseFunction(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. This function is useful for defining variablewise constraints.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    varables::Vector{VariableReference}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableReference objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by calling setobjective!. For example,x = addvariables!(m, 2)\nsetobjective!(m, ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nsetattribute!(m, Sense, MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
+    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is ScalarVariablewiseFunction defined as:struct ScalarVariablewiseFunction <: AbstractFunction\n    variable::VariableReference\nendIf v is a VariableReference object, then ScalarVariablewiseFunction(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. This function is useful for defining variablewise constraints.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    varables::Vector{VariableReference}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableReference objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by calling setobjective!. For example,x = addvariables!(m, 2)\nsetobjective!(m, MinSense, ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
 },
 
 {
@@ -333,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Sense",
     "category": "Type",
-    "text": "Sense()\n\nThe optimization sense of the solver instance, an OptimizationSense with value MinSense or MaxSense.\n\n\n\n"
+    "text": "Sense()\n\nThe optimization sense of the solver instance, an OptimizationSense with value MinSense, MaxSense, or FeasiblitySense.\n\n\n\n"
 },
 
 {
@@ -949,7 +949,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.setobjective!",
     "category": "Function",
-    "text": "setobjective!(m::AbstractSolverInstance, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func.\n\n\n\n"
+    "text": "setobjective!(m::AbstractSolverInstance, sense::OptimizationSense, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func with the optimization sense (MinSense or MaxSense) specified by sense.\n\n\n\n"
 },
 
 {
