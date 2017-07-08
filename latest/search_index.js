@@ -173,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Implementing a solver interface",
     "category": "section",
-    "text": "[The interface is designed for multiple dispatch, e.g., attributes, combinations of sets and functions.][Avoid storing extra copies of the problem when possible.][It would be nice if solvers supported the multiple different ways to write the same constraint, e.g., GreaterThan and Nonnegative, second-order cone and rotated second-order cone.]"
+    "text": "[The interface is designed for multiple dispatch, e.g., attributes, combinations of sets and functions.][Avoid storing extra copies of the problem when possible.][It would be nice if solvers supported the multiple different ways to write the same constraint, e.g., GreaterThan and Nonnegative, second-order cone and rotated second-order cone.]There is no special interface for column generation. If the solver has a special API for setting coefficients in existing constraints when adding a new variable, it is possible to queue modifications and new variables and then call the solver's API once all of the new coefficients are known."
 },
 
 {
