@@ -289,11 +289,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.ReturnsDuals",
+    "location": "apireference.html#MathOptInterface.SupportsDuals",
     "page": "Reference",
-    "title": "MathOptInterface.ReturnsDuals",
+    "title": "MathOptInterface.SupportsDuals",
     "category": "Type",
-    "text": "ReturnsDuals()\n\nA Bool indicating if the solver should be expected to return dual solutions when appropriate.\n\n\n\n"
+    "text": "SupportsDuals()\n\nA Bool indicating if the solver should be expected to return dual solutions when appropriate.\n\n\n\n"
 },
 
 {
@@ -333,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver",
     "category": "section",
-    "text": "AbstractSolver\nsupportsproblemList of solver attributesReturnsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolve\nSupportsConicThroughQuadratic"
+    "text": "AbstractSolver\nsupportsproblemList of solver attributesSupportsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolve\nSupportsConicThroughQuadratic"
 },
 
 {
