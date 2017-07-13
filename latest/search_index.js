@@ -421,7 +421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ObjectiveFunction",
     "category": "Type",
-    "text": "ObjectiveFunction()\n\nAn AbstractFunction instance which represents the objective function.\n\n\n\n"
+    "text": "ObjectiveFunction()\n\nAn AbstractFunction instance which represents the objective function. It is guaranteed to be equivalent but not necessarily identical to the function provided by the user.\n\n\n\n"
 },
 
 {
@@ -733,7 +733,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ConstraintFunction",
     "category": "Type",
-    "text": "ConstraintFunction()\n\nReturn the AbstractFunction object used to define the constraint.\n\n\n\n"
+    "text": "ConstraintFunction()\n\nReturn the AbstractFunction object used to define the constraint. It is guaranteed to be equivalent but not necessarily identical to the function provided by the user.\n\n\n\n"
 },
 
 {
