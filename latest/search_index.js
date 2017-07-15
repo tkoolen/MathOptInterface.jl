@@ -81,43 +81,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apimanual.html#Table-of-constraints-1",
+    "location": "apimanual.html#Constraints-by-function-set-pairs-1",
     "page": "Manual",
-    "title": "Table of constraints",
+    "title": "Constraints by function-set pairs",
     "category": "section",
-    "text": "[This needs formatting help.]"
+    "text": "Below is a list of common constraint types and how they are represented as function-set pairs in MOI. In the notation below, x is a vector of decision variables, x_i is a scalar decision variable, and all other terms are fixed constants.[Define notation more precisely. a vector; A matrix; don't reuse ulb as scalar and vector]"
 },
 
 {
-    "location": "apimanual.html#Linear-1",
+    "location": "apimanual.html#Linear-constraints-1",
     "page": "Manual",
-    "title": "Linear",
+    "title": "Linear constraints",
     "category": "section",
-    "text": "a^Tx le u: ScalarAffineFunction, LessThan\na^Tx ge l: ScalarAffineFunction, GreaterThan\na^Tx = b: ScalarAffineFunction, EqualTo\nl le a^Tx le u: ScalarAffineFunction, Interval\nx_i le u: ScalarVariablewiseFunction, LessThan\nx_i ge l: ScalarVariablewiseFunction, GreaterThan\nx_i = b: ScalarVariablewiseFunction, EqualTo\nl le x_i le u: ScalarVariablewiseFunction, Interval\nAx + b in mathbbR_+^n: VectorAffineFunction, Nonnegative\nAx + b in mathbbR_-^n: VectorAffineFunction, Nonpositive\nAx + b = 0: VectorAffineFunction, Zero[Define mathbbR_+ mathbbR_-]"
+    "text": "Mathematical Constraint MOI Function MOI Set\na^Tx le u ScalarAffineFunction LessThan\na^Tx ge l ScalarAffineFunction GreaterThan\na^Tx = b ScalarAffineFunction EqualTo\nl le a^Tx le u ScalarAffineFunction Interval\nx_i le u ScalarVariablewiseFunction LessThan\nx_i ge l ScalarVariablewiseFunction GreaterThan\nx_i = b ScalarVariablewiseFunction EqualTo\nl le x_i le u ScalarVariablewiseFunction Interval\nAx + b in mathbbR_+^n VectorAffineFunction Nonnegative\nAx + b in mathbbR_-^n VectorAffineFunction Nonpositive\nAx + b = 0 VectorAffineFunction Zero[Define mathbbR_+ mathbbR_-]"
 },
 
 {
-    "location": "apimanual.html#Conic-1",
+    "location": "apimanual.html#Conic-constraints-1",
     "page": "Manual",
-    "title": "Conic",
+    "title": "Conic constraints",
     "category": "section",
-    "text": "Ax + b le c^Tx + b: VectorAffineFunction, SecondOrderCone\n(a_1^Tx + b_1a_2^Tx + b_2a_3^Tx + b_3) in mathcalE: VectorAffineFunction, ExponentialCone\nA(x) in mathbbS_+: VectorAffineFunction, PositiveSemidefiniteConeTriangle or PositiveSemidefiniteConeScaled[Define mathcalE (exponential cone), mathbbS_+. A(x) is an affine function of x that outputs a matrix.]"
+    "text": "Mathematical Constraint MOI Function MOI Set\nlVert Ax + brVert_2 le c^Tx + b VectorAffineFunction SecondOrderCone\n(a_1^Tx + b_1a_2^Tx + b_2a_3^Tx + b_3) in mathcalE VectorAffineFunction ExponentialCone\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeTriangle\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeScaled[Define mathcalE (exponential cone), mathcalS_+ (smat), mathcalS_+ (svec). A(x) is an affine function of x that outputs a matrix.]"
 },
 
 {
-    "location": "apimanual.html#Quadratic-1",
+    "location": "apimanual.html#Quadratic-constraints-1",
     "page": "Manual",
-    "title": "Quadratic",
+    "title": "Quadratic constraints",
     "category": "section",
-    "text": "x^TQx + a^Tx + b ge 0: ScalarQuadraticFunction, GreaterThan\nx^TQx + a^Tx + b le 0: ScalarQuadraticFunction, LessThan\nx^TQx + a^Tx + b = 0: ScalarQuadraticFunction, EqualTo\nBilinear matrix inequality: VectorQuadraticFunction, PositiveSemidefiniteConeTriangle or PositiveSemidefiniteConeScaled"
+    "text": "Mathematical Constraint MOI Function MOI Set\nx^TQx + a^Tx + b ge 0 ScalarQuadraticFunction GreaterThan\nx^TQx + a^Tx + b le 0 ScalarQuadraticFunction LessThan\nx^TQx + a^Tx + b = 0 ScalarQuadraticFunction EqualTo\nBilinear matrix inequality VectorQuadraticFunction PositiveSemidefiniteCone..."
 },
 
 {
-    "location": "apimanual.html#Discrete/logical-1",
+    "location": "apimanual.html#Discrete-and-logical-constraints-1",
     "page": "Manual",
-    "title": "Discrete/logical",
+    "title": "Discrete and logical constraints",
     "category": "section",
-    "text": "x_i in mathbbZ: ScalarVariablewiseFunction, Integers\nx_i in 01: ScalarVariablewiseFunction, Binaries\nx_i in 0 cup lu: ScalarVariablewiseFunction, Semicontinous\nx_i in 0 cup ll+1ldotsu-1u: ScalarVariablewiseFunction, SemiInteger\nAt most one component of x can be nonzero: VectorVariablewiseFunction, SOS1\nAt most two components of x can be nonzero, and if two are nonzero they must be adjacent components: VectorVariablewiseFuncion, SOS2"
+    "text": "Mathematical Constraint MOI Function MOI Set\nx_i in mathbbZ ScalarVariablewiseFunction Integers\nx_i in 01 ScalarVariablewiseFunction ZeroOne\nx_i in 0 cup lu ScalarVariablewiseFunction Semicontinuous\nx_i in 0 cup ll+1ldotsu-1u ScalarVariablewiseFunction SemiInteger\nAt most one component of x can be nonzero VectorVariablewiseFunction SOS1\nAt most two components of x can be nonzero, and if so they must be adjacent components VectorVariablewiseFunction SOS2"
 },
 
 {
