@@ -661,7 +661,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addvariable!",
     "category": "Function",
-    "text": "addvariable!(m::AbstractSolverInstance)::VariableReference\n\nAdd a scalar variable to the solver instance, returning a variable reference. In addition, there is a special case for adding variables to existing linear problems.\n\naddvariable!(m::AbstractSolverInstance, cref::Vector{Union{AffineConstraintRef{NonPositive}, AffineConstraintRef{NonNegative}, AffineConstraintRef{Zero}, AffineConstraintRef{Interval}}}, coefs)::VariableReference\n\nAdd a variable with coefficients specified by coefs in the existing affine constraints given by the constraint references cref. To add a variable with coefficients in a constraint that is not listed here, use addvariable!(m) and then modifyconstraint! instead.\n\n\n\n"
+    "text": "addvariable!(m::AbstractSolverInstance)::VariableReference\n\nAdd a scalar variable to the solver instance, returning a variable reference.\n\n\n\n"
 },
 
 {
