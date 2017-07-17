@@ -101,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Conic constraints",
     "category": "section",
-    "text": "Mathematical Constraint MOI Function MOI Set\nlVert Ax + brVert_2 le c^Tx + d VectorAffineFunction SecondOrderCone\ny ge lVert x rVert_2 ScalarVariablewiseFunction SecondOrderCone\n2yz ge lVert x rVert_2^2 yz ge 0 ScalarVariablewiseFunction RotatedSecondOrderCone\n(a_1^Tx + b_1a_2^Tx + b_2a_3^Tx + b_3) in mathcalE VectorAffineFunction ExponentialCone\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeTriangle\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeScaled\nx in mathcalS_+ ScalarVariablewiseFunction PositiveSemidefiniteConeTriangle\nx in mathcalS_+ ScalarVariablewiseFunction PositiveSemidefiniteConeScaled[Define mathcalE (exponential cone), mathcalS_+ (smat), mathcalS_+ (svec). A(x) is an affine function of x that outputs a matrix.]"
+    "text": "Mathematical Constraint MOI Function MOI Set\nlVert Ax + brVert_2 le c^Tx + d VectorAffineFunction SecondOrderCone\ny ge lVert x rVert_2 VectorVariablewiseFunction SecondOrderCone\n2yz ge lVert x rVert_2^2 yz ge 0 VectorVariablewiseFunction RotatedSecondOrderCone\n(a_1^Tx + b_1a_2^Tx + b_2a_3^Tx + b_3) in mathcalE VectorAffineFunction ExponentialCone\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeTriangle\nA(x) in mathcalS_+ VectorAffineFunction PositiveSemidefiniteConeScaled\nx in mathcalS_+ VectorVariablewiseFunction PositiveSemidefiniteConeTriangle\nx in mathcalS_+ VectorVariablewiseFunction PositiveSemidefiniteConeScaled[Define mathcalE (exponential cone), mathcalS_+ (smat), mathcalS_+ (svec). A(x) is an affine function of x that outputs a matrix.]"
 },
 
 {
