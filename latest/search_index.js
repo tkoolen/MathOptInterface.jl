@@ -1045,7 +1045,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.dimension",
     "category": "Function",
-    "text": "dimension(s::AbstractSet)\n\nReturn the dimension (number of vector components) in the set s.\n\n\n\n"
+    "text": "dimension(s::AbstractVectorSet)\n\nReturn the underlying dimension (number of vector components) in the set s, i.e., n if the set is a subset of mathbbR^n.\n\n\n\n"
 },
 
 {
