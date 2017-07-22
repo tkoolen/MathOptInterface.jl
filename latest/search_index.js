@@ -637,7 +637,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Base.delete!",
     "category": "Method",
-    "text": "delete!(m::AbstractSolverInstance, ref::AnyReference)\n\nDelete the referenced object from the solver instance.\n\ndelete!(m::AbstractSolverInstance, refs::Vector{<:AnyReference})\n\nDelete the referenced objects in the vector refs from the solver instance. It may be assumed that R is a concrete type.\n\n\n\n"
+    "text": "delete!(m::AbstractSolverInstance, ref::AnyReference)\n\nDelete the referenced object from the solver instance.\n\ndelete!{R}(m::AbstractSolverInstance, refs::Vector{R<:AnyReference})\n\nDelete the referenced objects in the vector refs from the solver instance. It may be assumed that R is a concrete type.\n\n\n\n"
 },
 
 {
