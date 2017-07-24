@@ -345,6 +345,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.SupportsDeleteVariable",
+    "page": "Reference",
+    "title": "MathOptInterface.SupportsDeleteVariable",
+    "category": "Type",
+    "text": "SupportsDeleteVariable()\n\nA Bool indicating if the solver supports deleting variables from a solver instance.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.SupportsAddVariableAfterSolve",
     "page": "Reference",
     "title": "MathOptInterface.SupportsAddVariableAfterSolve",
@@ -365,7 +373,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver",
     "category": "section",
-    "text": "AbstractSolver\nsupportsproblemList of solver attributesSupportsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsAddVariableAfterSolve\nSupportsConicThroughQuadratic"
+    "text": "AbstractSolver\nsupportsproblemList of solver attributesSupportsDuals\nSupportsAddConstraintAfterSolve\nSupportsDeleteConstraint\nSupportsDeleteVariable\nSupportsAddVariableAfterSolve\nSupportsConicThroughQuadratic"
 },
 
 {
