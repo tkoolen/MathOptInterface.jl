@@ -881,35 +881,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.VectorConstantChange",
-    "page": "Reference",
-    "title": "MathOptInterface.VectorConstantChange",
-    "category": "Type",
-    "text": "VectorConstantChange{T}(new_constant)\n\nA struct used to request a change in the constant vector of a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ScalarCoefficientChange",
-    "page": "Reference",
-    "title": "MathOptInterface.ScalarCoefficientChange",
-    "category": "Type",
-    "text": "ScalarCoefficientChange{T}(variable, new_coefficient)\n\nA struct used to request a change in the linear coefficient of a single variable in a scalar-valued function. Applicable to ScalarAffineFunction and ScalarQuadraticFunction.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.MultirowChange",
-    "page": "Reference",
-    "title": "MathOptInterface.MultirowChange",
-    "category": "Type",
-    "text": "MultirowChange{T}(variable, rows, new_coefficients)\n\nA struct used to request a change in the linear coefficients of a single variable in a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
-},
-
-{
     "location": "apireference.html#Functions-and-function-modifications-1",
     "page": "Reference",
     "title": "Functions and function modifications",
     "category": "section",
-    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange\nVectorConstantChange\nScalarCoefficientChange\nMultirowChange"
+    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange"
 },
 
 {
