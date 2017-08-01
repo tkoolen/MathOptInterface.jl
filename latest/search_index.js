@@ -433,11 +433,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.NumberOfConstraints",
+    "location": "apireference.html#MathOptInterface.ListOfVariableReferences",
     "page": "Reference",
-    "title": "MathOptInterface.NumberOfConstraints",
+    "title": "MathOptInterface.ListOfVariableReferences",
     "category": "Type",
-    "text": "NumberOfConstraints{F,S}()\n\nThe number of constraints of the type F-in-S present in the solver instance.\n\n\n\n"
+    "text": "ListOfVariableReferences()\n\nA Vector{VariableReference} with references to all variables present in the solver instance (i.e., of length equal to the value of NumberOfVariables()).\n\n\n\n"
 },
 
 {
@@ -446,6 +446,22 @@ var documenterSearchIndex = {"docs": [
     "title": "MathOptInterface.ListOfConstraints",
     "category": "Type",
     "text": "ListOfConstraints()\n\nA list of tuples of the form (F,S), where F is a function type and S is a set type indicating that the attribute NumberOfConstraints{F,S}() has value greater than zero.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NumberOfConstraints",
+    "page": "Reference",
+    "title": "MathOptInterface.NumberOfConstraints",
+    "category": "Type",
+    "text": "NumberOfConstraints{F,S}()\n\nThe number of constraints of the type F-in-S present in the solver instance.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ListOfConstraintReferences",
+    "page": "Reference",
+    "title": "MathOptInterface.ListOfConstraintReferences",
+    "category": "Type",
+    "text": "ListOfConstraintReferences{F,S}()\n\nA Vector{ConstraintReferences{F,S}} with references to all constraints of type F-inS in the solver instance (i.e., of length equal to the value of NumberOfConstraints{F,S}()).\n\n\n\n"
 },
 
 {
@@ -549,7 +565,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver Instance",
     "category": "section",
-    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nSense\nNumberOfVariables\nNumberOfConstraints\nListOfConstraints\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
+    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferences\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
 },
 
 {
@@ -865,11 +881,35 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.VectorConstantChange",
+    "page": "Reference",
+    "title": "MathOptInterface.VectorConstantChange",
+    "category": "Type",
+    "text": "VectorConstantChange{T}(new_constant)\n\nA struct used to request a change in the constant vector of a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarCoefficientChange",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarCoefficientChange",
+    "category": "Type",
+    "text": "ScalarCoefficientChange{T}(variable, new_coefficient)\n\nA struct used to request a change in the linear coefficient of a single variable in a scalar-valued function. Applicable to ScalarAffineFunction and ScalarQuadraticFunction.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.MultirowChange",
+    "page": "Reference",
+    "title": "MathOptInterface.MultirowChange",
+    "category": "Type",
+    "text": "MultirowChange{T}(variable, rows, new_coefficients)\n\nA struct used to request a change in the linear coefficients of a single variable in a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#Functions-and-function-modifications-1",
     "page": "Reference",
     "title": "Functions and function modifications",
     "category": "section",
-    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange"
+    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange\nVectorConstantChange\nScalarCoefficientChange\nMultirowChange"
 },
 
 {
