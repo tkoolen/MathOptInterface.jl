@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.cangetattribute",
     "category": "Function",
-    "text": "cangetattribute(s::AbstractSolver, attr::AbstractSolverAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to query attribute attr from the solver s.\n\ncangetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncangetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether the solver instance m currently has a value for the attributed specified by attribute type attr applied to the reference type R.\n\nExamples\n\ncangetattribute(m, ObjectiveValue())\ncangetattribute(m, VariablePrimalStart(), varref)\ncangetattribute(m, ConstraintPrimal(), conref)\n\n\n\n"
+    "text": "cangetattribute(s::AbstractSolver, attr::AbstractSolverAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to query attribute attr from the solver s.\n\ncangetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, v::VariableReference)::Bool\ncangetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, c::ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether the solver instance m currently has a value for the attributed specified by attribute type attr applied to the variable reference v or constraint reference c.\n\ncangetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})::Bool\ncangetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})::Bool\n\nReturn a Bool indicating whether the solver instance m currently has a value for the attributed specified by attribute type attr applied to every variable references in v or constraint reference in c.\n\nExamples\n\ncangetattribute(m, ObjectiveValue())\ncangetattribute(m, VariablePrimalStart(), varref)\ncangetattribute(m, ConstraintPrimal(), conref)\ncangetattribute(m, VariablePrimal(), [ref1, ref2])\n\n\n\n"
 },
 
 {
@@ -285,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.cansetattribute",
     "category": "Function",
-    "text": "cansetattribute(s::AbstractSolver, attr::AbstractSolverAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr in the solver s.\n\ncansetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncangetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the reference type R in the solver instance m.\n\nExamples\n\ncansetattribute(m, ObjectiveValue())\ncansetattribute(m, VariablePrimalStart(), VariableReference)\ncansetattribute(m, ConstraintPrimal(), ConstraintReference{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
+    "text": "cansetattribute(s::AbstractSolver, attr::AbstractSolverAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr in the solver s.\n\ncansetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncangetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the reference type R in the solver instance m.\n\ncansetattribute(m::AbstractSolverInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})::Bool\ncansetattribute(m::AbstractSolverInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attrapplied to every variable reference in v or constraint reference in c in the solver instance m.\n\nExamples\n\ncansetattribute(m, ObjectiveValue())\ncansetattribute(m, VariablePrimalStart(), VariableReference)\ncansetattribute(m, ConstraintPrimal(), ConstraintReference{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
 },
 
 {
@@ -881,11 +881,35 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.VectorConstantChange",
+    "page": "Reference",
+    "title": "MathOptInterface.VectorConstantChange",
+    "category": "Type",
+    "text": "VectorConstantChange{T}(new_constant)\n\nA struct used to request a change in the constant vector of a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ScalarCoefficientChange",
+    "page": "Reference",
+    "title": "MathOptInterface.ScalarCoefficientChange",
+    "category": "Type",
+    "text": "ScalarCoefficientChange{T}(variable, new_coefficient)\n\nA struct used to request a change in the linear coefficient of a single variable in a scalar-valued function. Applicable to ScalarAffineFunction and ScalarQuadraticFunction.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.MultirowChange",
+    "page": "Reference",
+    "title": "MathOptInterface.MultirowChange",
+    "category": "Type",
+    "text": "MultirowChange{T}(variable, rows, new_coefficients)\n\nA struct used to request a change in the linear coefficients of a single variable in a vector-valued function. Applicable to VectorAffineFunction and VectorQuadraticFunction.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#Functions-and-function-modifications-1",
     "page": "Reference",
     "title": "Functions and function modifications",
     "category": "section",
-    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange"
+    "text": "List of recognized functions.AbstractFunction\nSingleVariable\nVectorOfVariables\nScalarAffineFunction\nVectorAffineFunction\nScalarQuadraticFunction\nVectorQuadraticFunctionList of function modifications.ScalarConstantChange\nVectorConstantChange\nScalarCoefficientChange\nMultirowChange"
 },
 
 {
