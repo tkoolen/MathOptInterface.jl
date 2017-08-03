@@ -417,11 +417,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.Sense",
+    "location": "apireference.html#MathOptInterface.ObjectiveSense",
     "page": "Reference",
-    "title": "MathOptInterface.Sense",
+    "title": "MathOptInterface.ObjectiveSense",
     "category": "Type",
-    "text": "Sense()\n\nThe optimization sense of the solver instance, an OptimizationSense with value MinSense, MaxSense, or FeasiblitySense.\n\n\n\n"
+    "text": "ObjectiveSense()\n\nThe sense of the objective function, an OptimizationSense with value MinSense, MaxSense, or FeasiblitySense.\n\n\n\n"
 },
 
 {
@@ -565,7 +565,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Solver Instance",
     "category": "section",
-    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferences\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
+    "text": "AbstractSolverInstanceSolverInstance\noptimize!\nfree!List of solver instance attributesRawSolver\nObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferences\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
 },
 
 {
@@ -1117,7 +1117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.setobjective!",
     "category": "Function",
-    "text": "setobjective!(m::AbstractSolverInstance, sense::OptimizationSense, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func with the optimization sense (MinSense or MaxSense) specified by sense.\n\n\n\n"
+    "text": "setobjective!(m::AbstractSolverInstance, sense::OptimizationSense, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func with the objective sense (MinSense or MaxSense) specified by sense.\n\n\n\n"
 },
 
 {
