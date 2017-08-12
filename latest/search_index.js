@@ -753,14 +753,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.canmodifyconstraint",
-    "page": "Reference",
-    "title": "MathOptInterface.canmodifyconstraint",
-    "category": "Function",
-    "text": "Modify Function\n\ncanmodifyconstraint(m::AbstractSolverInstance, c::ConstraintReference, func::F)::Bool\n\nReturn a Bool indicating whether it is possible to replace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\ncanmodifyconstraint(m, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\ncanmodifyconstraint(m, c, SingleVariable(v1)) # false\n\nModify Set\n\ncanmodifyconstraint(m::AbstractSolverInstance, c::ConstraintReference, S::S)::Bool\n\nReturn a Bool indicating whether it is possible to change the set of constraint c to the new set S which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\ncanmodifyconstraint(m, c, Interval(0, 5))\ncanmodifyconstraint(m, c, NonPositives) # false\n\nPartial Modifications\n\ncanmodifyconstraint(m::AbstractSolverInstance, c::ConstraintReference, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(m, c, ScalarConstantChange(10.0))\n\n\n\n"
-},
-
-{
     "location": "apireference.html#MathOptInterface.ConstraintPrimalStart",
     "page": "Reference",
     "title": "MathOptInterface.ConstraintPrimalStart",
@@ -821,7 +813,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\naddconstraints!\nmodifyconstraint!List of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
