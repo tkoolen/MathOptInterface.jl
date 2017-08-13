@@ -733,7 +733,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraint!",
     "category": "Function",
-    "text": "addconstraint!(m::AbstractSolverInstance, func::F, set::S)::ConstraintReference{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\n\n\n"
+    "text": "addconstraint!(m::AbstractSolverInstance, func::F, set::S)::ConstraintReference{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\naddconstraint!(m::AbstractSolverInstance, v::VariableReference, set::S)::ConstraintReference{SingleVariable,S} where {S}\naddconstraint!(m::AbstractSolverInstance, vec::Vector{VariableReference}, set::S)::ConstraintReference{VectorOfVariables,S} where {S}\n\nAdd the constraint v in mathcalS where v is the variable (or vector of variables) referenced by v and mathcalS is defined by set.\n\n\n\n"
 },
 
 {
