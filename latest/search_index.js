@@ -625,51 +625,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.VariableReference",
-    "page": "Reference",
-    "title": "MathOptInterface.VariableReference",
-    "category": "Type",
-    "text": "VariableReference\n\nA lightweight object used to reference variables in a solver instance.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.ConstraintReference",
-    "page": "Reference",
-    "title": "MathOptInterface.ConstraintReference",
-    "category": "Type",
-    "text": "ConstraintReference{F,S}\n\nA lightweight object used to reference F-in-S constraints in a solver instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.candelete",
-    "page": "Reference",
-    "title": "MathOptInterface.candelete",
-    "category": "Function",
-    "text": "candelete(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the solver instance m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.isvalid",
-    "page": "Reference",
-    "title": "MathOptInterface.isvalid",
-    "category": "Function",
-    "text": "isvalid(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the solver instance m.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintReference, MathOptInterface.VariableReference}}",
-    "page": "Reference",
-    "title": "Base.delete!",
-    "category": "Method",
-    "text": "delete!(m::AbstractSolverInstance, ref::AnyReference)\n\nDelete the referenced object from the solver instance.\n\ndelete!{R}(m::AbstractSolverInstance, refs::Vector{R<:AnyReference})\n\nDelete the referenced objects in the vector refs from the solver instance. It may be assumed that R is a concrete type.\n\n\n\n"
-},
-
-{
     "location": "apireference.html#References-1",
     "page": "Reference",
     "title": "References",
     "category": "section",
-    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)"
+    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)\ncandelete"
 },
 
 {
@@ -761,6 +721,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.transformconstraint!",
+    "page": "Reference",
+    "title": "MathOptInterface.transformconstraint!",
+    "category": "Function",
+    "text": "Transform Constraint Set\n\ntransformconstraint!(m::AbstractSolverInstance, c::ConstraintReference{F,S1}, newset::S2)::ConstraintReference{F,S2}\n\nReplace the set in constraint c with newset. The constraint reference c will no longer be valid, and the function returns a new constraint reference.\n\nSolvers may only support a subset of constraint transforms that they perform efficiently (for example, changing from a LessThan to GreaterThan set). In addition, set modification (where S1 = S2) should be performed via the modifyconstraint! function.\n\nTypically, the user should delete the constraint and add a new one.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}},\n\nc2 = transformconstraint!(m, c, GreaterThan(0.0))\ntransformconstraint!(m, c, LessThan(0.0)) # errors\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.cantransformconstraint",
+    "page": "Reference",
+    "title": "MathOptInterface.cantransformconstraint",
+    "category": "Function",
+    "text": "Transform Constraint Set\n\ncantransformconstraint(m::AbstractSolverInstance, c::ConstraintReference{F,S1}, newset::S2)::Bool\n\nReturn a Bool is the set in constraint c can be replaced with newset.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(m, c, GreaterThan(0.0)) # true\ncantransformconstraint(m, c, ZeroOne())        # false\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ConstraintPrimalStart",
     "page": "Reference",
     "title": "MathOptInterface.ConstraintPrimalStart",
@@ -821,7 +797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
@@ -1121,27 +1097,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.setobjective!",
-    "page": "Reference",
-    "title": "MathOptInterface.setobjective!",
-    "category": "Function",
-    "text": "setobjective!(m::AbstractSolverInstance, sense::OptimizationSense, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func with the objective sense (MinSense or MaxSense) specified by sense.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.modifyobjective!",
-    "page": "Reference",
-    "title": "MathOptInterface.modifyobjective!",
-    "category": "Function",
-    "text": "modifyobjective!(m::AbstractSolverInstance, change::AbstractFunctionModification)\n\nApply the modification specified by change to the objective function of m. To change the function completely, call setobjective! instead.\n\nExamples\n\nmodifyobjective!(m, ScalarConstantChange(10.0))\n\n\n\n"
-},
-
-{
     "location": "apireference.html#Objectives-1",
     "page": "Reference",
     "title": "Objectives",
     "category": "section",
-    "text": "Functions for adding and modifying objectives.setobjective!\nmodifyobjective!"
+    "text": "Functions for adding and modifying objectives.setobjective!\nmodifyobjective!\ncanmodifyobjective"
 },
 
 ]}
