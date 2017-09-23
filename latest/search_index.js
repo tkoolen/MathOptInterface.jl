@@ -49,11 +49,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apimanual.html#Solvers-and-solver-instances-1",
+    "location": "apimanual.html#Solvers-and-solver-instances,-and-standalone-instances-1",
     "page": "Manual",
-    "title": "Solvers and solver instances",
+    "title": "Solvers and solver instances, and standalone instances",
     "category": "section",
-    "text": "Solvers are \"factories\" used to specify solver-specific parameters and create new instances of a solver API. Solver instances should be understood as the representation of the problem in the solver's API, just as if one were using its API directly. When possible, the MOI wrapper for a solver should avoid storing an extra copy of the problem data.Through the rest of the manual, m is used as a generic solver instance."
+    "text": "MOI defines three high-level objects that most users will interact with.A Solver Instance should be understood as the representation of an instance of an optimization problem loaded in the solver's API. That is, the instance data is often (i.e., whenever possible) stored exclusively in the external API, not duplicated in the MOI translation layer (called the MOI wrapper). Hence, the ability to modify data in a solver instance depends on whether the solver's own API supports such modifications. AbstractSolverInstance is the abstract type for solver instances.\nA Solver is a \"factory\" used to specify solver-specific parameters (e.g., algorithmic parameters, license keys, etc.) and create new solver instances. These are typically very lightweight objects. AbstractSolver is the abstract type for solvers.\nA Standalone Instance is an explicit representation of an instance of an optimization problem unattached to any particular solver. The MathOptInterfaceUtilities package provides an implementation of a standalone instance type which implements the MOI interface for setting up a problem and adding variables and constraints, but does not implement any methods related to solving it or querying the solution. There is no abstract base type for standalone instances.Through the rest of the manual, m is used as a generic solver instance."
 },
 
 {
