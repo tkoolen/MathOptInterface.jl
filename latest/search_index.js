@@ -625,11 +625,51 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.VariableReference",
+    "page": "Reference",
+    "title": "MathOptInterface.VariableReference",
+    "category": "Type",
+    "text": "VariableReference\n\nA lightweight object used to reference variables in a solver instance.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ConstraintReference",
+    "page": "Reference",
+    "title": "MathOptInterface.ConstraintReference",
+    "category": "Type",
+    "text": "ConstraintReference{F,S}\n\nA lightweight object used to reference F-in-S constraints in a solver instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.candelete",
+    "page": "Reference",
+    "title": "MathOptInterface.candelete",
+    "category": "Function",
+    "text": "candelete(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the solver instance m.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.isvalid",
+    "page": "Reference",
+    "title": "MathOptInterface.isvalid",
+    "category": "Function",
+    "text": "isvalid(m::AbstractSolverInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the solver instance m.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintReference, MathOptInterface.VariableReference}}",
+    "page": "Reference",
+    "title": "Base.delete!",
+    "category": "Method",
+    "text": "delete!(m::AbstractSolverInstance, ref::AnyReference)\n\nDelete the referenced object from the solver instance.\n\ndelete!{R}(m::AbstractSolverInstance, refs::Vector{R<:AnyReference})\n\nDelete the referenced objects in the vector refs from the solver instance. It may be assumed that R is a concrete type.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#References-1",
     "page": "Reference",
     "title": "References",
     "category": "section",
-    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)\ncandelete"
+    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)"
 },
 
 {
@@ -1094,6 +1134,30 @@ var documenterSearchIndex = {"docs": [
     "title": "Sets",
     "category": "section",
     "text": "List of recognized sets.AbstractSet\nReals\nZeros\nNonnegatives\nNonpositives\nGreaterThan\nLessThan\nEqualTo\nInterval\nSecondOrderCone\nRotatedSecondOrderCone\nExponentialCone\nDualExponentialCone\nPowerCone\nDualPowerCone\nPositiveSemidefiniteConeTriangle\nPositiveSemidefiniteConeScaled\nInteger\nZeroOne\nSemicontinuous\nSemiinteger\nSOS1\nSOS2Functions for getting and setting properties of sets.dimension"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.setobjective!",
+    "page": "Reference",
+    "title": "MathOptInterface.setobjective!",
+    "category": "Function",
+    "text": "setobjective!(m::AbstractSolverInstance, sense::OptimizationSense, func::F)\n\nSet the objective function in the solver instance m to be f(x) where f is a function specified by func with the objective sense (MinSense or MaxSense) specified by sense.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.modifyobjective!",
+    "page": "Reference",
+    "title": "MathOptInterface.modifyobjective!",
+    "category": "Function",
+    "text": "modifyobjective!(m::AbstractSolverInstance, change::AbstractFunctionModification)\n\nApply the modification specified by change to the objective function of m. To change the function completely, call setobjective! instead.\n\nExamples\n\nmodifyobjective!(m, ScalarConstantChange(10.0))\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.canmodifyobjective",
+    "page": "Reference",
+    "title": "MathOptInterface.canmodifyobjective",
+    "category": "Function",
+    "text": "canmodifyobjective(m::AbstractSolverInstance, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the objective function of m.\n\nExamples\n\ncanmodifyobjective(m, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
