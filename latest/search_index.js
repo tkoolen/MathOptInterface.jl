@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "A complete example: solveknapsack",
     "category": "section",
-    "text": "The solveknapsack function below demonstrates the complete process from data to solver instance to result vector using MOI.[ needs formatting help ]\"\"\"\n    solveknapsack(c, w, C)\n\nSolve the binary-constrained knapsack problem: max c'x: w'x <= C, x binary.\nReturns the optimal weights and objective value. Throws an error if the solver\ndoes not terminate with a `Success` status.\n\"\"\"\nfunction solveknapsack(c::Vector{Float64}, w::Vector{Float64}, C::Float64, solver::AbstractSolver)\n    if !supportsproblem(solver, ScalarAffineFunction,\n            [(ScalarAffineFunction,LessThan),\n             (SingleVariable,ZeroOne)])\n        error(\"Provided solver cannot solve binary knapsack problems\")\n    end\n    numvar = length(c)\n    @assert numvar == length(w)\n\n    m = SolverInstance(solver)\n\n    # create the variables in the problem\n    x = addvariables!(m, numvar)\n\n    # set the objective function\n    setobjective!(m, MaxSense, ScalarAffineFunction(x, c, 0.0))\n\n    # add the knapsack constraint\n    addconstraint!(m, ScalarAffineFunction(x, w, 0.0), LessThan(C))\n\n    # add integrality constraints\n    for i in 1:numvar\n        addconstraint!(m, SingleVariable(x[i]), ZeroOne())\n    end\n\n    # all set\n    optimize!(m)\n\n    termination_status = getattribute(m, TerminationStatus())\n    objvalue = cangetattribute(m, ObjectiveValue()) ? getattribute(m, ObjectiveValue()) : NaN\n    if termination_status != Success\n        error(\"Solver terminated with status $termination_status\")\n    end\n\n    @assert getattribute(m, ResultCount()) > 0\n\n    result_status = getattribute(m, PrimalStatus())\n    if result_status != FeasiblePoint\n        error(\"Solver ran successfully did not return a feasible point. The problem may be infeasible.\")\n    end\n    primal_variable_result = getattribute(m, VariablePrimal(), x)\n\n    return (objvalue, primal_variable_result)\nend"
+    "text": "The solveknapsack function below demonstrates the complete process from data to solver instance to result vector using MOI.[ needs formatting help ]\"\"\"\n    solveknapsack(c, w, C)\n\nSolve the binary-constrained knapsack problem: max c'x: w'x <= C, x binary.\nReturns the optimal weights and objective value. Throws an error if the solver\ndoes not terminate with a `Success` status.\n\"\"\"\nfunction solveknapsack(c::Vector{Float64}, w::Vector{Float64}, C::Float64, solver::AbstractSolver)\n    if !supportsproblem(solver, ScalarAffineFunction{Float64},\n            [(ScalarAffineFunction{Float64},LessThan{Float64}),\n             (SingleVariable,ZeroOne)])\n        error(\"Provided solver cannot solve binary knapsack problems\")\n    end\n    numvar = length(c)\n    @assert numvar == length(w)\n\n    m = SolverInstance(solver)\n\n    # create the variables in the problem\n    x = addvariables!(m, numvar)\n\n    # set the objective function\n    setobjective!(m, MaxSense, ScalarAffineFunction(x, c, 0.0))\n\n    # add the knapsack constraint\n    addconstraint!(m, ScalarAffineFunction(x, w, 0.0), LessThan(C))\n\n    # add integrality constraints\n    for i in 1:numvar\n        addconstraint!(m, SingleVariable(x[i]), ZeroOne())\n    end\n\n    # all set\n    optimize!(m)\n\n    termination_status = getattribute(m, TerminationStatus())\n    objvalue = cangetattribute(m, ObjectiveValue()) ? getattribute(m, ObjectiveValue()) : NaN\n    if termination_status != Success\n        error(\"Solver terminated with status $termination_status\")\n    end\n\n    @assert getattribute(m, ResultCount()) > 0\n\n    result_status = getattribute(m, PrimalStatus())\n    if result_status != FeasiblePoint\n        error(\"Solver ran successfully did not return a feasible point. The problem may be infeasible.\")\n    end\n    primal_variable_result = getattribute(m, VariablePrimal(), x)\n\n    return (objvalue, primal_variable_result)\nend"
 },
 
 {
@@ -325,7 +325,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.supportsproblem",
     "category": "Function",
-    "text": "supportsproblem(s::AbstractSolver, objective_type::F, constraint_types::Vector)::Bool\n\nReturn true if the solver supports optimizing a problem with objective type F and constraints of the types specified by constraint_types which is a list of tuples (F,S) for F-in-S constraints. Return false if the solver does not support this problem class.\n\nExamples\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan)])\n\nshould be true for a linear programming solver s.\n\nsupportsproblem(s, ScalarQuadraticFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan)])\n\nshould be true for a quadratic programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan),\n    (SingleVariable,ZeroOne)])\n\nshould be true for a mixed-integer linear programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan),\n    (ScalarAffineFunction{Float64},GreaterThan),\n    (VectorAffineFunction{Float64},SecondOrderCone)])\n\nshould be true for a second-order cone solver s.\n\n\n\n"
+    "text": "supportsproblem(s::AbstractSolver, objective_type::F, constraint_types::Vector)::Bool\n\nReturn true if the solver supports optimizing a problem with objective type F and constraints of the types specified by constraint_types which is a list of tuples (F,S) for F-in-S constraints. Return false if the solver does not support this problem class.\n\nExamples\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan{Float64}),\n    (ScalarAffineFunction{Float64},GreaterThan{Float64})])\n\nshould be true for a linear programming solver s.\n\nsupportsproblem(s, ScalarQuadraticFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan{Float64}),\n    (ScalarAffineFunction{Float64},GreaterThan{Float64})])\n\nshould be true for a quadratic programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan{Float64}),\n    (ScalarAffineFunction{Float64},GreaterThan{Float64}),\n    (SingleVariable,ZeroOne)])\n\nshould be true for a mixed-integer linear programming solver s.\n\nsupportsproblem(s, ScalarAffineFunction{Float64},\n    [(ScalarAffineFunction{Float64},Zeros),\n    (ScalarAffineFunction{Float64},LessThan{Float64}),\n    (ScalarAffineFunction{Float64},GreaterThan{Float64}),\n    (VectorAffineFunction{Float64},SecondOrderCone)])\n\nshould be true for a second-order cone solver s.\n\n\n\n"
 },
 
 {
@@ -1021,7 +1021,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.GreaterThan",
     "category": "Type",
-    "text": "GreaterThan(lower)\n\nThe set lowerinfty) subseteq mathbbR.\n\n\n\n"
+    "text": "GreaterThan{T <: Real}(lower::T)\n\nThe set lowerinfty) subseteq mathbbR.\n\n\n\n"
 },
 
 {
@@ -1029,7 +1029,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.LessThan",
     "category": "Type",
-    "text": "LessThan(upper)\n\nThe set (-inftyupper subseteq mathbbR.\n\n\n\n"
+    "text": "LessThan{T <: Real}(upper::T)\n\nThe set (-inftyupper subseteq mathbbR.\n\n\n\n"
 },
 
 {
@@ -1037,7 +1037,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.EqualTo",
     "category": "Type",
-    "text": "EqualTo(value)\n\nThe set containing the single point x in mathbbR where x is given by value.\n\n\n\n"
+    "text": "EqualTo{T <: Real}(value::T)\n\nThe set containing the single point x in mathbbR where x is given by value.\n\n\n\n"
 },
 
 {
@@ -1045,7 +1045,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Interval",
     "category": "Type",
-    "text": "Interval(lower,upper)\n\nThe interval lower upper subseteq mathbbR. If lower or upper is -Inf or Inf, respectively, the set is interpreted as a one-sided interval.\n\n\n\n"
+    "text": "Interval{T <: Real}(lower::T,upper::T)\n\nThe interval lower upper subseteq mathbbR. If lower or upper is -Inf or Inf, respectively, the set is interpreted as a one-sided interval.\n\n\n\n"
 },
 
 {
@@ -1085,7 +1085,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.PowerCone",
     "category": "Type",
-    "text": "PowerCone(a)\n\nThe 3-dimensional power cone  (xyz) in mathbbR^3  x^a y^1-a = z x ge 0 y ge 0  with parameter a.\n\n\n\n"
+    "text": "PowerCone{T <: Real}(a::T)\n\nThe 3-dimensional power cone  (xyz) in mathbbR^3  x^a y^1-a = z x ge 0 y ge 0  with parameter a.\n\n\n\n"
 },
 
 {
@@ -1093,7 +1093,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.DualPowerCone",
     "category": "Type",
-    "text": "DualPowerCone(a)\n\nThe 3-dimensional power cone  (uvw) in mathbbR^3  (fracua)^a (fracv1-a)^1-a = w u ge 0 v ge 0  with parameter a.\n\n\n\n"
+    "text": "DualPowerCone{T <: Real}(a::T)\n\nThe 3-dimensional power cone  (uvw) in mathbbR^3  (fracua)^a (fracv1-a)^1-a = w u ge 0 v ge 0  with parameter a.\n\n\n\n"
 },
 
 {
@@ -1133,7 +1133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Semicontinuous",
     "category": "Type",
-    "text": "Semicontinuous(l,u)\n\nThe set 0 cup lu.\n\n\n\n"
+    "text": "Semicontinuous{T <: Real}(l::T,u::T)\n\nThe set 0 cup lu.\n\n\n\n"
 },
 
 {
@@ -1141,7 +1141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Semiinteger",
     "category": "Type",
-    "text": "Semiinteger(l,u)\n\nThe set 0 cup ll+1ldotsu-1u.\n\n\n\n"
+    "text": "Semiinteger{T <: Real}(l::T,u::T)\n\nThe set 0 cup ll+1ldotsu-1u.\n\n\n\n"
 },
 
 {
@@ -1149,7 +1149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SOS1",
     "category": "Type",
-    "text": "SOS1(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 1. Of the variables in the set, at most one can be nonzero. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
+    "text": "SOS1{T <: Real}(weights::Vector{T})\n\nThe set corresponding to the special ordered set (SOS) constraint of type 1. Of the variables in the set, at most one can be nonzero. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
 },
 
 {
@@ -1157,7 +1157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SOS2",
     "category": "Type",
-    "text": "SOS2(weights)\n\nThe set corresponding to the special ordered set (SOS) constraint of type 2. Of the variables in the set, at most two can be nonzero, and if two are nonzero, they must be adjacent in the ordering of the set. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
+    "text": "SOS2{T <: Real}(weights::Vector{T})\n\nThe set corresponding to the special ordered set (SOS) constraint of type 2. Of the variables in the set, at most two can be nonzero, and if two are nonzero, they must be adjacent in the ordering of the set. The weights induce an ordering of the variables; as such, they should be unique values. The kth element in the set corresponds to the kth weight in weights. See here for a description of SOS constraints and their potential uses.\n\n\n\n"
 },
 
 {
