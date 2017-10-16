@@ -721,6 +721,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.VariableName",
+    "page": "Reference",
+    "title": "MathOptInterface.VariableName",
+    "category": "Type",
+    "text": "VariableName()\n\nThe name of the variable.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.VariablePrimalStart",
     "page": "Reference",
     "title": "MathOptInterface.VariablePrimalStart",
@@ -749,7 +757,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Variables",
     "category": "section",
-    "text": "Functions for adding variables. For deleting, see references section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+    "text": "Functions for adding variables. For deleting, see references section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to getattribute and setattribute! should include as an argument a single VariableReference or a vector of VariableReference objects.VariableName\nVariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
 },
 
 {
@@ -817,6 +825,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.ConstraintName",
+    "page": "Reference",
+    "title": "MathOptInterface.ConstraintName",
+    "category": "Type",
+    "text": "ConstraintName()\n\nThe name of the variable.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ConstraintPrimalStart",
     "page": "Reference",
     "title": "MathOptInterface.ConstraintPrimalStart",
@@ -877,7 +893,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to getattribute and setattribute! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
