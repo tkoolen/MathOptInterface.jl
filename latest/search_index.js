@@ -409,6 +409,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.writeinstance",
+    "page": "Reference",
+    "title": "MathOptInterface.writeinstance",
+    "category": "Function",
+    "text": "writeinstance(m::AbstractInstance, filename::String)\n\nWrites the current instance data to the given file. Supported file types depend on the solver or standalone instance type.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ObjectiveSense",
     "page": "Reference",
     "title": "MathOptInterface.ObjectiveSense",
@@ -461,7 +469,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstanceList of instance attributesObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwriteinstanceList of instance attributesObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
 },
 
 {
