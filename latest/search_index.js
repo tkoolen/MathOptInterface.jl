@@ -417,6 +417,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.Name",
+    "page": "Reference",
+    "title": "MathOptInterface.Name",
+    "category": "Type",
+    "text": "Name()\n\nA string identifying the instance.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ObjectiveSense",
     "page": "Reference",
     "title": "MathOptInterface.ObjectiveSense",
@@ -469,7 +477,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwriteinstanceList of instance attributesObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwriteinstanceList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
 },
 
 {
@@ -733,7 +741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.VariableName",
     "category": "Type",
-    "text": "VariableName()\n\nThe name of the variable.\n\n\n\n"
+    "text": "VariableName()\n\nA string identifying the variable.\n\n\n\n"
 },
 
 {
@@ -837,7 +845,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ConstraintName",
     "category": "Type",
-    "text": "ConstraintName()\n\nThe name of the variable.\n\n\n\n"
+    "text": "ConstraintName()\n\nA string identifying the constraint.\n\n\n\n"
 },
 
 {
