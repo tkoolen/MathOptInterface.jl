@@ -917,7 +917,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.AbstractFunction",
     "category": "Type",
-    "text": "AbstractFunction{V}\n\nAbstract supertype for function objects. The parameter V indicates the variable type, usually VariableReference.\n\n\n\n"
+    "text": "AbstractFunction\n\nAbstract supertype for function objects.\n\n\n\n"
 },
 
 {
