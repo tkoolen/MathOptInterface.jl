@@ -409,11 +409,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.writeinstance",
+    "location": "apireference.html#MathOptInterface.write",
     "page": "Reference",
-    "title": "MathOptInterface.writeinstance",
+    "title": "MathOptInterface.write",
     "category": "Function",
-    "text": "writeinstance(m::AbstractInstance, filename::String)\n\nWrites the current instance data to the given file. Supported file types depend on the solver or standalone instance type.\n\n\n\n"
+    "text": "write(m::AbstractInstance, filename::String)\n\nWrites the current instance data to the given file. Supported file types depend on the solver or standalone instance type.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.read!",
+    "page": "Reference",
+    "title": "MathOptInterface.read!",
+    "category": "Function",
+    "text": "read!(m::AbstractInstance, filename::String)\n\nRead the file filename into the instance m. If m is non-empty, this may throw an error.\n\nSupported file types depend on the instance type.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.copy!",
+    "page": "Reference",
+    "title": "MathOptInterface.copy!",
+    "category": "Function",
+    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)\n\nCopy the model from the instance src into the instance dest. If dest is non-empty, this may throw an error.\n\n\n\n"
 },
 
 {
@@ -477,7 +493,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwriteinstanceList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!List of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
 },
 
 {
