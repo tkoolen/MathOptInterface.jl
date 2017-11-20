@@ -605,7 +605,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.candelete",
     "category": "Function",
-    "text": "candelete(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the instance m.\n\n\n\n"
+    "text": "candelete(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the instance instance.\n\n\n\n"
 },
 
 {
@@ -613,7 +613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Function",
-    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance m.\n\n\n\n"
+    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance instance.\n\n\n\n"
 },
 
 {
@@ -693,7 +693,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Method",
-    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance m.\n\n\n\n"
+    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance instance.\n\n\n\n"
 },
 
 {
