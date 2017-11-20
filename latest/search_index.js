@@ -225,14 +225,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.AbstractSolverInstanceAttribute",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractSolverInstanceAttribute",
-    "category": "Type",
-    "text": "AbstractSolverInstanceAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the solver instance. These attributes do not apply to standalone instances.\n\n\n\n"
-},
-
-{
     "location": "apireference.html#MathOptInterface.AbstractVariableAttribute",
     "page": "Reference",
     "title": "MathOptInterface.AbstractVariableAttribute",
@@ -261,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.get",
     "category": "Function",
-    "text": "get(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractSolverInstance, attr::AbstractSolverInstanceAttribute)\n\nReturn an attribute attr of the solver instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableReference)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintReference)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableReference}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableReference, \"var1\")\nget(instance, ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintReference, \"con1\")\n\n\n\n"
+    "text": "get(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableReference)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintReference)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableReference}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableReference, \"var1\")\nget(instance, ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintReference, \"con1\")\n\n\n\n"
 },
 
 {
@@ -293,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Attributes",
     "category": "section",
-    "text": "List of attribute categories.AbstractInstanceAttribute\nAbstractSolverInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!"
+    "text": "List of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!"
 },
 
 {
