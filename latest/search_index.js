@@ -1005,7 +1005,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.RotatedSecondOrderCone",
     "category": "Type",
-    "text": "RotatedSecondOrderCone(dimension)\n\nThe rotated second-order cone  (tux) mathbbR^dimension  2tu ge  x _2^2 tu ge 0  of dimension dimension.\n\n\n\n"
+    "text": "RotatedSecondOrderCone(dimension)\n\nThe rotated second-order cone  (tux) in mathbbR^dimension  2tu ge  x _2^2 tu ge 0  of dimension dimension.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.GeometricMeanCone",
+    "page": "Reference",
+    "title": "MathOptInterface.GeometricMeanCone",
+    "category": "Type",
+    "text": "GeometricMeanCone(dimension)\n\nThe geometric mean cone  (tx) in mathbbR^n+1  x ge 0 t le sqrtnx_1 x_2 cdots x_n  of dimension dimension=n+1.\n\n\n\n"
 },
 
 {
@@ -1054,6 +1062,62 @@ var documenterSearchIndex = {"docs": [
     "title": "MathOptInterface.PositiveSemidefiniteConeScaled",
     "category": "Type",
     "text": "PositiveSemidefiniteConeScaled(dimension)\n\nThe (vectorized) cone of symmetric positive semidefinite matrices, with off-diagonals scaled. The entries of the upper triangular part of the matrix are given column by column (or equivalently, the entries of the lower triangular part are given row by row). An n times n matrix has n(n+1)2 lower-triangular elements, so for the vectorized cone of dimension d, the corresponding symmetric matrix has side dimension sqrt14 + 2 d - 12 elements. The off-diagonal entries of the matrices of both the cone and its dual are scaled by sqrt2 and the scalar product is simply the sum of the pairwise product of the entries.\n\nExamples\n\nThe matrix\n\nbeginbmatrix\n  1  2  4\n  2  3  5\n  4  5  6\nendbmatrix\n\nand to (1 2sqrt2 3sqrt2 4 5sqrt2 6) for PositiveSemidefiniteConeScaled.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.PositiveSemidefiniteConeSquare",
+    "page": "Reference",
+    "title": "MathOptInterface.PositiveSemidefiniteConeSquare",
+    "category": "Type",
+    "text": "PositiveSemidefiniteConeSquare(dimension)\n\nThe cone of symmetric positive semidefinite matrices. The entries of the matrix are given column by column (or equivalently, row by row). The matrix is both constrained to be symmetric and and to be positive semidefinite. That is, if the functions in entries (i j) and (j i) are different, then a constraint will be added to make sure that the entries are equal.\n\nExamples\n\nConstraining the matrix\n\nbeginbmatrix\n  1  -y\n  -z  0\nendbmatrix\n\nto be symmetric positive semidefinite can be achieved by constraining the vector (1 -z -y 0) (or (1 -y -z 0)) to belong to the PositiveSemidefiniteConeSquare(2). It both constrains y = z and (1 -y 0) (or (1 -z 0)) to be in PositiveSemidefiniteConeTriangle.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.LogDetConeTriangle",
+    "page": "Reference",
+    "title": "MathOptInterface.LogDetConeTriangle",
+    "category": "Type",
+    "text": "LogDetConeTriangle(dimension)\n\nThe Log-Determinant cone  (t X) in mathbbR^1 + d(d+1)2  t le log(det(X))  where the matrix X is represented in the same symmetric packed format as in the PositiveSemidefiniteConeTriangle. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.LogDetConeScaled",
+    "page": "Reference",
+    "title": "MathOptInterface.LogDetConeScaled",
+    "category": "Type",
+    "text": "LogDetConeScaled(dimension)\n\nThe Log-Determinant cone  (t X) in mathbbR^1 + d(d+1)2  t le log(det(X))  where the matrix X is represented in the same symmetric packed format as in the PositiveSemidefiniteConeScaled. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.LogDetConeSquare",
+    "page": "Reference",
+    "title": "MathOptInterface.LogDetConeSquare",
+    "category": "Type",
+    "text": "LogDetConeSquare(dimension)\n\nThe Log-Determinant cone  (t X) in mathbbR^1 + d^2  t le log(det(X)) X text symmetric  where the matrix X is represented in the same format as in the PositiveSemidefiniteConeSquare. Similarly to PositiveSemidefiniteConeSquare, constraints are added to ensures that X is symmetric. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.RootDetConeTriangle",
+    "page": "Reference",
+    "title": "MathOptInterface.RootDetConeTriangle",
+    "category": "Type",
+    "text": "RootDetConeTriangle(dimension)\n\nThe Root-Determinant cone  (t X) in mathbbR^1 + d(d+1)2  t le det(X)^1d  where the matrix X is represented in the same symmetric packed format as in the PositiveSemidefiniteConeTriangle. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.RootDetConeScaled",
+    "page": "Reference",
+    "title": "MathOptInterface.RootDetConeScaled",
+    "category": "Type",
+    "text": "RootDetConeScaled(dimension)\n\nThe Root-Determinant cone  (t X) in mathbbR^1 + d(d+1)2  t le det(X)^1d  where the matrix X is represented in the same symmetric packed format as in the PositiveSemidefiniteConeScaled. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.RootDetConeSquare",
+    "page": "Reference",
+    "title": "MathOptInterface.RootDetConeSquare",
+    "category": "Type",
+    "text": "RootDetConeSquare(dimension)\n\nThe Root-Determinant cone  (t X) in mathbbR^1 + d^2  t le det(X)^1d X text symmetric  where the matrix X is represented in the same format as in the PositiveSemidefiniteConeSquare. Similarly to PositiveSemidefiniteConeSquare, constraints are added to ensures that X is symmetric. The argument dimension is the dimension of the matrix X, i.e., its number of rows or columns.\n\n\n\n"
 },
 
 {
@@ -1117,7 +1181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Sets",
     "category": "section",
-    "text": "List of recognized sets.AbstractSet\nReals\nZeros\nNonnegatives\nNonpositives\nGreaterThan\nLessThan\nEqualTo\nInterval\nSecondOrderCone\nRotatedSecondOrderCone\nExponentialCone\nDualExponentialCone\nPowerCone\nDualPowerCone\nPositiveSemidefiniteConeTriangle\nPositiveSemidefiniteConeScaled\nInteger\nZeroOne\nSemicontinuous\nSemiinteger\nSOS1\nSOS2Functions for getting and setting properties of sets.dimension"
+    "text": "List of recognized sets.AbstractSet\nReals\nZeros\nNonnegatives\nNonpositives\nGreaterThan\nLessThan\nEqualTo\nInterval\nSecondOrderCone\nRotatedSecondOrderCone\nGeometricMeanCone\nExponentialCone\nDualExponentialCone\nPowerCone\nDualPowerCone\nPositiveSemidefiniteConeTriangle\nPositiveSemidefiniteConeScaled\nPositiveSemidefiniteConeSquare\nLogDetConeTriangle\nLogDetConeScaled\nLogDetConeSquare\nRootDetConeTriangle\nRootDetConeScaled\nRootDetConeSquare\nInteger\nZeroOne\nSemicontinuous\nSemiinteger\nSOS1\nSOS2Functions for getting and setting properties of sets.dimension"
 },
 
 {
