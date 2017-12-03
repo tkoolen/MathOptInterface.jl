@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Purpose",
     "category": "section",
-    "text": "Each mathematical optimization solver API has its own concepts and data structures for representing optimization instances and obtaining results. However, it is often desirable to represent an instance of an optimization problem at a higher level so that it is easy to try using different solvers. MathOptInterface (MOI) is an abstraction layer designed to provide a unified interface to mathematical optimization solvers so that users do not need to understand multiple solver-specific APIs. MOI can be used directly, or through a higher-level modeling interface like JuMP.MOI has been designed to replace MathProgBase, which has been used by modeling packages such as JuMP and Convex.jl. This second-generation abstraction layer addresses a number of limitations of MathProgBase. MOI is designed to:Be simple and extensible, unifying linear, quadratic, and conic optimization, and seamlessly facilitate extensions to essentially arbitrary constraints and functions (e.g., indicator constraints, complementarity constraints, and piecewise linear functions)\nBe fast by allowing access to a solver's in-memory representation of a problem without writing intermediate files (when possible) and by using multiple dispatch and avoiding requiring containers of nonconcrete types\nAllow a solver to return multiple results (e.g., a pool of solutions)\nAllow a solver to return extra arbitrary information via attributes (e.g., variable- and constraint-wise membership in an irreducible inconsistent subset for infeasibility analysis)\nProvide a greatly expanded set of status codes explaining what happened during the optimization procedure\nEnable a solver to more precisely specify which problem classes it supports\nEnable both primal and dual warm starts\nEnable adding and removing both variables and constraints by using reference objects instead of integer indices\nEnable any modification that the solver supports to an existing instance\nAvoid requiring the solver wrapper to store an additional copy of the problem dataThis manual introduces the concepts needed to understand MOI and give a high-level picture of how all of the pieces fit together. The primary focus is on MOI from the perspective of a user of the interface. At the end of the manual we have a section on Implementing a solver interface. The API Reference page lists the complete API.MOI does not export functions, but for brevity we often omit qualifying names with the MOI module. Best practice is to haveusing MathOptInterface\nconst MOI = MathOptInterfaceand prefix all MOI methods with MOI. in user code. If a name is also available in base Julia, we always explicitly use the module prefix, for example, with MOI.get."
+    "text": "Each mathematical optimization solver API has its own concepts and data structures for representing optimization instances and obtaining results. However, it is often desirable to represent an instance of an optimization problem at a higher level so that it is easy to try using different solvers. MathOptInterface (MOI) is an abstraction layer designed to provide a unified interface to mathematical optimization solvers so that users do not need to understand multiple solver-specific APIs. MOI can be used directly, or through a higher-level modeling interface like JuMP.MOI has been designed to replace MathProgBase, which has been used by modeling packages such as JuMP and Convex.jl. This second-generation abstraction layer addresses a number of limitations of MathProgBase. MOI is designed to:Be simple and extensible, unifying linear, quadratic, and conic optimization, and seamlessly facilitate extensions to essentially arbitrary constraints and functions (e.g., indicator constraints, complementarity constraints, and piecewise linear functions)\nBe fast by allowing access to a solver's in-memory representation of a problem without writing intermediate files (when possible) and by using multiple dispatch and avoiding requiring containers of nonconcrete types\nAllow a solver to return multiple results (e.g., a pool of solutions)\nAllow a solver to return extra arbitrary information via attributes (e.g., variable- and constraint-wise membership in an irreducible inconsistent subset for infeasibility analysis)\nProvide a greatly expanded set of status codes explaining what happened during the optimization procedure\nEnable a solver to more precisely specify which problem classes it supports\nEnable both primal and dual warm starts\nEnable adding and removing both variables and constraints by indices that are not required to be consecutive\nEnable any modification that the solver supports to an existing instance\nAvoid requiring the solver wrapper to store an additional copy of the problem dataThis manual introduces the concepts needed to understand MOI and give a high-level picture of how all of the pieces fit together. The primary focus is on MOI from the perspective of a user of the interface. At the end of the manual we have a section on Implementing a solver interface. The API Reference page lists the complete API.MOI does not export functions, but for brevity we often omit qualifying names with the MOI module. Best practice is to haveusing MathOptInterface\nconst MOI = MathOptInterfaceand prefix all MOI methods with MOI. in user code. If a name is also available in base Julia, we always explicitly use the module prefix, for example, with MOI.get."
 },
 
 {
@@ -45,7 +45,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Standard form problem",
     "category": "section",
-    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:the functions f_0 f_1 ldots f_m are specified by AbstractFunction objects\nthe sets mathcalS_1 ldots mathcalS_m are specified by AbstractSet objectsThe current function types are:projection onto a single coordinate: x_j, a single variable defined by a variable reference\nprojection onto multiple coordinates: a subvector of variables defined by a list of variable references\nscalar-valued affine: a^T x + b, where a is a vector and b scalar\nvector-valued affine: A x + b, where A is a matrix and b is a vector\nscalar-valued quadratic: frac12 x^T Q x + a^T x + b, where Q is a symmetric matrix, a is a vector, and b is a constant\nvector-valued quadratic: a vector of scalar-valued quadratic expressionsIn a future version, MOI could be extended to cover functions defined by evaluation oracles (e.g., for nonlinear derivative-based optimization).MOI defines some commonly used sets, but the interface is extensible to other sets recognized by the solver. [Describe currently supported sets.]"
+    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:the functions f_0 f_1 ldots f_m are specified by AbstractFunction objects\nthe sets mathcalS_1 ldots mathcalS_m are specified by AbstractSet objectsThe current function types are:projection onto a single coordinate: x_j, a single variable defined by a variable index\nprojection onto multiple coordinates: a subvector of variables defined by a list of variable indices\nscalar-valued affine: a^T x + b, where a is a vector and b scalar\nvector-valued affine: A x + b, where A is a matrix and b is a vector\nscalar-valued quadratic: frac12 x^T Q x + a^T x + b, where Q is a symmetric matrix, a is a vector, and b is a constant\nvector-valued quadratic: a vector of scalar-valued quadratic expressionsIn a future version, MOI could be extended to cover functions defined by evaluation oracles (e.g., for nonlinear derivative-based optimization).MOI defines some commonly used sets, but the interface is extensible to other sets recognized by the solver. [Describe currently supported sets.]"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Variables",
     "category": "section",
-    "text": "All variables in MOI are scalar variables. New scalar variables are created with addvariable! or addvariables!, which return a VariableReference or Vector{VariableReference} respectively. Integer indices are never used to reference variables.One uses VariableReference objects to set and get variable attributes. For example, the VariablePrimalStart attribute is used to provide an initial starting point for a variable or collection of variables:v = addvariable!(instance)\nset!(instance, VariablePrimalStart(), v, 10.5)\nv2 = addvariables!(instance, 3)\nset!(instance, VariablePrimalStart(), v2, [1.3,6.8,-4.6])A variable can be deleted from an instance with delete!(::AbstractInstance, ::VariableReference), if this functionality is supported."
+    "text": "All variables in MOI are scalar variables. New scalar variables are created with addvariable! or addvariables!, which return a VariableIndex or Vector{VariableIndex} respectively. VariableIndex objects are type-safe wrappers around integers that refer to a variable in a particular instance.One uses VariableIndex objects to set and get variable attributes. For example, the VariablePrimalStart attribute is used to provide an initial starting point for a variable or collection of variables:v = addvariable!(instance)\nset!(instance, VariablePrimalStart(), v, 10.5)\nv2 = addvariables!(instance, 3)\nset!(instance, VariablePrimalStart(), v2, [1.3,6.8,-4.6])A variable can be deleted from an instance with delete!(::AbstractInstance, ::VariableIndex), if this functionality is supported."
 },
 
 {
@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Functions",
     "category": "section",
-    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is SingleVariable defined as:struct SingleVariable <: AbstractFunction\n    variable::VariableReference\nendIf v is a VariableReference object, then SingleVariable(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. One may also call this function a coordinate projection, which is more useful for defining constraints than as an objective function.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    variables::Vector{VariableReference}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableReference objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by setting the ObjectiveFunction attribute. The ObjectiveSense attribute is used for setting the optimization sense. For example,x = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nset!(instance, ObjectiveSense(), MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
+    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is SingleVariable defined as:struct SingleVariable <: AbstractFunction\n    variable::VariableIndex\nendIf v is a VariableIndex object, then SingleVariable(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. One may also call this function a coordinate projection, which is more useful for defining constraints than as an objective function.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    variables::Vector{VariableIndex}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableIndex objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by setting the ObjectiveFunction attribute. The ObjectiveSense attribute is used for setting the optimization sense. For example,x = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nset!(instance, ObjectiveSense(), MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Sets",
     "category": "section",
-    "text": "All constraints are specified with addconstraint! by restricting the output of some function to a set. The interface allows an arbitrary combination of functions and sets, but of course solvers may decide to support only a small number of combinations.For example, linear programming solvers should support, at least, combinations of affine functions with the LessThan and GreaterThan sets. These are simply linear constraints. SingleVariable functions combined with these same sets are used to specify upper and lower bounds on variables.The code example below encodes the linear optimization problem:beginalign\n max_x in mathbbR^2  3x_1 + 2x_2 \n\n textst  x_1 + x_2 le 5\n\n x_1  ge 0\n\nx_2  ge -1\nendalignx = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction(), ScalarAffineFunction(x, [3.0,2.0], 0.0))\nset!(instance, ObjectiveSense(), MaxSense)\naddconstraint!(instance, ScalarAffineFunction(x, [1.0,1.0], 0.0), LessThan(5.0))\naddconstraint!(instance, SingleVariable(x[1]), GreaterThan(0.0))\naddconstraint!(instance, SingleVariable(x[2]), GreaterThan(-1.0))[Example with vector-valued set.]"
+    "text": "All constraints are specified with addconstraint! by restricting the output of some function to a set. The interface allows an arbitrary combination of functions and sets, but of course solvers may decide to support only a small number of combinations.For example, linear programming solvers should support, at least, combinations of affine functions with the LessThan and GreaterThan sets. These are simply linear constraints. SingleVariable functions combined with these same sets are used to specify upper and lower bounds on variables.The code example below encodes the linear optimization problem:beginalign\n max_x in mathbbR^2  3x_1 + 2x_2 \n\n textst  x_1 + x_2 le 5\n\n x_1  ge 0\n\nx_2  ge -1\nendalignx = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction(), ScalarAffineFunction(x, [3.0,2.0], 0.0))\nset!(instance, ObjectiveSense(), MaxSense)\naddconstraint!(instance, ScalarAffineFunction(x, [1.0,1.0], 0.0), LessThan(5.0))\naddconstraint!(instance, SingleVariable(x[1]), GreaterThan(0.0))\naddconstraint!(instance, SingleVariable(x[2]), GreaterThan(-1.0))[Example with vector-valued set.][Describe ConstraintIndex objects.]"
 },
 
 {
@@ -125,7 +125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Solving and retrieving the results",
     "category": "section",
-    "text": "Once a solver instance is loaded with the objective function and all of the constraints, we can ask the solver to solve the instance by calling optimize!.optimize!(instance)The optimization procedure may terminate for a number of reasons. The TerminationStatus attribute of the solver instance returns a TerminationStatusCode object which explains why the solver stopped. Some statuses indicate generally successful termination, some termination because of limit, and some termination because of something unexpected like invalid problem data or failure to converge. A typical usage of the TerminationStatus attribute is as follows:status = MOI.get(instance, TerminationStatus())\nif status == Success\n    # Ok, the solver has a result to return\nelse\n    # Handle other cases\n    # The solver may or may not have a result\nendThe Success status code specifically implies that the solver has a \"result\" to return. In the case that the solver converged to an optimal solution, this result will just be the optimal solution vector. The PrimalStatus attribute returns a ResultStatusCode that explains how to interpret the result. In the case that the solver is known to return globally optimal solutions (up to numerical tolerances), the combination of Success termination status and FeasiblePoint primal result status implies that the primal result vector should be interpreted as a globally optimal solution. A result may be available even if the status is not Success, for example, if the solver stopped because of a time limit and has a feasible but nonoptimal solution. Use the ResultCount attribute to check if one or more results are available.In addition to the primal status, the DualStatus provides important information for primal-dual solvers.If a result is available, it may be retrieved with the VariablePrimal attribute:MOI.get(instance, VariablePrimal(), x)If x is a VariableRefrence then the function call returns a scalar, and if x is a Vector{VariableReference} then the call returns a vector of scalars. VariablePrimal() is equivalent to VariablePrimal(1), i.e., the variable primal vector of the first result. Use VariablePrimal(N) to access the Nth result.See also the attributes ConstraintPrimal, and ConstraintDual. See Duals for a discussion of the MOI conventions for primal-dual pairs and certificates."
+    "text": "Once a solver instance is loaded with the objective function and all of the constraints, we can ask the solver to solve the instance by calling optimize!.optimize!(instance)The optimization procedure may terminate for a number of reasons. The TerminationStatus attribute of the solver instance returns a TerminationStatusCode object which explains why the solver stopped. Some statuses indicate generally successful termination, some termination because of limit, and some termination because of something unexpected like invalid problem data or failure to converge. A typical usage of the TerminationStatus attribute is as follows:status = MOI.get(instance, TerminationStatus())\nif status == Success\n    # Ok, the solver has a result to return\nelse\n    # Handle other cases\n    # The solver may or may not have a result\nendThe Success status code specifically implies that the solver has a \"result\" to return. In the case that the solver converged to an optimal solution, this result will just be the optimal solution vector. The PrimalStatus attribute returns a ResultStatusCode that explains how to interpret the result. In the case that the solver is known to return globally optimal solutions (up to numerical tolerances), the combination of Success termination status and FeasiblePoint primal result status implies that the primal result vector should be interpreted as a globally optimal solution. A result may be available even if the status is not Success, for example, if the solver stopped because of a time limit and has a feasible but nonoptimal solution. Use the ResultCount attribute to check if one or more results are available.In addition to the primal status, the DualStatus provides important information for primal-dual solvers.If a result is available, it may be retrieved with the VariablePrimal attribute:MOI.get(instance, VariablePrimal(), x)If x is a VariableIndex then the function call returns a scalar, and if x is a Vector{VariableIndex} then the call returns a vector of scalars. VariablePrimal() is equivalent to VariablePrimal(1), i.e., the variable primal vector of the first result. Use VariablePrimal(N) to access the Nth result.See also the attributes ConstraintPrimal, and ConstraintDual. See Duals for a discussion of the MOI conventions for primal-dual pairs and certificates."
 },
 
 {
@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canget",
     "category": "Function",
-    "text": "canget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableReference)::Bool\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether the instance instance currently has a value for the attributed specified by attribute type attr applied to the variable reference v or constraint reference c.\n\ncanget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})::Bool\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})::Bool\n\nReturn a Bool indicating whether the instance instance currently has a value for the attributed specified by attribute type attr applied to every variable references in v or constraint reference in c.\n\ncanget(instance::AbstractInstance, ::Type{VariableReference}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in the instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintReference{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in the instance instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintReference}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in the instance instance.\n\nExamples\n\ncanget(instance, ObjectiveValue())\ncanget(instance, VariablePrimalStart(), varref)\ncanget(instance, ConstraintPrimal(), conref)\ncanget(instance, VariablePrimal(), [ref1, ref2])\ncanget(instance, VariableReference, \"var1\")\ncanget(instance, ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(instance, ConstraintReference, \"con1\")\n\n\n\n"
+    "text": "canget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex)::Bool\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether the instance instance currently has a value for the attributed specified by attribute type attr applied to the variable indexed by v or constraint indexed by c.\n\ncanget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})::Bool\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})::Bool\n\nReturn a Bool indicating whether the instance instance currently has a value for the attributed specified by attribute type attr applied to every variable indexed by v or constraint indexed by c.\n\ncanget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in the instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in the instance instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in the instance instance.\n\nExamples\n\ncanget(instance, ObjectiveValue())\ncanget(instance, VariablePrimalStart(), varref)\ncanget(instance, ConstraintPrimal(), conref)\ncanget(instance, VariablePrimal(), [ref1, ref2])\ncanget(instance, VariableIndex, \"var1\")\ncanget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.get",
     "category": "Function",
-    "text": "get(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableReference)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintReference)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableReference}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintReference}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding reference object, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableReference, \"var1\")\nget(instance, ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintReference, \"con1\")\n\n\n\n"
+    "text": "get(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableIndex, \"var1\")\nget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -277,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canset",
     "category": "Function",
-    "text": "canset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableReference})::Bool\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintReference{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the reference type R in the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attrapplied to every variable reference in v or constraint reference in c in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableReference)\ncanset(instance, ConstraintPrimal(), ConstraintReference{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
+    "text": "canset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to every variable in v or constraint in c in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
 },
 
 {
@@ -285,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.set!",
     "category": "Function",
-    "text": "set!(instance::AbstractInstance, attr::AbstractInstanceAttribute, value)\n\nAssign value to the attribute attr of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableReference, value)\n\nAssign value to the attribute attr of variable v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableReference}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintReference, value)\n\nAssign a value to the attribute attr of constraint c in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintReference{F,S}})\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in instance instance.\n\n\n\n"
+    "text": "set!(instance::AbstractInstance, attr::AbstractInstanceAttribute, value)\n\nAssign value to the attribute attr of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex, value)\n\nAssign value to the attribute attr of variable v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex, value)\n\nAssign a value to the attribute attr of constraint c in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in instance instance.\n\n\n\n"
 },
 
 {
@@ -369,11 +369,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.ListOfVariableReferences",
+    "location": "apireference.html#MathOptInterface.ListOfVariableIndices",
     "page": "Reference",
-    "title": "MathOptInterface.ListOfVariableReferences",
+    "title": "MathOptInterface.ListOfVariableIndices",
     "category": "Type",
-    "text": "ListOfVariableReferences()\n\nA Vector{VariableReference} with references to all variables present in the instance (i.e., of length equal to the value of NumberOfVariables()).\n\n\n\n"
+    "text": "ListOfVariableIndices()\n\nA Vector{VariableIndex} indexing all variables present in the instance (i.e., of length equal to the value of NumberOfVariables()).\n\n\n\n"
 },
 
 {
@@ -393,11 +393,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.ListOfConstraintReferences",
+    "location": "apireference.html#MathOptInterface.ListOfConstraintIndices",
     "page": "Reference",
-    "title": "MathOptInterface.ListOfConstraintReferences",
+    "title": "MathOptInterface.ListOfConstraintIndices",
     "category": "Type",
-    "text": "ListOfConstraintReferences{F,S}()\n\nA Vector{ConstraintReferences{F,S}} with references to all constraints of type F-inS in the instance (i.e., of length equal to the value of NumberOfConstraints{F,S}()).\n\n\n\n"
+    "text": "ListOfConstraintIndices{F,S}()\n\nA Vector{ConstraintIndex{F,S}} indexing all constraints of type F-inS in the instance (i.e., of length equal to the value of NumberOfConstraints{F,S}()).\n\n\n\n"
 },
 
 {
@@ -405,7 +405,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!List of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableReferences\nListOfConstraints\nNumberOfConstraints\nListOfConstraintReferencesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!List of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
 },
 
 {
@@ -593,19 +593,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.VariableReference",
+    "location": "apireference.html#MathOptInterface.VariableIndex",
     "page": "Reference",
-    "title": "MathOptInterface.VariableReference",
+    "title": "MathOptInterface.VariableIndex",
     "category": "Type",
-    "text": "VariableReference\n\nA lightweight object used to reference variables in an instance.\n\n\n\n"
+    "text": "VariableIndex\n\nA type-safe wrapper for Int64 for use in referencing variables in an instance. To allow for deletion, indices need not be consecutive.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.ConstraintReference",
+    "location": "apireference.html#MathOptInterface.ConstraintIndex",
     "page": "Reference",
-    "title": "MathOptInterface.ConstraintReference",
+    "title": "MathOptInterface.ConstraintIndex",
     "category": "Type",
-    "text": "ConstraintReference{F,S}\n\nA lightweight object used to reference F-in-S constraints in an instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint.\n\n\n\n"
+    "text": "ConstraintIndex{F,S}\n\nA type-safe wrapper for Int64 for use in referencing F-in-S constraints in an instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint. To allow for deletion, indices need not be consecutive.\n\n\n\n"
 },
 
 {
@@ -613,7 +613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.candelete",
     "category": "Function",
-    "text": "candelete(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether the object referred to by ref can be removed from the instance instance.\n\n\n\n"
+    "text": "candelete(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether the object referred to by index can be removed from the instance instance.\n\n\n\n"
 },
 
 {
@@ -621,23 +621,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Function",
-    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance instance.\n\n\n\n"
+    "text": "isvalid(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the instance instance.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintReference, MathOptInterface.VariableReference}}",
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintIndex, MathOptInterface.VariableIndex}}",
     "page": "Reference",
     "title": "Base.delete!",
     "category": "Method",
-    "text": "delete!(instance::AbstractInstance, ref::AnyReference)\n\nDelete the referenced object from the instance.\n\ndelete!{R}(instance::AbstractInstance, refs::Vector{R<:AnyReference})\n\nDelete the referenced objects in the vector refs from the instance. It may be assumed that R is a concrete type.\n\n\n\n"
+    "text": "delete!(instance::AbstractInstance, index::Index)\n\nDelete the referenced object from the instance.\n\ndelete!{R}(instance::AbstractInstance, indices::Vector{R<:Index})\n\nDelete the referenced objects in the vector indices from the instance. It may be assumed that R is a concrete type.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#References-1",
+    "location": "apireference.html#Index-types-1",
     "page": "Reference",
-    "title": "References",
+    "title": "Index types",
     "category": "section",
-    "text": "VariableReference\nConstraintReference\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::AnyReference)"
+    "text": "VariableIndex\nConstraintIndex\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::Index)"
 },
 
 {
@@ -645,7 +645,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addvariables!",
     "category": "Function",
-    "text": "addvariables!(instance::AbstractInstance, n::Int)::Vector{VariableReference}\n\nAdd n scalar variables to the instance, returning a vector of variable references.\n\n\n\n"
+    "text": "addvariables!(instance::AbstractInstance, n::Int)::Vector{VariableIndex}\n\nAdd n scalar variables to the instance, returning a vector of variable indices.\n\n\n\n"
 },
 
 {
@@ -653,7 +653,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addvariable!",
     "category": "Function",
-    "text": "addvariable!(instance::AbstractInstance)::VariableReference\n\nAdd a scalar variable to the instance, returning a variable reference.\n\n\n\n"
+    "text": "addvariable!(instance::AbstractInstance)::VariableIndex\n\nAdd a scalar variable to the instance, returning a variable index.\n\n\n\n"
 },
 
 {
@@ -693,15 +693,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Variables",
     "category": "section",
-    "text": "Functions for adding variables. For deleting, see references section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to get and set! should include as an argument a single VariableReference or a vector of VariableReference objects.VariableName\nVariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+    "text": "Functions for adding variables. For deleting, see index types section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to get and set! should include as an argument a single VariableIndex or a vector of VariableIndex objects.VariableName\nVariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.ConstraintReference}",
+    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.ConstraintIndex}",
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Method",
-    "text": "isvalid(instance::AbstractInstance, ref::AnyReference)::Bool\n\nReturn a Bool indicating whether this reference refers to a valid object in the instance instance.\n\n\n\n"
+    "text": "isvalid(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the instance instance.\n\n\n\n"
 },
 
 {
@@ -717,7 +717,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraint!",
     "category": "Function",
-    "text": "addconstraint!(instance::AbstractInstance, func::F, set::S)::ConstraintReference{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\naddconstraint!(instance::AbstractInstance, v::VariableReference, set::S)::ConstraintReference{SingleVariable,S} where {S}\naddconstraint!(instance::AbstractInstance, vec::Vector{VariableReference}, set::S)::ConstraintReference{VectorOfVariables,S} where {S}\n\nAdd the constraint v in mathcalS where v is the variable (or vector of variables) referenced by v and mathcalS is defined by set.\n\n\n\n"
+    "text": "addconstraint!(instance::AbstractInstance, func::F, set::S)::ConstraintIndex{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\naddconstraint!(instance::AbstractInstance, v::VariableIndex, set::S)::ConstraintIndex{SingleVariable,S} where {S}\naddconstraint!(instance::AbstractInstance, vec::Vector{VariableIndex}, set::S)::ConstraintIndex{VectorOfVariables,S} where {S}\n\nAdd the constraint v in mathcalS where v is the variable (or vector of variables) referenced by v and mathcalS is defined by set.\n\n\n\n"
 },
 
 {
@@ -725,7 +725,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraints!",
     "category": "Function",
-    "text": "addconstraints!(instance::AbstractInstance, funcs::Vector{F}, sets::Vector{S})::Vector{ConstraintReference{F,S}} where {F,S}\n\nAdd the set of constraints specified by each function-set pair in funcs and sets. F and S should be concrete types. This call is equivalent to addconstraint!.(instance, funcs, sets) but may be more efficient.\n\n\n\n"
+    "text": "addconstraints!(instance::AbstractInstance, funcs::Vector{F}, sets::Vector{S})::Vector{ConstraintIndex{F,S}} where {F,S}\n\nAdd the set of constraints specified by each function-set pair in funcs and sets. F and S should be concrete types. This call is equivalent to addconstraint!.(instance, funcs, sets) but may be more efficient.\n\n\n\n"
 },
 
 {
@@ -733,7 +733,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyconstraint!",
     "category": "Function",
-    "text": "Modify Function\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintReference{F,S}, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\nmodifyconstraint!(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(instance, c, SingleVariable(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintReference{F,S}, set::S)\n\nChange the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\nmodifyconstraint!(instance, c, Interval(0, 5))\nmodifyconstraint!(instance, c, NonPositives) # Error\n\nPartial Modifications\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintReference, change::AbstractFunctionModification)\n\nApply the modification specified by change to the function of constraint c.\n\nExamples\n\nmodifyconstraint!(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "Modify Function\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S}, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction,S} and v1 and v2 are VariableIndex objects,\n\nmodifyconstraint!(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(instance, c, SingleVariable(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S}, set::S)\n\nChange the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintIndex{F,Interval}\n\nmodifyconstraint!(instance, c, Interval(0, 5))\nmodifyconstraint!(instance, c, NonPositives) # Error\n\nPartial Modifications\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex, change::AbstractFunctionModification)\n\nApply the modification specified by change to the function of constraint c.\n\nExamples\n\nmodifyconstraint!(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -741,7 +741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canmodifyconstraint",
     "category": "Function",
-    "text": "Modify Function\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintReference{F,S}, func::F)::Bool\n\nReturn a Bool indicating whether it is possible to replace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction,S} and v1 and v2 are VariableReference objects,\n\ncanmodifyconstraint(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\ncanmodifyconstraint(instance, c, SingleVariable(v1)) # false\n\nModify Set\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintReference{F,S}, set::S)::Bool\n\nReturn a Bool indicating whether it is possible to change the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintReference{F,Interval}\n\ncanmodifyconstraint(instance, c, Interval(0, 5))\ncanmodifyconstraint(instance, c, NonPositives) # false\n\nPartial Modifications\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintReference, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "Modify Function\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, func::F)::Bool\n\nReturn a Bool indicating whether it is possible to replace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction,S} and v1 and v2 are VariableIndex objects,\n\ncanmodifyconstraint(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\ncanmodifyconstraint(instance, c, SingleVariable(v1)) # false\n\nModify Set\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, set::S)::Bool\n\nReturn a Bool indicating whether it is possible to change the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintIndex{F,Interval}\n\ncanmodifyconstraint(instance, c, Interval(0, 5))\ncanmodifyconstraint(instance, c, NonPositives) # false\n\nPartial Modifications\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -749,7 +749,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.transformconstraint!",
     "category": "Function",
-    "text": "Transform Constraint Set\n\ntransformconstraint!(instance::AbstractInstance, c::ConstraintReference{F,S1}, newset::S2)::ConstraintReference{F,S2}\n\nReplace the set in constraint c with newset. The constraint reference c will no longer be valid, and the function returns a new constraint reference.\n\nSolvers may only support a subset of constraint transforms that they perform efficiently (for example, changing from a LessThan to GreaterThan set). In addition, set modification (where S1 = S2) should be performed via the modifyconstraint! function.\n\nTypically, the user should delete the constraint and add a new one.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}},\n\nc2 = transformconstraint!(instance, c, GreaterThan(0.0))\ntransformconstraint!(instance, c, LessThan(0.0)) # errors\n\n\n\n"
+    "text": "Transform Constraint Set\n\ntransformconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S1}, newset::S2)::ConstraintIndex{F,S2}\n\nReplace the set in constraint c with newset. The constraint index c will no longer be valid, and the function returns a new constraint index with the correct type.\n\nSolvers may only support a subset of constraint transforms that they perform efficiently (for example, changing from a LessThan to GreaterThan set). In addition, set modification (where S1 = S2) should be performed via the modifyconstraint! function.\n\nTypically, the user should delete the constraint and add a new one.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\nc2 = transformconstraint!(instance, c, GreaterThan(0.0))\ntransformconstraint!(instance, c, LessThan(0.0)) # errors\n\n\n\n"
 },
 
 {
@@ -757,7 +757,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.cantransformconstraint",
     "category": "Function",
-    "text": "Transform Constraint Set\n\ncantransformconstraint(instance::AbstractInstance, c::ConstraintReference{F,S1}, newset::S2)::Bool\n\nReturn a Bool is the set in constraint c can be replaced with newset.\n\nExamples\n\nIf c is a ConstraintReference{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(instance, c, GreaterThan(0.0)) # true\ncantransformconstraint(instance, c, ZeroOne())        # false\n\n\n\n"
+    "text": "Transform Constraint Set\n\ncantransformconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S1}, newset::S2)::Bool\n\nReturn a Bool is the set in constraint c can be replaced with newset.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(instance, c, GreaterThan(0.0)) # true\ncantransformconstraint(instance, c, ZeroOne())        # false\n\n\n\n"
 },
 
 {
@@ -829,7 +829,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintReference)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintReference or a vector of ConstraintReference{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintIndex)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintIndex or a vector of ConstraintIndex{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
@@ -845,7 +845,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SingleVariable",
     "category": "Type",
-    "text": "SingleVariable(variable)\n\nThe function that extracts the scalar variable referenced by variable, a VariableReference. This function is naturally be used for single variable bounds or integrality constraints.\n\n\n\n"
+    "text": "SingleVariable(variable)\n\nThe function that extracts the scalar variable referenced by variable, a VariableIndex. This function is naturally be used for single variable bounds or integrality constraints.\n\n\n\n"
 },
 
 {
@@ -853,7 +853,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.VectorOfVariables",
     "category": "Type",
-    "text": "VectorOfVariables(variables)\n\nThe function that extracts the vector of variables referenced by variables, a Vector{VariableReference}. This function is naturally be used for constraints that apply to groups of variables, such as an \"all different\" constraint, an indicator constraint, or a complementarity constraint.\n\n\n\n"
+    "text": "VectorOfVariables(variables)\n\nThe function that extracts the vector of variables referenced by variables, a Vector{VariableIndex}. This function is naturally be used for constraints that apply to groups of variables, such as an \"all different\" constraint, an indicator constraint, or a complementarity constraint.\n\n\n\n"
 },
 
 {
@@ -861,7 +861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ScalarAffineFunction",
     "category": "Type",
-    "text": "ScalarAffineFunction{T}(variables, coefficients, constant)\n\nThe scalar-valued affine function a^T x + b, where:\n\na is a sparse vector specified in tuple form by variables::Vector{VariableReference} and coefficients::Vector{T}\nb is a scalar specified by constant::T\n\nDuplicate variable references in variables are accepted, and the corresponding coefficients are summed together.\n\n\n\n"
+    "text": "ScalarAffineFunction{T}(variables, coefficients, constant)\n\nThe scalar-valued affine function a^T x + b, where:\n\na is a sparse vector specified in tuple form by variables::Vector{VariableIndex} and coefficients::Vector{T}\nb is a scalar specified by constant::T\n\nDuplicate variable indices in variables are accepted, and the corresponding coefficients are summed together.\n\n\n\n"
 },
 
 {
@@ -877,7 +877,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ScalarQuadraticFunction",
     "category": "Type",
-    "text": "ScalarQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe scalar-valued quadratic function frac12x^TQx + a^T x + b, where:\n\na is a sparse vector specified in tuple form by affine_variables, affine_coefficients\nb is a scalar specified by constant\nQ is a symmetric matrix is specified in triplet form by quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients\n\nDuplicate indices in a or Q are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
+    "text": "ScalarQuadraticFunction{T}(affine_variables, affine_coefficients, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe scalar-valued quadratic function frac12x^TQx + a^T x + b, where:\n\na is a sparse vector specified in tuple form by affine_variables, affine_coefficients\nb is a scalar specified by constant\nQ is a symmetric matrix is specified in triplet form by quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients\n\nDuplicate indices in a or Q are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableIndexes) are considered duplicates; only one need be specified.\n\n\n\n"
 },
 
 {
@@ -885,7 +885,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.VectorQuadraticFunction",
     "category": "Type",
-    "text": "VectorQuadraticFunction{T}(affine_outputindex, affine_variables, affine_coefficients, quadratic_outputindex, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe vector-valued quadratic function with ith component (\"output index\") defined as frac12x^TQ_ix + a_i^T x + b_i, where:\n\na_i is a sparse vector specified in tuple form by the subset of affine_variables, affine_coefficients for the indices k where affine_outputindex[k] == i.\nb_i is a scalar specified by constant[i]\nQ_i is a symmetric matrix is specified in triplet form by the subset of quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients for the indices k where quadratic_outputindex[k] == i\n\nDuplicate indices in a_i or Q_i are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableReferences) are considered duplicates; only one need be specified.\n\n\n\n"
+    "text": "VectorQuadraticFunction{T}(affine_outputindex, affine_variables, affine_coefficients, quadratic_outputindex, quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients, constant)\n\nThe vector-valued quadratic function with ith component (\"output index\") defined as frac12x^TQ_ix + a_i^T x + b_i, where:\n\na_i is a sparse vector specified in tuple form by the subset of affine_variables, affine_coefficients for the indices k where affine_outputindex[k] == i.\nb_i is a scalar specified by constant[i]\nQ_i is a symmetric matrix is specified in triplet form by the subset of quadratic_rowvariables, quadratic_colvariables, quadratic_coefficients for the indices k where quadratic_outputindex[k] == i\n\nDuplicate indices in a_i or Q_i are accepted, and the corresponding coefficients are summed together. \"Mirrored\" indices (q,r) and (r,q) (where r and q are VariableIndexes) are considered duplicates; only one need be specified.\n\n\n\n"
 },
 
 {
