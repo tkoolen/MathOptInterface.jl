@@ -341,7 +341,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.copy!",
     "category": "Function",
-    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)\n\nCopy the model from the instance src into the instance dest. If dest is non-empty, this may throw an error.\n\n\n\n"
+    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\nindex_map = copy!(dest, src)\n\nisvalid(dest, x) # false (unless index_map[x] == x)\nisvalid(dest, index_map[x]) # true\n\n\n\n"
 },
 
 {
