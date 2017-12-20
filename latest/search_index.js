@@ -345,6 +345,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.cancopy",
+    "page": "Reference",
+    "title": "MathOptInterface.cancopy",
+    "category": "Function",
+    "text": "cancopy(dest::AbstractInstance, src::AbstractInstance)::Bool\n\nReturn true if the instance src can be copied into dest, false otherwise. The latter case implies that src contains an objective, constraint, or attribute that dest does not support.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.Name",
     "page": "Reference",
     "title": "MathOptInterface.Name",
@@ -405,7 +413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!List of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!\ncancopyList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
 },
 
 {
