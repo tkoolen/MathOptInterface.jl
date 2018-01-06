@@ -341,15 +341,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.copy!",
     "category": "Function",
-    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\nindex_map = copy!(dest, src)\n\nisvalid(dest, x) # false (unless index_map[x] == x)\nisvalid(dest, index_map[x]) # true\n\n\n\n"
+    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.cancopy",
+    "location": "apireference.html#MathOptInterface.CopyResult",
     "page": "Reference",
-    "title": "MathOptInterface.cancopy",
-    "category": "Function",
-    "text": "cancopy(dest::AbstractInstance, src::AbstractInstance)::Bool\n\nReturn true if the instance src can be copied into dest, false otherwise. The latter case implies that src contains an objective, constraint, or attribute that dest does not support.\n\n\n\n"
+    "title": "MathOptInterface.CopyResult",
+    "category": "Type",
+    "text": "struct CopyResult{T}\n    status::CopyStatusCode\n    message::String # Human-friendly explanation why the copy failed\n    indexmap::T     # Only valid if status is CopySuccess\nend\n\nA struct returned by copy! to indicate success or failure. If success, also exposes a map between the variable and constraint indices of the two instances.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.CopyStatusCode",
+    "page": "Reference",
+    "title": "MathOptInterface.CopyStatusCode",
+    "category": "Type",
+    "text": "CopyStatusCode\n\nAn Enum of possible statuses returned by a copy! operation through the CopyResult struct.\n\nCopySuccess: The copy was successful.\nCopyUnsupportedAttribute: The copy failed because the destination does not support an attribute present in the source.\nCopyUnsupportedConstraint: The copy failed because the destination does not support a constraint present in the source.\nCopyOtherError: The copy failed for a different reason.\n\nIn the failure cases:\n\nSee the corresponding message field of the CopyResult for an explanation of the failure.\nThe state of the destination instance is undefined.\n\n\n\n"
 },
 
 {
@@ -413,7 +421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!\ncopy!\ncancopyList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
 },
 
 {
