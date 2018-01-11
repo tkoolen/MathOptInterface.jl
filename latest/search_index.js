@@ -341,7 +341,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.copy!",
     "category": "Function",
-    "text": "copy!(dest::AbstractInstance, src::AbstractInstance)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
+    "text": "copy!(dest::AbstractInstance, src::AbstractInstance, warnattributes=true)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nIf an attribute attr cannot be copied from src to dest then:\n\nIf mustcopy(attr) is true then an error is thrown, otherwise,\nIf warnattributes is true, a warning is displayed, otherwise,\nThe attribute is silently ignored.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
 },
 
 {
@@ -358,6 +358,14 @@ var documenterSearchIndex = {"docs": [
     "title": "MathOptInterface.CopyStatusCode",
     "category": "Type",
     "text": "CopyStatusCode\n\nAn Enum of possible statuses returned by a copy! operation through the CopyResult struct.\n\nCopySuccess: The copy was successful.\nCopyUnsupportedAttribute: The copy failed because the destination does not support an attribute present in the source.\nCopyUnsupportedConstraint: The copy failed because the destination does not support a constraint present in the source.\nCopyOtherError: The copy failed for a different reason.\n\nIn the failure cases:\n\nSee the corresponding message field of the CopyResult for an explanation of the failure.\nThe state of the destination instance is undefined.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.mustcopy",
+    "page": "Reference",
+    "title": "MathOptInterface.mustcopy",
+    "category": "Function",
+    "text": "mustcopy(attr::Union{Type{AbstractInstanceAttribute}, Type{AbstractVariableAttribute}, Type{AbstractConstraintAttribute}})\n\nReturns true if it is mandatory to copy the attribute in MOI.copy! and false if the attribute only affects how the instance is solved.\n\nExamples\n\nThe attributes ObjectiveFunction and ObjectiveSense are mandatory but a hypothetical attribute such as GurobiLogLevel is not mandatory.\n\n\n\n"
 },
 
 {
@@ -417,11 +425,35 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.ListOfInstanceAttributesSet",
+    "page": "Reference",
+    "title": "MathOptInterface.ListOfInstanceAttributesSet",
+    "category": "Type",
+    "text": "ListOfInstanceAttributesSet()\n\nA Vector{AbstractInstanceAttribute} of all instance attributes that were set to the instance.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ListOfVariableAttributesSet",
+    "page": "Reference",
+    "title": "MathOptInterface.ListOfVariableAttributesSet",
+    "category": "Type",
+    "text": "ListOfVariableAttributesSet()\n\nA Vector{AbstractVariableAttribute} of all variable attributes that were set to the instance.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.ListOfConstraintAttributesSet",
+    "page": "Reference",
+    "title": "MathOptInterface.ListOfConstraintAttributesSet",
+    "category": "Type",
+    "text": "ListOfConstraintAttributesSet{F, S}()\n\nA Vector{AbstractConstraintAttribute} of all constraint attributes that were set to F-in-S constraints.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#Instance-1",
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndicesThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCode\nmustcopyList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
 },
 
 {
