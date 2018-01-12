@@ -277,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canset",
     "category": "Function",
-    "text": "canset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to every variable in v or constraint in c in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
+    "text": "canset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
 },
 
 {
