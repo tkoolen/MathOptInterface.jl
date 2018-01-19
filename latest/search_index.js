@@ -289,11 +289,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.supports",
+    "page": "Reference",
+    "title": "MathOptInterface.supports",
+    "category": "Function",
+    "text": "supports(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance supports the instance attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance supports the variable attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F,S}\n\nReturn a Bool indicating whether instance supports the constraint attribute attr applied to an F-in-S constraint.\n\nIn other words, it should return true if copy!(instance, src) does not return CopyUnsupportedAttribute when the attribute attr is set to src. If the attribute is only not supported in specific circumstances, it should still return true.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#Attributes-1",
     "page": "Reference",
     "title": "Attributes",
     "category": "section",
-    "text": "List of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!"
+    "text": "List of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!\nsupports"
 },
 
 {
@@ -809,6 +817,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.supportsconstraint",
+    "page": "Reference",
+    "title": "MathOptInterface.supportsconstraint",
+    "category": "Function",
+    "text": "supportsconstraint(instance::AbstractInstance, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether instance supports F-in-S constraints, that is, copy!(instance, src) does not return CopyUnsupportedConstraint when src contains F-in-S constraints. If F-in-S constraints are only not supported in specific circumstances, e.g. F-in-S constraints cannot be combined with another type of constraint, it should still return true.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.ConstraintName",
     "page": "Reference",
     "title": "MathOptInterface.ConstraintName",
@@ -877,7 +893,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintIndex)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintIndex or a vector of ConstraintIndex{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintIndex)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraint\nsupportsconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintIndex or a vector of ConstraintIndex{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
