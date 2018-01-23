@@ -14,7 +14,7 @@ end</code></pre><p>If <code>v</code> is a <code>VariableIndex</code> object, the
     coefficients::Vector{T}
     constant::T
 end</code></pre><p>If <code>x</code> is a vector of <code>VariableIndex</code> objects, then <code>ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0)</code> represents the function <span>$5x_1 - 2.3x_2 + 1$</span>.</p><p>Objective functions are assigned to an instance by setting the <a href="apireference.html#MathOptInterface.ObjectiveFunction"><code>ObjectiveFunction</code></a> attribute. The <a href="apireference.html#MathOptInterface.ObjectiveSense"><code>ObjectiveSense</code></a> attribute is used for setting the optimization sense. For example,</p><pre><code class="language-julia">x = addvariables!(instance, 2)
-set!(instance, ObjectiveFunction(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))
+set!(instance, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))
 set!(instance, ObjectiveSense(), MinSense)</code></pre><p>sets the objective to the function just discussed in the minimization sense.</p><p>See <a href="apireference.html#Functions-and-function-modifications-1">Functions and function modifications</a> for the complete list of functions.</p><h2><a class="nav-anchor" id="Sets-1" href="#Sets-1">Sets</a></h2><p>All constraints are specified with <a href="apireference.html#MathOptInterface.addconstraint!"><code>addconstraint!</code></a> by restricting the output of some function to a set. The interface allows an arbitrary combination of functions and sets, but of course solvers may decide to support only a small number of combinations.</p><p>For example, linear programming solvers should support, at least, combinations of affine functions with the <a href="apireference.html#MathOptInterface.LessThan"><code>LessThan</code></a> and <a href="apireference.html#MathOptInterface.GreaterThan"><code>GreaterThan</code></a> sets. These are simply linear constraints. <code>SingleVariable</code> functions combined with these same sets are used to specify upper and lower bounds on variables.</p><p>The code example below encodes the linear optimization problem:</p><div>\[\begin{align}
 &amp; \max_{x \in \mathbb{R}^2} &amp; 3x_1 + 2x_2 &amp;
 \\
@@ -24,7 +24,7 @@ set!(instance, ObjectiveSense(), MinSense)</code></pre><p>sets the objective to 
 \\
 &amp;&amp;x_2 &amp; \ge -1
 \end{align}\]</div><pre><code class="language-julia">x = addvariables!(instance, 2)
-set!(instance, ObjectiveFunction(), ScalarAffineFunction(x, [3.0,2.0], 0.0))
+set!(instance, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction(x, [3.0,2.0], 0.0))
 set!(instance, ObjectiveSense(), MaxSense)
 addconstraint!(instance, ScalarAffineFunction(x, [1.0,1.0], 0.0), LessThan(5.0))
 addconstraint!(instance, SingleVariable(x[1]), GreaterThan(0.0))
@@ -51,7 +51,7 @@ instance = GLPKInstance() # TODO: match with actual name in GLPK wrapper
 x = MOI.addvariables!(instance, numvariables)
 
 # set the objective function
-MOI.set!(instance, MOI.ObjectiveFunction(), MOI.ScalarAffineFunction(x, c, 0.0))
+MOI.set!(instance, MOI.ObjectiveFunction{MOI.ScalarAffineFunction{Float64}}(), MOI.ScalarAffineFunction(x, c, 0.0))
 MOI.set!(instance, MOI.ObjectiveSense(), MOI.MaxSense)
 
 # add the knapsack constraint
