@@ -225,6 +225,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.AbstractSolverParameter",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractSolverParameter",
+    "category": "Type",
+    "text": "AbstractSolverParameter\n\nAbstract supertype for parameter objects that can be used to set or get parameters of the solver.\n\nNote\n\nThe difference between AbstractSolverParameter and AbstractInstanceAttribute lies in the behavior of isempty, empty! and copy!. Typically solver parameters only affect how the instance is solved.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.AbstractInstanceAttribute",
     "page": "Reference",
     "title": "MathOptInterface.AbstractInstanceAttribute",
@@ -253,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canget",
     "category": "Function",
-    "text": "canget(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr.\n\ncanget(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every variable of the instance.\n\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every F-in-S constraint.\n\ncanget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in instance.\n\nExamples\n\ncanget(instance, ObjectiveValue())\ncanget(instance, VariablePrimalStart(), VariableIndex)\ncanget(instance, VariablePrimal(), VariableIndex)\ncanget(instance, ConstraintPrimal(), ConstraintIndex{SingleVariable,EqualTo{Float64}})\ncanget(instance, VariableIndex, \"var1\")\ncanget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
+    "text": "canget(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether instance currently has a value for the parameter specified by parameter type param.\n\ncanget(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr.\n\ncanget(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every variable of the instance.\n\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every F-in-S constraint.\n\ncanget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in instance.\n\nExamples\n\ncanget(instance, ObjectiveValue())\ncanget(instance, VariablePrimalStart(), VariableIndex)\ncanget(instance, VariablePrimal(), VariableIndex)\ncanget(instance, ConstraintPrimal(), ConstraintIndex{SingleVariable,EqualTo{Float64}})\ncanget(instance, VariableIndex, \"var1\")\ncanget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -261,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.get",
     "category": "Function",
-    "text": "get(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableIndex, \"var1\")\nget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
+    "text": "get(instance::AbstractInstance, param::AbstractSolverParameter)\n\nReturn a parameter param of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableIndex, \"var1\")\nget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -277,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canset",
     "category": "Function",
-    "text": "canset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
+    "text": "canset(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether it is possible to set the parameter param to the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set the attribute attr to the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
 },
 
 {
@@ -285,7 +293,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.set!",
     "category": "Function",
-    "text": "set!(instance::AbstractInstance, attr::AbstractInstanceAttribute, value)\n\nAssign value to the attribute attr of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex, value)\n\nAssign value to the attribute attr of variable v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex, value)\n\nAssign a value to the attribute attr of constraint c in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in instance instance.\n\n\n\n"
+    "text": "set!(instance::AbstractInstance, param::AbstractSolverParameter, value)\n\nAssign value to the parameter param of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractInstanceAttribute, value)\n\nAssign value to the attribute attr of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex, value)\n\nAssign value to the attribute attr of variable v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex, value)\n\nAssign a value to the attribute attr of constraint c in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in instance instance.\n\n\n\n"
 },
 
 {
@@ -293,15 +301,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.supports",
     "category": "Function",
-    "text": "supports(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance supports the instance attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance supports the variable attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F,S}\n\nReturn a Bool indicating whether instance supports the constraint attribute attr applied to an F-in-S constraint.\n\nIn other words, it should return true if copy!(instance, src) does not return CopyUnsupportedAttribute when the attribute attr is set to src. If the attribute is only not supported in specific circumstances, it should still return true.\n\n\n\n"
+    "text": "supports(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether instance supports the solver parameter param.\n\nsupports(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance supports the instance attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance supports the variable attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F,S}\n\nReturn a Bool indicating whether instance supports the constraint attribute attr applied to an F-in-S constraint.\n\nIn other words, it should return true if copy!(instance, src) does not return CopyUnsupportedAttribute when the attribute attr is set to src. If the attribute is only not supported in specific circumstances, it should still return true.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Attributes-1",
+    "location": "apireference.html#Parameters-and-Attributes-1",
     "page": "Reference",
-    "title": "Attributes",
+    "title": "Parameters and Attributes",
     "category": "section",
-    "text": "List of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!\nsupports"
+    "text": "Parameter abstract type.AbstractSolverParameterList of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting parameters and attributes.canget\nget\nget!\ncanset\nset!\nsupports"
 },
 
 {
@@ -349,7 +357,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.copy!",
     "category": "Function",
-    "text": "copy!(dest::AbstractInstance, src::AbstractInstance, warnattributes=true)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nIf an attribute attr cannot be copied from src to dest then:\n\nIf mustcopy(attr) is true then an error is thrown, otherwise,\nIf warnattributes is true, a warning is displayed, otherwise,\nThe attribute is silently ignored.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
+    "text": "copy!(dest::AbstractInstance, src::AbstractInstance, warnattributes=true)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nIf an attribute attr cannot be copied from src to dest then an error is thrown. If a solver parameter cannot be copied then:\n\nIf warnattributes is true, a warning is displayed, otherwise,\nThe attribute is silently ignored.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
 },
 
 {
@@ -366,14 +374,6 @@ var documenterSearchIndex = {"docs": [
     "title": "MathOptInterface.CopyStatusCode",
     "category": "Type",
     "text": "CopyStatusCode\n\nAn Enum of possible statuses returned by a copy! operation through the CopyResult struct.\n\nCopySuccess: The copy was successful.\nCopyUnsupportedAttribute: The copy failed because the destination does not support an attribute present in the source.\nCopyUnsupportedConstraint: The copy failed because the destination does not support a constraint present in the source.\nCopyOtherError: The copy failed for a different reason.\n\nIn the failure cases:\n\nSee the corresponding message field of the CopyResult for an explanation of the failure.\nThe state of the destination instance is undefined.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.mustcopy",
-    "page": "Reference",
-    "title": "MathOptInterface.mustcopy",
-    "category": "Function",
-    "text": "mustcopy(attr::Union{Type{AbstractInstanceAttribute}, Type{AbstractVariableAttribute}, Type{AbstractConstraintAttribute}})\n\nReturns true if it is mandatory to copy the attribute in MOI.copy! and false if the attribute only affects how the instance is solved.\n\nExamples\n\nThe attributes ObjectiveFunction and ObjectiveSense are mandatory but a hypothetical attribute such as GurobiLogLevel is not mandatory.\n\n\n\n"
 },
 
 {
@@ -461,7 +461,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCode\nmustcopyList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
 },
 
 {
