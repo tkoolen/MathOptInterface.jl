@@ -50,6 +50,13 @@ CopyResult
 CopyStatusCode
 ```
 
+List of solver parameters
+
+```@docs
+ListOfSolverParametersSet
+SolverName
+```
+
 List of instance attributes
 
 ```@docs

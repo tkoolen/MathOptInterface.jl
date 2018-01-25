@@ -242,6 +242,13 @@ A `Vector{AbstractSolverParameter}` of all solver parameters that were set to th
 """
 struct ListOfSolverParametersSet <: AbstractSolverParameter end
 
+"""
+    SolverName()
+
+A string identifying the solver.
+"""
+struct SolverName <: AbstractSolverParameter end
+
 ## Instance attributes
 
 """
