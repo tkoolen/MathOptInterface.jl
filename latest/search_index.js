@@ -765,7 +765,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canaddconstraint",
     "category": "Function",
-    "text": "canaddconstraint(instance::AbstractInstance, func::AbstractFunction, set::AbstractSet)::Bool\n\nReturn a Bool indicating whether it is possible to add the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\n\n\n"
+    "text": "canaddconstraint(instance::AbstractInstance, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether it is possible to add a constraint f(x) in mathcalS where f is of type F, and mathcalS is of type S.\n\n\n\n"
 },
 
 {
@@ -797,7 +797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canmodifyconstraint",
     "category": "Function",
-    "text": "Modify Function\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, func::F)::Bool\n\nReturn a Bool indicating whether it is possible to replace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction,S} and v1 and v2 are VariableIndex objects,\n\ncanmodifyconstraint(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\ncanmodifyconstraint(instance, c, SingleVariable(v1)) # false\n\nModify Set\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, set::S)::Bool\n\nReturn a Bool indicating whether it is possible to change the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintIndex{F,Interval}\n\ncanmodifyconstraint(instance, c, Interval(0, 5))\ncanmodifyconstraint(instance, c, NonPositives) # false\n\nPartial Modifications\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "Modify Function\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, ::Type{F})::Bool\n\nReturn a Bool indicating whether the function in constraint c can be replaced by another function of the same type F as the original function.\n\nModify Set\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, ::Type{S})::Bool\n\nReturn a Bool indicating whether the set in constraint c can be replaced by another set of the same type S as the original set.\n\nPartial Modifications\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(instance, c, ScalarConstantChange{Float64})\n\n\n\n"
 },
 
 {
@@ -813,7 +813,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.cantransformconstraint",
     "category": "Function",
-    "text": "Transform Constraint Set\n\ncantransformconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S1}, newset::S2)::Bool\n\nReturn a Bool is the set in constraint c can be replaced with newset.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(instance, c, GreaterThan(0.0)) # true\ncantransformconstraint(instance, c, ZeroOne())        # false\n\n\n\n"
+    "text": "Transform Constraint Set\n\ncantransformconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S1}, ::Type{S2})::Bool where S2<:AbstractSet\n\nReturn a Bool indicating whether the set of type S1 in constraint c can be replaced by a set of type S2.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(instance, c, GreaterThan(0.0)) # true\ncantransformconstraint(instance, c, ZeroOne())        # false\n\n\n\n"
 },
 
 {
@@ -1245,7 +1245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canmodifyobjective",
     "category": "Function",
-    "text": "canmodifyobjective(instance::AbstractInstance, change::AbstractFunctionModification)::Bool\n\nReturn a Bool indicating whether it is possible to apply the modification specified by change to the objective function of instance.\n\nExamples\n\ncanmodifyobjective(instance, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "canmodifyobjective(instance::AbstractInstance, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the objective function of instance instance.\n\nExamples\n\ncanmodifyobjective(instance, ScalarConstantChange{Float64})\n\n\n\n"
 },
 
 {
