@@ -697,6 +697,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.canaddvariable",
+    "page": "Reference",
+    "title": "MathOptInterface.canaddvariable",
+    "category": "Function",
+    "text": "canaddvariable(instance::AbstractInstance)::Bool\n\nReturn a Bool indicating whether it is possible to add a variable to the instance instance.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.addvariables!",
     "page": "Reference",
     "title": "MathOptInterface.addvariables!",
@@ -749,7 +757,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Variables",
     "category": "section",
-    "text": "Functions for adding variables. For deleting, see index types section.addvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to get and set! should include as an argument a single VariableIndex or a vector of VariableIndex objects.VariableName\nVariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
+    "text": "Functions for adding variables. For deleting, see index types section.canaddvariable\naddvariables!\naddvariable!List of attributes associated with variables. [category AbstractVariableAttribute] Calls to get and set! should include as an argument a single VariableIndex or a vector of VariableIndex objects.VariableName\nVariablePrimalStart\nVariablePrimal\nVariableBasisStatus"
 },
 
 {
