@@ -337,6 +337,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "apireference.html#MathOptInterface.isempty",
+    "page": "Reference",
+    "title": "MathOptInterface.isempty",
+    "category": "Function",
+    "text": "isempty(instance::AbstractInstance)\n\nReturns false if the instance has any instance attribute set or has any variables or constraints. Note that an empty instance can have solver parameters set.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.empty!",
+    "page": "Reference",
+    "title": "MathOptInterface.empty!",
+    "category": "Function",
+    "text": "empty!(instance::AbstractInstance)\n\nEmpty the instance, that is, remove from the instance instance all variables, constraints and instance attributes but not solver parameters.\n\n\n\n"
+},
+
+{
     "location": "apireference.html#MathOptInterface.write",
     "page": "Reference",
     "title": "MathOptInterface.write",
@@ -461,7 +477,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Instance",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
+    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nisempty\nempty!\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
 },
 
 {
