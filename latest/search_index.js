@@ -1280,4 +1280,180 @@ var documenterSearchIndex = {"docs": [
     "text": "Functions for modifying objective functions. Use ObjectiveFunction and ObjectiveSense to set and query the objective function.modifyobjective!\ncanmodifyobjective"
 },
 
+{
+    "location": "apireference.html#Nonlinear-programming-(NLP)-1",
+    "page": "Reference",
+    "title": "Nonlinear programming (NLP)",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NLPBlock",
+    "page": "Reference",
+    "title": "MathOptInterface.NLPBlock",
+    "category": "Type",
+    "text": "NLPBlock()\n\nHolds the NLPBlockData that represents a set of nonlinear constraints, and optionally a nonlinear objective.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NLPBlockData",
+    "page": "Reference",
+    "title": "MathOptInterface.NLPBlockData",
+    "category": "Type",
+    "text": "struct NLPBlockData\n    lb::Vector{Float64}\n    ub::Vector{Float64}\n    evaluator::AbstractNLPEvaluator\n    has_objective::Bool\nend\n\nA struct encoding a set of nonlinear constraints of the form lb le g(x) le ub and, if has_objective == true, a nonlinear objective function f(x). It is an error to set both a nonlinear objective function and another objective function using an ObjectiveFunction attribute. The evaluator is a callback object that is used to query function values, derivatives, and expression graphs. If has_objective == false, then it is an error to query properties of the objective function, and in Hessian-of-the-Lagrangian queries, σ must be set to zero.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NLPBlockDual",
+    "page": "Reference",
+    "title": "MathOptInterface.NLPBlockDual",
+    "category": "Type",
+    "text": "NLPBlockDual(N)\nNLPBlockDual()\n\nThe Lagrange multipliers on the constraints from the NLPBlock in result N. If N is omitted, it is 1 by default.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.NLPBlockDualStart",
+    "page": "Reference",
+    "title": "MathOptInterface.NLPBlockDualStart",
+    "category": "Type",
+    "text": "NLPBlockDualStart()\n\nAn initial assignment of the Lagrange multipliers on the constraints from the NLPBlock that the solver may use to warm-start the solve.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#Attributes-1",
+    "page": "Reference",
+    "title": "Attributes",
+    "category": "section",
+    "text": "NLPBlock\nNLPBlockData\nNLPBlockDual\nNLPBlockDualStart"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractNLPEvaluator",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractNLPEvaluator",
+    "category": "Type",
+    "text": "AbstractNLPEvaluator\n\nAbstract supertype for the callback object used in NLPBlock.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.initialize!",
+    "page": "Reference",
+    "title": "MathOptInterface.initialize!",
+    "category": "Function",
+    "text": "initialize!(d::AbstractNLPEvaluator, requested_features::Vector{Symbol}, variable_order::Vector{VariableIndex})\n\nMust be called before any other methods. The vector requested_features lists features requested by the solver. These may include :Grad for gradients of f, :Jac for explicit Jacobians of g, :JacVec for Jacobian-vector products, :HessVec for Hessian-vector and Hessian-of-Lagrangian-vector products, :Hess for explicit Hessians and Hessian-of-Lagrangians, and :ExprGraph for expression graphs. The vector variable_order provides a ordering on the variable indices in the instance. Each variable index (i.e., ListOfVariableIndices) must appear exactly once in variable_order, but the indices may appear in any order. All subsequent references to the vector x follow this index mapping; the ith index of x corresponds to variable_order[i].\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.features_available",
+    "page": "Reference",
+    "title": "MathOptInterface.features_available",
+    "category": "Function",
+    "text": "features_available(d::AbstractNLPEvaluator)\n\nReturns the subset of features available for this problem instance, as a list of symbols in the same format as in initialize.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_objective",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_objective",
+    "category": "Function",
+    "text": "eval_objective(d::AbstractNLPEvaluator, x)\n\nEvaluate the objective f(x), returning a scalar value.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_constraint",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_constraint",
+    "category": "Function",
+    "text": "eval_constraint(d::AbstractNLPEvaluator, g, x)\n\nEvaluate the constraint function g(x), storing the result in the vector g which must be of the appropriate size.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_objective_gradient",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_objective_gradient",
+    "category": "Function",
+    "text": "eval_objective_gradient(d::AbstractNLPEvaluator, g, x)\n\nEvaluate nabla f(x) as a dense vector, storing the result in the vector g which must be of the appropriate size.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.jacobian_structure",
+    "page": "Reference",
+    "title": "MathOptInterface.jacobian_structure",
+    "category": "Function",
+    "text": "jacobian_structure(d::AbstractNLPEvaluator)\n\nReturns the sparsity structure of the Jacobian matrix J_g(x) = left beginarrayc nabla g_1(x)  nabla g_2(x)  vdots  nabla g_m(x) endarrayright where g_i is the itextth component of g. The sparsity structure is assumed to be independent of the point x. Returns a tuple (I,J) where I contains the row indices and J contains the column indices of each structurally nonzero element. These indices are not required to be sorted and can contain duplicates, in which case the solver should combine the corresponding elements by adding them together.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.hessian_lagrangian_structure",
+    "page": "Reference",
+    "title": "MathOptInterface.hessian_lagrangian_structure",
+    "category": "Function",
+    "text": "hessian_lagrangian_structure(d::AbstractNLPEvaluator)\n\nReturns the sparsity structure of the Hessian-of-the-Lagrangian matrix nabla^2 f + sum_i=1^m nabla^2 g_i as a tuple (I,J) where I contains the row indices and J contains the column indices of each structurally nonzero element. These indices are not required to be sorted and can contain duplicates, in which case the solver should combine the corresponding elements by adding them together. Any mix of lower and upper-triangular indices is valid. Elements (i,j) and (j,i), if both present, should be treated as duplicates.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_constraint_jacobian",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_constraint_jacobian",
+    "category": "Function",
+    "text": "eval_constraint_jacobian(d::AbstractNLPEvaluator, J, x)\n\nEvaluates the sparse Jacobian matrix `J_g(x) = \\left[ \\begin{array}{c} \\nabla g_1(x) \\\\ \\nabla g_2(x) \\\\ \\vdots \\\\ \\nabla g_m(x) \\end{array}\\right]. The result is stored in the vector J in the same order as the indices returned by jac_structure.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_constraint_jacobian_product",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_constraint_jacobian_product",
+    "category": "Function",
+    "text": "eval_constraint_jacobian_product(d::AbstractNLPEvaluator, y, x, w)\n\nComputes the Jacobian-vector product J_g(x)w, storing the result in the vector y.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_constraint_jacobian_transpose_product",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_constraint_jacobian_transpose_product",
+    "category": "Function",
+    "text": "eval_constraint_jacobian_transpose_product(d::AbstractNLPEvaluator, y, x, w)\n\nComputes the Jacobian-transpose-vector product J_g(x)^Tw, storing the result in the vector y.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_hessian_lagrangian",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_hessian_lagrangian",
+    "category": "Function",
+    "text": "eval_hessian_lagrangian(d::AbstractNLPEvaluator, H, x, σ, μ)\n\nGiven scalar weight σ and vector of constraint weights μ, computes the sparse Hessian-of-the-Lagrangian matrix sigmanabla^2 f(x) + sum_i=1^m mu_i nabla^2 g_i(x), storing the result in the vector H in the same order as the indices returned by hesslag_structure.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.eval_hessian_lagrangian_product",
+    "page": "Reference",
+    "title": "MathOptInterface.eval_hessian_lagrangian_product",
+    "category": "Function",
+    "text": "eval_hessian_lagrangian_prod(d::AbstractNLPEvaluator, h, x, v, σ, μ)\n\nGiven scalar weight σ and vector of constraint weights μ, computes the Hessian-of-the-Lagrangian-vector product left(sigmanabla^2 f(x) + sum_i=1^m mu_i nabla^2 g_i(x)right)v, storing the result in the vector h.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.objective_expr",
+    "page": "Reference",
+    "title": "MathOptInterface.objective_expr",
+    "category": "Function",
+    "text": "objective_expr(d::AbstractNLPEvaluator)\n\nReturns an expression graph for the objective function as a standard Julia Expr object. All sums and products are flattened out as simple Expr(:+,...) and Expr(:*,...) objects. The symbol x is used as a placeholder for the vector of decision variables. No other undefined symbols are permitted; coefficients are embedded as explicit values. For example, the expression x_1+sin(x_2exp(x_3)) would be represented as the Julia object :(x[1] + sin(x[2]/exp(x[3]))). See the Julia manual for more information on the structure of Expr objects. There are currently no restrictions on recognized functions; typically these will be built-in Julia functions like ^, exp, log, cos, tan, sqrt, etc., but modeling interfaces may choose to extend these basic functions.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.constraint_expr",
+    "page": "Reference",
+    "title": "MathOptInterface.constraint_expr",
+    "category": "Function",
+    "text": "constraint_expr(d::AbstractNLPEvaluator, i)\n\nReturns an expression graph for the itextth constraint in the same format as described above, with an additional comparison operator indicating the sense of and bounds on the constraint. The right-hand side of the comparison must be a constant; that is, :(x[1]^3 <= 1) is allowed, while :(1 <= x[1]^3) is not valid. Double-sided constraints are allowed, in which case both the lower bound and upper bounds should be constants; for example, :(-1 <= cos(x[1]) + sin(x[2]) <= 1) is valid.\n\n\n\n"
+},
+
+{
+    "location": "apireference.html#NLP-evaluator-methods-1",
+    "page": "Reference",
+    "title": "NLP evaluator methods",
+    "category": "section",
+    "text": "AbstractNLPEvaluator\ninitialize!\nfeatures_available\neval_objective\neval_constraint\neval_objective_gradient\njacobian_structure\nhessian_lagrangian_structure\neval_constraint_jacobian\neval_constraint_jacobian_product\neval_constraint_jacobian_transpose_product\neval_hessian_lagrangian\neval_hessian_lagrangian_product\nobjective_expr\nconstraint_expr"
+},
+
 ]}
