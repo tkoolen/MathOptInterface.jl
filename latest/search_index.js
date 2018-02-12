@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Purpose",
     "category": "section",
-    "text": "Each mathematical optimization solver API has its own concepts and data structures for representing optimization instances and obtaining results. However, it is often desirable to represent an instance of an optimization problem at a higher level so that it is easy to try using different solvers. MathOptInterface (MOI) is an abstraction layer designed to provide a unified interface to mathematical optimization solvers so that users do not need to understand multiple solver-specific APIs. MOI can be used directly, or through a higher-level modeling interface like JuMP.MOI has been designed to replace MathProgBase, which has been used by modeling packages such as JuMP and Convex.jl. This second-generation abstraction layer addresses a number of limitations of MathProgBase. MOI is designed to:Be simple and extensible, unifying linear, quadratic, and conic optimization, and seamlessly facilitate extensions to essentially arbitrary constraints and functions (e.g., indicator constraints, complementarity constraints, and piecewise linear functions)\nBe fast by allowing access to a solver's in-memory representation of a problem without writing intermediate files (when possible) and by using multiple dispatch and avoiding requiring containers of nonconcrete types\nAllow a solver to return multiple results (e.g., a pool of solutions)\nAllow a solver to return extra arbitrary information via attributes (e.g., variable- and constraint-wise membership in an irreducible inconsistent subset for infeasibility analysis)\nProvide a greatly expanded set of status codes explaining what happened during the optimization procedure\nEnable a solver to more precisely specify which problem classes it supports\nEnable both primal and dual warm starts\nEnable adding and removing both variables and constraints by indices that are not required to be consecutive\nEnable any modification that the solver supports to an existing instance\nAvoid requiring the solver wrapper to store an additional copy of the problem dataThis manual introduces the concepts needed to understand MOI and give a high-level picture of how all of the pieces fit together. The primary focus is on MOI from the perspective of a user of the interface. At the end of the manual we have a section on Implementing a solver interface. The API Reference page lists the complete API.MOI does not export functions, but for brevity we often omit qualifying names with the MOI module. Best practice is to haveusing MathOptInterface\nconst MOI = MathOptInterfaceand prefix all MOI methods with MOI. in user code. If a name is also available in base Julia, we always explicitly use the module prefix, for example, with MOI.get."
+    "text": "Each mathematical optimization solver API has its own concepts and data structures for representing optimization models and obtaining results. However, it is often desirable to represent an instance of an optimization problem at a higher level so that it is easy to try using different solvers. MathOptInterface (MOI) is an abstraction layer designed to provide a unified interface to mathematical optimization solvers so that users do not need to understand multiple solver-specific APIs. MOI can be used directly, or through a higher-level modeling interface like JuMP.MOI has been designed to replace MathProgBase, which has been used by modeling packages such as JuMP and Convex.jl. This second-generation abstraction layer addresses a number of limitations of MathProgBase. MOI is designed to:Be simple and extensible, unifying linear, quadratic, and conic optimization, and seamlessly facilitate extensions to essentially arbitrary constraints and functions (e.g., indicator constraints, complementarity constraints, and piecewise linear functions)\nBe fast by allowing access to a solver's in-memory representation of a problem without writing intermediate files (when possible) and by using multiple dispatch and avoiding requiring containers of nonconcrete types\nAllow a solver to return multiple results (e.g., a pool of solutions)\nAllow a solver to return extra arbitrary information via attributes (e.g., variable- and constraint-wise membership in an irreducible inconsistent subset for infeasibility analysis)\nProvide a greatly expanded set of status codes explaining what happened during the optimization procedure\nEnable a solver to more precisely specify which problem classes it supports\nEnable both primal and dual warm starts\nEnable adding and removing both variables and constraints by indices that are not required to be consecutive\nEnable any modification that the solver supports to an existing model\nAvoid requiring the solver wrapper to store an additional copy of the problem dataThis manual introduces the concepts needed to understand MOI and give a high-level picture of how all of the pieces fit together. The primary focus is on MOI from the perspective of a user of the interface. At the end of the manual we have a section on Implementing a solver interface. The API Reference page lists the complete API.MOI does not export functions, but for brevity we often omit qualifying names with the MOI module. Best practice is to haveusing MathOptInterface\nconst MOI = MathOptInterfaceand prefix all MOI methods with MOI. in user code. If a name is also available in base Julia, we always explicitly use the module prefix, for example, with MOI.get."
 },
 
 {
@@ -45,15 +45,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Standard form problem",
     "category": "section",
-    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:the functions f_0 f_1 ldots f_m are specified by AbstractFunction objects\nthe sets mathcalS_1 ldots mathcalS_m are specified by AbstractSet objectsThe current function types are:projection onto a single coordinate: x_j, a single variable defined by a variable index\nprojection onto multiple coordinates: a subvector of variables defined by a list of variable indices\nscalar-valued affine: a^T x + b, where a is a vector and b scalar\nvector-valued affine: A x + b, where A is a matrix and b is a vector\nscalar-valued quadratic: frac12 x^T Q x + a^T x + b, where Q is a symmetric matrix, a is a vector, and b is a constant\nvector-valued quadratic: a vector of scalar-valued quadratic expressionsIn a future version, MOI could be extended to cover functions defined by evaluation oracles (e.g., for nonlinear derivative-based optimization).MOI defines some commonly used sets, but the interface is extensible to other sets recognized by the solver. [Describe currently supported sets.]"
+    "text": "The standard form problem is:beginalign\n     min_x in mathbbR^n  f_0(x)\n    \n     textst  f_i(x)  in mathcalS_i  i = 1 ldots m\nendalignwhere:the functions f_0 f_1 ldots f_m are specified by AbstractFunction objects\nthe sets mathcalS_1 ldots mathcalS_m are specified by AbstractSet objectsThe current function types are:projection onto a single coordinate: x_j, a single variable defined by a variable index\nprojection onto multiple coordinates: a subvector of variables defined by a list of variable indices\nscalar-valued affine: a^T x + b, where a is a vector and b scalar\nvector-valued affine: A x + b, where A is a matrix and b is a vector\nscalar-valued quadratic: frac12 x^T Q x + a^T x + b, where Q is a symmetric matrix, a is a vector, and b is a constant\nvector-valued quadratic: a vector of scalar-valued quadratic expressionsExtensions for nonlinear programming are present but not yet well documented.MOI defines some commonly used sets, but the interface is extensible to other sets recognized by the solver. [Describe currently supported sets.]"
 },
 
 {
-    "location": "apimanual.html#Instances-1",
+    "location": "apimanual.html#The-ModelLike-and-AbstractOptimizer-APIs-1",
     "page": "Manual",
-    "title": "Instances",
+    "title": "The ModelLike and AbstractOptimizer APIs",
     "category": "section",
-    "text": "An Instance (AbstractInstance) is a representation of a concrete instance of an optimization problem, i.e., with all data specified.  Instances are either standalone instances or solver instances:A Standalone Instance (AbstractStandaloneInstance) is unattached to any particular solver. It is simply a type that stores the data for an instance, which may be used for reading or writing optimization problems to files or manipulating a problem before providing it to a solver. The MathOptInterfaceUtilities package provides an implementation of a standalone instance.\nA Solver Instance (AbstractSolverInstance) should be understood as the representation of an instance of an optimization problem loaded in the solver's API. That is, the instance data is often (i.e., whenever possible) stored exclusively in the external API, not duplicated in the MOI translation layer (called the MOI wrapper). Hence, the ability to modify data in a solver instance depends on whether the solver's own API supports such modifications. Solver instances were designed to allow efficient incremental instance construction and modification, e.g., when solving in a loop.Instances share a common API for constructing the problem and querying its data. Solver instances, additionally, provide methods to solve the attached instance and query the results.Through the rest of the manual, instance is used as a generic solver instance.[Discuss how instances are constructed, solver parameters.]"
+    "text": "The most significant part of MOI is the definition of the model API that is used to specify an instance of an optimization problem (e.g., by adding variables and constraints). Objects that implement the model API should inherit from the ModelLike abstract type.Notably missing from the model API is the method to solve an optimization problem. ModelLike objects may store an instance (e.g., in memory or backed by a file format) without being linked to a particular solver. In addition to the model API, MOI defines AbstractOptimizer. Optimizers (or solvers) implement the model API (inheriting from ModelLike) and additionally provide methods to solve the model.Through the rest of the manual, model is used as a generic ModelLike, and optimizer is used as a generic AbstractOptimizer.[Discuss how models are constructed, optimizer attributes.]"
 },
 
 {
@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Variables",
     "category": "section",
-    "text": "All variables in MOI are scalar variables. New scalar variables are created with addvariable! or addvariables!, which return a VariableIndex or Vector{VariableIndex} respectively. VariableIndex objects are type-safe wrappers around integers that refer to a variable in a particular instance.One uses VariableIndex objects to set and get variable attributes. For example, the VariablePrimalStart attribute is used to provide an initial starting point for a variable or collection of variables:v = addvariable!(instance)\nset!(instance, VariablePrimalStart(), v, 10.5)\nv2 = addvariables!(instance, 3)\nset!(instance, VariablePrimalStart(), v2, [1.3,6.8,-4.6])A variable can be deleted from an instance with delete!(::AbstractInstance, ::VariableIndex), if this functionality is supported."
+    "text": "All variables in MOI are scalar variables. New scalar variables are created with addvariable! or addvariables!, which return a VariableIndex or Vector{VariableIndex} respectively. VariableIndex objects are type-safe wrappers around integers that refer to a variable in a particular model.One uses VariableIndex objects to set and get variable attributes. For example, the VariablePrimalStart attribute is used to provide an initial starting point for a variable or collection of variables:v = addvariable!(model)\nset!(model, VariablePrimalStart(), v, 10.5)\nv2 = addvariables!(model, 3)\nset!(model, VariablePrimalStart(), v2, [1.3,6.8,-4.6])A variable can be deleted from a model with delete!(::ModelLike, ::VariableIndex). Not all models support deleting variables; the candelete method is used to check if this is supported."
 },
 
 {
@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Functions",
     "category": "section",
-    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is SingleVariable defined as:struct SingleVariable <: AbstractFunction\n    variable::VariableIndex\nendIf v is a VariableIndex object, then SingleVariable(v) is simply the scalar-valued function from the complete set of variables in an instance that returns the value of variable v. One may also call this function a coordinate projection, which is more useful for defining constraints than as an objective function.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    variables::Vector{VariableIndex}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableIndex objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to an instance by setting the ObjectiveFunction attribute. The ObjectiveSense attribute is used for setting the optimization sense. For example,x = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nset!(instance, ObjectiveSense(), MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
+    "text": "MOI defines six functions as listed in the definition of the Standard form problem. The simplest function is SingleVariable defined as:struct SingleVariable <: AbstractFunction\n    variable::VariableIndex\nendIf v is a VariableIndex object, then SingleVariable(v) is simply the scalar-valued function from the complete set of variables in a model that returns the value of variable v. One may also call this function a coordinate projection, which is more useful for defining constraints than as an objective function.A more interesting function is ScalarAffineFunction, defined asstruct ScalarAffineFunction{T} <: AbstractFunction\n    variables::Vector{VariableIndex}\n    coefficients::Vector{T}\n    constant::T\nendIf x is a vector of VariableIndex objects, then ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0) represents the function 5x_1 - 23x_2 + 1.Objective functions are assigned to a model by setting the ObjectiveFunction attribute. The ObjectiveSense attribute is used for setting the optimization sense. For example,x = addvariables!(model, 2)\nset!(model, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction([x[1],x[2]],[5.0,-2.3],1.0))\nset!(model, ObjectiveSense(), MinSense)sets the objective to the function just discussed in the minimization sense.See Functions and function modifications for the complete list of functions."
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Sets",
     "category": "section",
-    "text": "All constraints are specified with addconstraint! by restricting the output of some function to a set. The interface allows an arbitrary combination of functions and sets, but of course solvers may decide to support only a small number of combinations.For example, linear programming solvers should support, at least, combinations of affine functions with the LessThan and GreaterThan sets. These are simply linear constraints. SingleVariable functions combined with these same sets are used to specify upper and lower bounds on variables.The code example below encodes the linear optimization problem:beginalign\n max_x in mathbbR^2  3x_1 + 2x_2 \n\n textst  x_1 + x_2 le 5\n\n x_1  ge 0\n\nx_2  ge -1\nendalignx = addvariables!(instance, 2)\nset!(instance, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction(x, [3.0,2.0], 0.0))\nset!(instance, ObjectiveSense(), MaxSense)\naddconstraint!(instance, ScalarAffineFunction(x, [1.0,1.0], 0.0), LessThan(5.0))\naddconstraint!(instance, SingleVariable(x[1]), GreaterThan(0.0))\naddconstraint!(instance, SingleVariable(x[2]), GreaterThan(-1.0))[Example with vector-valued set.][Describe ConstraintIndex objects.]"
+    "text": "All constraints are specified with addconstraint! by restricting the output of some function to a set. The interface allows an arbitrary combination of functions and sets, but of course solvers may decide to support only a small number of combinations.For example, linear programming solvers should support, at least, combinations of affine functions with the LessThan and GreaterThan sets. These are simply linear constraints. SingleVariable functions combined with these same sets are used to specify upper and lower bounds on variables.The code example below encodes the linear optimization problem:beginalign\n max_x in mathbbR^2  3x_1 + 2x_2 \n\n textst  x_1 + x_2 le 5\n\n x_1  ge 0\n\nx_2  ge -1\nendalignx = addvariables!(model, 2)\nset!(model, ObjectiveFunction{ScalarAffineFunction{Float64}}(), ScalarAffineFunction(x, [3.0,2.0], 0.0))\nset!(model, ObjectiveSense(), MaxSense)\naddconstraint!(model, ScalarAffineFunction(x, [1.0,1.0], 0.0), LessThan(5.0))\naddconstraint!(model, SingleVariable(x[1]), GreaterThan(0.0))\naddconstraint!(model, SingleVariable(x[2]), GreaterThan(-1.0))[Example with vector-valued set.][Describe ConstraintIndex objects.]"
 },
 
 {
@@ -125,7 +125,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Solving and retrieving the results",
     "category": "section",
-    "text": "Once a solver instance is loaded with the objective function and all of the constraints, we can ask the solver to solve the instance by calling optimize!.optimize!(instance)The optimization procedure may terminate for a number of reasons. The TerminationStatus attribute of the solver instance returns a TerminationStatusCode object which explains why the solver stopped. Some statuses indicate generally successful termination, some termination because of limit, and some termination because of something unexpected like invalid problem data or failure to converge. A typical usage of the TerminationStatus attribute is as follows:status = MOI.get(instance, TerminationStatus())\nif status == Success\n    # Ok, the solver has a result to return\nelse\n    # Handle other cases\n    # The solver may or may not have a result\nendThe Success status code specifically implies that the solver has a \"result\" to return. In the case that the solver converged to an optimal solution, this result will just be the optimal solution vector. The PrimalStatus attribute returns a ResultStatusCode that explains how to interpret the result. In the case that the solver is known to return globally optimal solutions (up to numerical tolerances), the combination of Success termination status and FeasiblePoint primal result status implies that the primal result vector should be interpreted as a globally optimal solution. A result may be available even if the status is not Success, for example, if the solver stopped because of a time limit and has a feasible but nonoptimal solution. Use the ResultCount attribute to check if one or more results are available.In addition to the primal status, the DualStatus provides important information for primal-dual solvers.If a result is available, it may be retrieved with the VariablePrimal attribute:MOI.get(instance, VariablePrimal(), x)If x is a VariableIndex then the function call returns a scalar, and if x is a Vector{VariableIndex} then the call returns a vector of scalars. VariablePrimal() is equivalent to VariablePrimal(1), i.e., the variable primal vector of the first result. Use VariablePrimal(N) to access the Nth result.See also the attributes ConstraintPrimal, and ConstraintDual. See Duals for a discussion of the MOI conventions for primal-dual pairs and certificates."
+    "text": "Once an optimizer is loaded with the objective function and all of the constraints, we can ask the solver to solve the model by calling optimize!.optimize!(optimizer)The optimization procedure may terminate for a number of reasons. The TerminationStatus attribute of the optimizer returns a TerminationStatusCode object which explains why the solver stopped. Some statuses indicate generally successful termination, some termination because of limit, and some termination because of something unexpected like invalid problem data or failure to converge. A typical usage of the TerminationStatus attribute is as follows:status = MOI.get(optimizer, TerminationStatus())\nif status == Success\n    # Ok, the solver has a result to return\nelse\n    # Handle other cases\n    # The solver may or may not have a result\nendThe Success status code specifically implies that the solver has a \"result\" to return. In the case that the solver converged to an optimal solution, this result will just be the optimal solution vector. The PrimalStatus attribute returns a ResultStatusCode that explains how to interpret the result. In the case that the solver is known to return globally optimal solutions (up to numerical tolerances), the combination of Success termination status and FeasiblePoint primal result status implies that the primal result vector should be interpreted as a globally optimal solution. A result may be available even if the status is not Success, for example, if the solver stopped because of a time limit and has a feasible but nonoptimal solution. Use the ResultCount attribute to check if one or more results are available.In addition to the primal status, the DualStatus provides important information for primal-dual solvers.If a result is available, it may be retrieved with the VariablePrimal attribute:MOI.get(optimizer, VariablePrimal(), x)If x is a VariableIndex then the function call returns a scalar, and if x is a Vector{VariableIndex} then the call returns a vector of scalars. VariablePrimal() is equivalent to VariablePrimal(1), i.e., the variable primal vector of the first result. Use VariablePrimal(N) to access the Nth result.See also the attributes ConstraintPrimal, and ConstraintDual. See Duals for a discussion of the MOI conventions for primal-dual pairs and certificates."
 },
 
 {
@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "A complete example: solving a knapsack problem",
     "category": "section",
-    "text": "[ needs formatting help, doc tests ]using MathOptInterface\nconst MOI = MathOptInterface\nusing MathOptInterfaceGLPK\n\n# Solve the binary-constrained knapsack problem: max c'x: w'x <= C, x binary using GLPK.\n\nc = [1.0, 2.0, 3.0]\nw = [0.3, 0.5, 1.0]\n\nnumvariables = length(c)\n\ninstance = GLPKInstance() # TODO: match with actual name in GLPK wrapper\n\n# create the variables in the problem\nx = MOI.addvariables!(instance, numvariables)\n\n# set the objective function\nMOI.set!(instance, MOI.ObjectiveFunction{MOI.ScalarAffineFunction{Float64}}(), MOI.ScalarAffineFunction(x, c, 0.0))\nMOI.set!(instance, MOI.ObjectiveSense(), MOI.MaxSense)\n\n# add the knapsack constraint\nMOI.addconstraint!(instance, MOI.ScalarAffineFunction(x, w, 0.0), MOI.LessThan(C))\n\n# add integrality constraints\nfor i in 1:numvariables\n    MOI.addconstraint!(instance, MOI.SingleVariable(x[i]), MOI.ZeroOne())\nend\n\n# all set\nMOI.optimize!(instance)\n\ntermination_status = MOI.get(instance, TerminationStatus())\nobjvalue = MOI.canget(instance, MOI.ObjectiveValue()) ? MOI.get(instance, MOI.ObjectiveValue()) : NaN\nif termination_status != MOI.Success\n    error(\"Solver terminated with status $termination_status\")\nend\n\n@assert MOI.get(instance, MOI.ResultCount()) > 0\n\nresult_status = MOI.get(instance, MOI.PrimalStatus())\nif result_status != MOI.FeasiblePoint\n    error(\"Solver ran successfully did not return a feasible point. The problem may be infeasible.\")\nend\nprimal_variable_result = MOI.get(instance, MOI.VariablePrimal(), x)\n\n@show objvalue\n@show primal_variable_result"
+    "text": "[ needs formatting help, doc tests ]using MathOptInterface\nconst MOI = MathOptInterface\nusing MathOptInterfaceGLPK\n\n# Solve the binary-constrained knapsack problem: max c'x: w'x <= C, x binary using GLPK.\n\nc = [1.0, 2.0, 3.0]\nw = [0.3, 0.5, 1.0]\n\nnumvariables = length(c)\n\noptimizer = GLPKOptimizer() # TODO: match with actual name in GLPK wrapper\n\n# create the variables in the problem\nx = MOI.addvariables!(optimizer, numvariables)\n\n# set the objective function\nMOI.set!(optimizer, MOI.ObjectiveFunction{MOI.ScalarAffineFunction{Float64}}(), MOI.ScalarAffineFunction(x, c, 0.0))\nMOI.set!(optimizer, MOI.ObjectiveSense(), MOI.MaxSense)\n\n# add the knapsack constraint\nMOI.addconstraint!(optimizer, MOI.ScalarAffineFunction(x, w, 0.0), MOI.LessThan(C))\n\n# add integrality constraints\nfor i in 1:numvariables\n    MOI.addconstraint!(optimizer, MOI.SingleVariable(x[i]), MOI.ZeroOne())\nend\n\n# all set\nMOI.optimize!(optimizer)\n\ntermination_status = MOI.get(optimizer, TerminationStatus())\nobjvalue = MOI.canget(optimizer, MOI.ObjectiveValue()) ? MOI.get(optimizer, MOI.ObjectiveValue()) : NaN\nif termination_status != MOI.Success\n    error(\"Solver terminated with status $termination_status\")\nend\n\n@assert MOI.get(optimizer, MOI.ResultCount()) > 0\n\nresult_status = MOI.get(optimizer, MOI.PrimalStatus())\nif result_status != MOI.FeasiblePoint\n    error(\"Solver ran successfully did not return a feasible point. The problem may be infeasible.\")\nend\nprimal_variable_result = MOI.get(optimizer, MOI.VariablePrimal(), x)\n\n@show objvalue\n@show primal_variable_result"
 },
 
 {
@@ -181,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Manual",
     "title": "Duals",
     "category": "section",
-    "text": "Conic duality is the starting point for MOI's duality conventions. When all functions are affine (or coordinate projections), and all constraint sets are closed convex cone, the instance may be called a conic optimization problem. For conic-form minimization problems, the primal is:beginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n max_y_1 ldots y_m  -sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 - sum_i=1^m A_i^T y_i  = 0\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignwhere each mathcalC_i is a closed convex cone and mathcalC_i^* is its dual cone.For conic-form maximization problems, the primal is:beginalign\n max_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n min_y_1 ldots y_m  sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 + sum_i=1^m A_i^T y_i  = 0\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignA linear inequality constraint a^T x + b ge c should be interpreted as a^T x + b - c in mathbbR_+, and similarly a^T x + b le c should be interpreted as a^T x + b - c in mathbbR_-. Variable-wise constraints should be interpreted as affine constraints with the appropriate identity mapping in place of A_i.For the special case of minimization LPs, the MOI primal form can be stated asbeginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst\nA_1 x  ge b_1\n A_2 x  le b_2\n A_3 x  = b_3\nendalignBy applying the stated transformations to conic form, taking the dual, and transforming back into linear inequality form, one obtains the following dual:beginalign\n max_y_1y_2y_3  b_1^Ty_1 + b_2^Ty_2 + b_3^Ty_3 + b_0\n\n textst\nA_1^Ty_1 + A_2^Ty_2 + A_3^Ty_3  = a_0\n y_1 ge 0\n y_2 le 0\nendalignFor maximization LPs, the MOI primal form can be stated as:beginalign\n max_x in mathbbR^n  a_0^T x + b_0\n\n textst\nA_1 x  ge b_1\n A_2 x  le b_2\n A_3 x  = b_3\nendalignand similarly, the dual is:beginalign\n min_y_1y_2y_3  -b_1^Ty_1 - b_2^Ty_2 - b_3^Ty_3 + b_0\n\n textst\nA_1^Ty_1 + A_2^Ty_2 + A_3^Ty_3  = -a_0\n y_1 ge 0\n y_2 le 0\nendalignAn important note for the LP case is that the signs of the feasible duals depend only on the sense of the inequality and not on the objective sense.Currently, a convention for duals is not defined for problems with non-conic sets mathcalS_i or quadratic functions f_0 f_i."
+    "text": "Conic duality is the starting point for MOI's duality conventions. When all functions are affine (or coordinate projections), and all constraint sets are closed convex cones, the model may be called a conic optimization problem. For conic-form minimization problems, the primal is:beginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n max_y_1 ldots y_m  -sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 - sum_i=1^m A_i^T y_i  = 0\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignwhere each mathcalC_i is a closed convex cone and mathcalC_i^* is its dual cone.For conic-form maximization problems, the primal is:beginalign\n max_x in mathbbR^n  a_0^T x + b_0\n\n textst  A_i x + b_i  in mathcalC_i  i = 1 ldots m\nendalignand the dual is:beginalign\n min_y_1 ldots y_m  sum_i=1^m b_i^T y_i + b_0\n\n textst  a_0 + sum_i=1^m A_i^T y_i  = 0\n\n  y_i  in mathcalC_i^*  i = 1 ldots m\nendalignA linear inequality constraint a^T x + b ge c should be interpreted as a^T x + b - c in mathbbR_+, and similarly a^T x + b le c should be interpreted as a^T x + b - c in mathbbR_-. Variable-wise constraints should be interpreted as affine constraints with the appropriate identity mapping in place of A_i.For the special case of minimization LPs, the MOI primal form can be stated asbeginalign\n min_x in mathbbR^n  a_0^T x + b_0\n\n textst\nA_1 x  ge b_1\n A_2 x  le b_2\n A_3 x  = b_3\nendalignBy applying the stated transformations to conic form, taking the dual, and transforming back into linear inequality form, one obtains the following dual:beginalign\n max_y_1y_2y_3  b_1^Ty_1 + b_2^Ty_2 + b_3^Ty_3 + b_0\n\n textst\nA_1^Ty_1 + A_2^Ty_2 + A_3^Ty_3  = a_0\n y_1 ge 0\n y_2 le 0\nendalignFor maximization LPs, the MOI primal form can be stated as:beginalign\n max_x in mathbbR^n  a_0^T x + b_0\n\n textst\nA_1 x  ge b_1\n A_2 x  le b_2\n A_3 x  = b_3\nendalignand similarly, the dual is:beginalign\n min_y_1y_2y_3  -b_1^Ty_1 - b_2^Ty_2 - b_3^Ty_3 + b_0\n\n textst\nA_1^Ty_1 + A_2^Ty_2 + A_3^Ty_3  = -a_0\n y_1 ge 0\n y_2 le 0\nendalignAn important note for the LP case is that the signs of the feasible duals depend only on the sense of the inequality and not on the objective sense.Currently, a convention for duals is not defined for problems with non-conic sets mathcalS_i or quadratic functions f_0 f_i."
 },
 
 {
@@ -193,9 +193,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apimanual.html#Modifying-an-instance-1",
+    "location": "apimanual.html#Modifying-a-model-1",
     "page": "Manual",
-    "title": "Modifying an instance",
+    "title": "Modifying a model",
     "category": "section",
     "text": "[Explain modifyconstraint! and modifyobjective!.]"
 },
@@ -225,19 +225,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.AbstractSolverParameter",
+    "location": "apireference.html#MathOptInterface.AbstractOptimizerAttribute",
     "page": "Reference",
-    "title": "MathOptInterface.AbstractSolverParameter",
+    "title": "MathOptInterface.AbstractOptimizerAttribute",
     "category": "Type",
-    "text": "AbstractSolverParameter\n\nAbstract supertype for parameter objects that can be used to set or get parameters of the solver.\n\nNote\n\nThe difference between AbstractSolverParameter and AbstractInstanceAttribute lies in the behavior of isempty, empty! and copy!. Typically solver parameters only affect how the instance is solved.\n\n\n\n"
+    "text": "AbstractOptimizerAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the optimizer.\n\nNote\n\nThe difference between AbstractOptimizerAttribute and AbstractModelAttribute lies in the behavior of isempty, empty! and copy!. Typically optimizer attributes only affect how the model is solved.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.AbstractInstanceAttribute",
+    "location": "apireference.html#MathOptInterface.AbstractModelAttribute",
     "page": "Reference",
-    "title": "MathOptInterface.AbstractInstanceAttribute",
+    "title": "MathOptInterface.AbstractModelAttribute",
     "category": "Type",
-    "text": "AbstractInstanceAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the instance.\n\n\n\n"
+    "text": "AbstractModelAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of the model.\n\n\n\n"
 },
 
 {
@@ -245,7 +245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.AbstractVariableAttribute",
     "category": "Type",
-    "text": "AbstractVariableAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of variables in the instance.\n\n\n\n"
+    "text": "AbstractVariableAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of variables in the model.\n\n\n\n"
 },
 
 {
@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.AbstractConstraintAttribute",
     "category": "Type",
-    "text": "AbstractConstraintAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of constraints in the instance.\n\n\n\n"
+    "text": "AbstractConstraintAttribute\n\nAbstract supertype for attribute objects that can be used to set or get attributes (properties) of constraints in the model.\n\n\n\n"
 },
 
 {
@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canget",
     "category": "Function",
-    "text": "canget(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether instance currently has a value for the parameter specified by parameter type param.\n\ncanget(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr.\n\ncanget(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every variable of the instance.\n\ncanget(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether instance currently has a value for the attribute specified by attribute type attr applied to every F-in-S constraint.\n\ncanget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in instance.\n\ncanget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in instance.\n\nExamples\n\ncanget(instance, ObjectiveValue())\ncanget(instance, VariablePrimalStart(), VariableIndex)\ncanget(instance, VariablePrimal(), VariableIndex)\ncanget(instance, ConstraintPrimal(), ConstraintIndex{SingleVariable,EqualTo{Float64}})\ncanget(instance, VariableIndex, \"var1\")\ncanget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
+    "text": "canget(optimizer::AbstractOptimizer, attr::AbstractOptimizerAttribute)::Bool\n\nReturn a Bool indicating whether optimizer currently has a value for the attribute specified by attr type attr.\n\ncanget(model::ModelLike, attr::AbstractModelAttribute)::Bool\n\nReturn a Bool indicating whether model currently has a value for the attribute specified by attribute type attr.\n\ncanget(model::ModelLike, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether model currently has a value for the attribute specified by attribute type attr applied to every variable of the model.\n\ncanget(model::ModelLike, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether model currently has a value for the attribute specified by attribute type attr applied to every F-in-S constraint.\n\ncanget(model::ModelLike, ::Type{VariableIndex}, name::String)::Bool\n\nReturn a Bool indicating if a variable with the name name exists in model.\n\ncanget(model::ModelLike, ::Type{ConstraintIndex{F,S}}, name::String)::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating if an F-in-S constraint with the name name exists in model.\n\ncanget(model::ModelLike, ::Type{ConstraintIndex}, name::String)::Bool\n\nReturn a Bool indicating if a constraint of any kind with the name name exists in model.\n\nExamples\n\ncanget(model, ObjectiveValue())\ncanget(model, VariablePrimalStart(), VariableIndex)\ncanget(model, VariablePrimal(), VariableIndex)\ncanget(model, ConstraintPrimal(), ConstraintIndex{SingleVariable,EqualTo{Float64}})\ncanget(model, VariableIndex, \"var1\")\ncanget(model, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\ncanget(model, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -269,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.get",
     "category": "Function",
-    "text": "get(instance::AbstractInstance, param::AbstractSolverParameter)\n\nReturn a parameter param of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractInstanceAttribute)\n\nReturn an attribute attr of the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex)\n\nReturn an attribute attr of the variable v in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex)\n\nReturn an attribute attr of the constraint c in instance instance.\n\nget(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the instance instance.\n\nget(instance::AbstractInstance, ::Type{VariableIndex}, name::String)\n\nIf a variable with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError.\n\nget(instance::AbstractInstance, ::Type{ConstraintIndex}, name::String)\n\nIf any constraint with name name exists in the instance instance, return the corresponding index, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(instance, ObjectiveValue())\nget(instance, VariablePrimal(), ref)\nget(instance, VariablePrimal(5), [ref1, ref2])\nget(instance, OtherAttribute(\"something specific to cplex\"))\nget(instance, VariableIndex, \"var1\")\nget(instance, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(instance, ConstraintIndex, \"con1\")\n\n\n\n"
+    "text": "get(optimizer::AbstractOptimizer, attr::AbstractOptimizerAttribute)\n\nReturn an attribute attr of the optimizer optimizer.\n\nget(model::ModelLike, attr::AbstractModelAttribute)\n\nReturn an attribute attr of the model model.\n\nget(model::ModelLike, attr::AbstractVariableAttribute, v::VariableIndex)\n\nReturn an attribute attr of the variable v in model model.\n\nget(model::ModelLike, attr::AbstractVariableAttribute, v::Vector{VariableIndex})\n\nReturn a vector of attributes corresponding to each variable in the collection v in the model model.\n\nget(model::ModelLike, attr::AbstractConstraintAttribute, c::ConstraintIndex)\n\nReturn an attribute attr of the constraint c in model model.\n\nget(model::ModelLike, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}})\n\nReturn a vector of attributes corresponding to each constraint in the collection c in the model model.\n\nget(model::ModelLike, ::Type{VariableIndex}, name::String)\n\nIf a variable with name name exists in the model model, return the corresponding index, otherwise throw a KeyError.\n\nget(model::ModelLike, ::Type{ConstraintIndex{F,S}}, name::String) where {F<:AbstractFunction,S<:AbstractSet}\n\nIf an F-in-S constraint with name name exists in the model model, return the corresponding index, otherwise throw a KeyError.\n\nget(model::ModelLike, ::Type{ConstraintIndex}, name::String)\n\nIf any constraint with name name exists in the model model, return the corresponding index, otherwise throw a KeyError. This version is available for convenience but may incur a performance penalty because it is not type stable.\n\nExamples\n\nget(model, ObjectiveValue())\nget(model, VariablePrimal(), ref)\nget(model, VariablePrimal(5), [ref1, ref2])\nget(model, OtherAttribute(\"something specific to cplex\"))\nget(model, VariableIndex, \"var1\")\nget(model, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, \"con1\")\nget(model, ConstraintIndex, \"con1\")\n\n\n\n"
 },
 
 {
@@ -277,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.get!",
     "category": "Function",
-    "text": "get!(output, instance::AbstractInstance, args...)\n\nAn in-place version of get. The signature matches that of get except that the the result is placed in the vector output.\n\n\n\n"
+    "text": "get!(output, model::ModelLike, args...)\n\nAn in-place version of get. The signature matches that of get except that the the result is placed in the vector output.\n\n\n\n"
 },
 
 {
@@ -285,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canset",
     "category": "Function",
-    "text": "canset(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether it is possible to set the parameter param to the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set the attribute attr to the instance instance.\n\ncanset(instance::AbstractInstance, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(instance::AbstractInstance, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the instance instance.\n\nExamples\n\ncanset(instance, ObjectiveValue())\ncanset(instance, VariablePrimalStart(), VariableIndex)\ncanset(instance, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
+    "text": "canset(optimizer::AbstractOptimizer, attr::AbstractOptimizerAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set the attribute attr to the optimizer optimizer.\n\ncanset(model::ModelLike, attr::AbstractModelAttribute)::Bool\n\nReturn a Bool indicating whether it is possible to set the attribute attr to the model model.\n\ncanset(model::ModelLike, attr::AbstractVariableAttribute, R::Type{VariableIndex})::Bool\ncanset(model::ModelLike, attr::AbstractConstraintAttribute, R::Type{ConstraintIndex{F,S})::Bool\n\nReturn a Bool indicating whether it is possible to set attribute attr applied to the index type R in the model model.\n\nExamples\n\ncanset(model, ObjectiveValue())\ncanset(model, VariablePrimalStart(), VariableIndex)\ncanset(model, ConstraintPrimal(), ConstraintIndex{VectorAffineFunction{Float64},Nonnegatives})\n\n\n\n"
 },
 
 {
@@ -293,7 +293,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.set!",
     "category": "Function",
-    "text": "set!(instance::AbstractInstance, param::AbstractSolverParameter, value)\n\nAssign value to the parameter param of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractInstanceAttribute, value)\n\nAssign value to the attribute attr of the instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::VariableIndex, value)\n\nAssign value to the attribute attr of variable v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractVariableAttribute, v::Vector{VariableIndex}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::ConstraintIndex, value)\n\nAssign a value to the attribute attr of constraint c in instance instance.\n\nset!(instance::AbstractInstance, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in instance instance.\n\n\n\n"
+    "text": "set!(optimizer::AbstractOptimizer, attr::AbstractOptimizerAttribute, value)\n\nAssign value to the attribute attr of the optimizer optimizer.\n\nset!(model::ModelLike, attr::AbstractModelAttribute, value)\n\nAssign value to the attribute attr of the model model.\n\nset!(model::ModelLike, attr::AbstractVariableAttribute, v::VariableIndex, value)\n\nAssign value to the attribute attr of variable v in model model.\n\nset!(model::ModelLike, attr::AbstractVariableAttribute, v::Vector{VariableIndex}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each variable in the collection v in model model.\n\nset!(model::ModelLike, attr::AbstractConstraintAttribute, c::ConstraintIndex, value)\n\nAssign a value to the attribute attr of constraint c in model model.\n\nset!(model::ModelLike, attr::AbstractConstraintAttribute, c::Vector{ConstraintIndex{F,S}}, vector_of_values)\n\nAssign a value respectively to the attribute attr of each constraint in the collection c in model model.\n\n\n\n"
 },
 
 {
@@ -301,39 +301,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.supports",
     "category": "Function",
-    "text": "supports(instance::AbstractInstance, param::AbstractSolverParameter)::Bool\n\nReturn a Bool indicating whether instance supports the solver parameter param.\n\nsupports(instance::AbstractInstance, attr::AbstractInstanceAttribute)::Bool\n\nReturn a Bool indicating whether instance supports the instance attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether instance supports the variable attribute attr.\n\nsupports(instance::AbstractInstance, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F,S}\n\nReturn a Bool indicating whether instance supports the constraint attribute attr applied to an F-in-S constraint.\n\nIn other words, it should return true if copy!(instance, src) does not return CopyUnsupportedAttribute when the attribute attr is set to src. If the attribute is only not supported in specific circumstances, it should still return true.\n\n\n\n"
+    "text": "supports(model::ModelLike, attr::AbstractOptimizerAttribute)::Bool\n\nReturn a Bool indicating whether model supports the optimizer attribute attr.\n\nsupports(model::ModelLike, attr::AbstractModelAttribute)::Bool\n\nReturn a Bool indicating whether model supports the model attribute attr.\n\nsupports(model::ModelLike, attr::AbstractVariableAttribute, ::Type{VariableIndex})::Bool\n\nReturn a Bool indicating whether model supports the variable attribute attr.\n\nsupports(model::ModelLike, attr::AbstractConstraintAttribute, ::Type{ConstraintIndex{F,S}})::Bool where {F,S}\n\nReturn a Bool indicating whether model supports the constraint attribute attr applied to an F-in-S constraint.\n\nIn other words, it should return true if copy!(model, src) does not return CopyUnsupportedAttribute when the attribute attr is set to src. If the attribute is only not supported in specific circumstances, it should still return true.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Parameters-and-Attributes-1",
+    "location": "apireference.html#Attributes-1",
     "page": "Reference",
-    "title": "Parameters and Attributes",
+    "title": "Attributes",
     "category": "section",
-    "text": "Parameter abstract type.AbstractSolverParameterList of attribute categories.AbstractInstanceAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting parameters and attributes.canget\nget\nget!\ncanset\nset!\nsupports"
+    "text": "List of attribute categories.AbstractOptimizerAttribute\nAbstractModelAttribute\nAbstractVariableAttribute\nAbstractConstraintAttributeFunctions for getting and setting attributes.canget\nget\nget!\ncanset\nset!\nsupports"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.AbstractInstance",
+    "location": "apireference.html#MathOptInterface.ModelLike",
     "page": "Reference",
-    "title": "MathOptInterface.AbstractInstance",
+    "title": "MathOptInterface.ModelLike",
     "category": "Type",
-    "text": "AbstractInstance\n\nAbstract supertype for objects representing an instance of an optimization problem.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AbstractStandaloneInstance",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractStandaloneInstance",
-    "category": "Type",
-    "text": "AbstractStandaloneInstance\n\nAbstract supertype for objects representing an instance of an optimization problem unattached to any particular solver. Does not have methods for solving or querying results.\n\n\n\n"
-},
-
-{
-    "location": "apireference.html#MathOptInterface.AbstractSolverInstance",
-    "page": "Reference",
-    "title": "MathOptInterface.AbstractSolverInstance",
-    "category": "Type",
-    "text": "AbstractSolverInstance\n\nAbstract supertype for objects representing an instance of an optimization problem tied to a particular solver. This is typically a solver's in-memory representation. In addition to AbstractInstance, AbstractSolverInstance objects let you solve the instance and query the solution.\n\n\n\n"
+    "text": "ModelLike\n\nAbstract supertype for objects that implement the \"Model\" interface for defining an optimization problem.\n\n\n\n"
 },
 
 {
@@ -341,7 +325,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.isempty",
     "category": "Function",
-    "text": "isempty(instance::AbstractInstance)\n\nReturns false if the instance has any instance attribute set or has any variables or constraints. Note that an empty instance can have solver parameters set.\n\n\n\n"
+    "text": "isempty(model::ModelLike)\n\nReturns false if the model has any model attribute set or has any variables or constraints. Note that an empty model can have optimizer attributes set.\n\n\n\n"
 },
 
 {
@@ -349,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.empty!",
     "category": "Function",
-    "text": "empty!(instance::AbstractInstance)\n\nEmpty the instance, that is, remove from the instance instance all variables, constraints and instance attributes but not solver parameters.\n\n\n\n"
+    "text": "empty!(model::ModelLike)\n\nEmpty the model, that is, remove all variables, constraints and model attributes but not optimizer attributes.\n\n\n\n"
 },
 
 {
@@ -357,7 +341,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.write",
     "category": "Function",
-    "text": "write(instance::AbstractInstance, filename::String)\n\nWrites the current instance data to the given file. Supported file types depend on the solver or standalone instance type.\n\n\n\n"
+    "text": "write(model::ModelLike, filename::String)\n\nWrites the current model data to the given file. Supported file types depend on the solver or standalone instance type.\n\n\n\n"
 },
 
 {
@@ -365,7 +349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.read!",
     "category": "Function",
-    "text": "read!(instance::AbstractInstance, filename::String)\n\nRead the file filename into the instance instance. If m is non-empty, this may throw an error.\n\nSupported file types depend on the instance type.\n\n\n\n"
+    "text": "read!(model::ModelLike, filename::String)\n\nRead the file filename into the instance instance. If m is non-empty, this may throw an error.\n\nSupported file types depend on the instance type.\n\n\n\n"
 },
 
 {
@@ -373,7 +357,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.copy!",
     "category": "Function",
-    "text": "copy!(dest::AbstractInstance, src::AbstractInstance, warnattributes=true)::CopyResult\n\nCopy the model from the instance src into the instance dest. The target instance dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successfully, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src instance to the corresponding indices in the dest instance.\n\nIf an attribute attr cannot be copied from src to dest then an error is thrown. If a solver parameter cannot be copied then:\n\nIf warnattributes is true, a warning is displayed, otherwise,\nThe attribute is silently ignored.\n\nExample\n\n# Given empty `AbstractInstance`s `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
+    "text": "copy!(dest::ModelLike, src::ModelLike, warnattributes=true)::CopyResult\n\nCopy the model from src into dest. The target dest is emptied, and all previous indices to variables or constraints in dest are invalidated. Returns a CopyResult object. If the copy is successful, the CopyResult contains a dictionary-like object that translates variable and constraint indices from the src model to the corresponding indices in the dest model.\n\nIf an attribute attr cannot be copied from src to dest then an error is thrown. If an optimizer attribute cannot be copied then:\n\nIf warnattributes is true, a warning is displayed, otherwise,\nThe attribute is silently ignored.\n\nExample\n\n# Given empty `ModelLike` objects `src` and `dest`.\n\nx = addvariable!(src)\n\nisvalid(src, x)   # true\nisvalid(dest, x)  # false (`dest` has no variables)\n\ncopy_result = copy!(dest, src)\nif copy_result.status == CopySuccess\n    index_map = copy_result.indexmap\n    isvalid(dest, x) # false (unless index_map[x] == x)\n    isvalid(dest, index_map[x]) # true\nelse\n    println(\"Copy failed with status \", copy_result.status)\n    println(\"Failure message: \", copy_result.message)\nend\n\n\n\n"
 },
 
 {
@@ -397,7 +381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.Name",
     "category": "Type",
-    "text": "Name()\n\nA string identifying the instance.\n\n\n\n"
+    "text": "Name()\n\nA string identifying the model.\n\n\n\n"
 },
 
 {
@@ -413,7 +397,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.NumberOfVariables",
     "category": "Type",
-    "text": "NumberOfVariables()\n\nThe number of variables in the instance.\n\n\n\n"
+    "text": "NumberOfVariables()\n\nThe number of variables in the model.\n\n\n\n"
 },
 
 {
@@ -421,7 +405,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ListOfVariableIndices",
     "category": "Type",
-    "text": "ListOfVariableIndices()\n\nA Vector{VariableIndex} indexing all variables present in the instance (i.e., of length equal to the value of NumberOfVariables()).\n\n\n\n"
+    "text": "ListOfVariableIndices()\n\nA Vector{VariableIndex} indexing all variables present in the model (i.e., of length equal to the value of NumberOfVariables()).\n\n\n\n"
 },
 
 {
@@ -437,7 +421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.NumberOfConstraints",
     "category": "Type",
-    "text": "NumberOfConstraints{F,S}()\n\nThe number of constraints of the type F-in-S present in the instance.\n\n\n\n"
+    "text": "NumberOfConstraints{F,S}()\n\nThe number of constraints of the type F-in-S present in the model.\n\n\n\n"
 },
 
 {
@@ -445,15 +429,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ListOfConstraintIndices",
     "category": "Type",
-    "text": "ListOfConstraintIndices{F,S}()\n\nA Vector{ConstraintIndex{F,S}} indexing all constraints of type F-inS in the instance (i.e., of length equal to the value of NumberOfConstraints{F,S}()).\n\n\n\n"
+    "text": "ListOfConstraintIndices{F,S}()\n\nA Vector{ConstraintIndex{F,S}} indexing all constraints of type F-inS in the model (i.e., of length equal to the value of NumberOfConstraints{F,S}()).\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#MathOptInterface.ListOfInstanceAttributesSet",
+    "location": "apireference.html#MathOptInterface.ListOfModelAttributesSet",
     "page": "Reference",
-    "title": "MathOptInterface.ListOfInstanceAttributesSet",
+    "title": "MathOptInterface.ListOfModelAttributesSet",
     "category": "Type",
-    "text": "ListOfInstanceAttributesSet()\n\nA Vector{AbstractInstanceAttribute} of all instance attributes that were set to the instance.\n\n\n\n"
+    "text": "ListOfModelAttributesSet()\n\nA Vector{AbstractModelAttribute} of all model attributes that were set to the model.\n\n\n\n"
 },
 
 {
@@ -461,7 +445,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ListOfVariableAttributesSet",
     "category": "Type",
-    "text": "ListOfVariableAttributesSet()\n\nA Vector{AbstractVariableAttribute} of all variable attributes that were set to the instance.\n\n\n\n"
+    "text": "ListOfVariableAttributesSet()\n\nA Vector{AbstractVariableAttribute} of all variable attributes that were set to the model.\n\n\n\n"
 },
 
 {
@@ -473,11 +457,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Instance-1",
+    "location": "apireference.html#Model-Interface-1",
     "page": "Reference",
-    "title": "Instance",
+    "title": "Model Interface",
     "category": "section",
-    "text": "AbstractInstance\nAbstractStandaloneInstance\nAbstractSolverInstance\nisempty\nempty!\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of instance attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfInstanceAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSetThere are no attributes specific to a standalone instance."
+    "text": "ModelLike\nisempty\nempty!\nwrite\nread!Copyingcopy!\nCopyResult\nCopyStatusCodeList of model attributesName\nObjectiveSense\nNumberOfVariables\nListOfVariableIndices\nListOfConstraints\nNumberOfConstraints\nListOfConstraintIndices\nListOfModelAttributesSet\nListOfVariableAttributesSet\nListOfConstraintAttributesSet"
+},
+
+{
+    "location": "apireference.html#MathOptInterface.AbstractOptimizer",
+    "page": "Reference",
+    "title": "MathOptInterface.AbstractOptimizer",
+    "category": "Type",
+    "text": "AbstractOptimizer\n\nAbstract supertype for objects representing an instance of an optimization problem tied to a particular solver. This is typically a solver's in-memory representation. In addition to ModelLike, AbstractOptimizer objects let you solve the instance and query the solution.\n\n\n\n"
 },
 
 {
@@ -485,7 +477,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.optimize!",
     "category": "Function",
-    "text": "optimize!(instance::AbstractSolverInstance)\n\nStart the solution procedure.\n\n\n\n"
+    "text": "optimize!(optimizer::AbstractOptimizer)\n\nStart the solution procedure.\n\n\n\n"
 },
 
 {
@@ -493,7 +485,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.free!",
     "category": "Function",
-    "text": "free!(instance::AbstractSolverInstance)\n\nRelease any resources and memory used by the solver instance. Note that the Julia garbage collector takes care of this automatically, but automatic collection cannot always be forced. This method is useful for more precise control of resources, especially in the case of commercial solvers with licensing restrictions on the number of concurrent runs. Users must discard the solver instance object after this method is invoked.\n\n\n\n"
+    "text": "free!(optimizer::AbstractOptimizer)\n\nRelease any resources and memory used by the optimizer. Note that the Julia garbage collector takes care of this automatically, but automatic collection cannot always be forced. This method is useful for more precise control of resources, especially in the case of commercial solvers with licensing restrictions on the number of concurrent runs. Users must discard the optimizer object after this method is invoked.\n\n\n\n"
 },
 
 {
@@ -501,7 +493,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.RawSolver",
     "category": "Type",
-    "text": "RawSolver()\n\nAn object that may be used to access a solver-specific API for this solver instance.\n\n\n\n"
+    "text": "RawSolver()\n\nAn object that may be used to access a solver-specific API for this optimizer.\n\n\n\n"
 },
 
 {
@@ -517,7 +509,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ObjectiveFunction",
     "category": "Type",
-    "text": "ObjectiveFunction{F<:AbstractScalarFunction}()\n\nAn F instance which represents the objective function. It is guaranteed to be equivalent but not necessarily identical to the function provided by the user. Throws an InexactError if the objective function cannot be converted to F, e.g. the objective function is quadratic and F is ScalarAffineFunction{Float64} or it has non-integer coefficient and F is ScalarAffineFunction{Int}.\n\n\n\n"
+    "text": "ObjectiveFunction{F<:AbstractScalarFunction}()\n\nAn F model which represents the objective function. It is guaranteed to be equivalent but not necessarily identical to the function provided by the user. Throws an InexactError if the objective function cannot be converted to F, e.g. the objective function is quadratic and F is ScalarAffineFunction{Float64} or it has non-integer coefficient and F is ScalarAffineFunction{Int}.\n\n\n\n"
 },
 
 {
@@ -549,7 +541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.SolveTime",
     "category": "Type",
-    "text": "SolveTime()\n\nThe total elapsed solution time (in seconds) as reported by the solver.\n\n\n\n"
+    "text": "SolveTime()\n\nThe total elapsed solution time (in seconds) as reported by the optimizer.\n\n\n\n"
 },
 
 {
@@ -581,7 +573,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.TerminationStatus",
     "category": "Type",
-    "text": "TerminationStatus()\n\nA TerminationStatusCode explaining why the solver stopped.\n\n\n\n"
+    "text": "TerminationStatus()\n\nA TerminationStatusCode explaining why the optimizer stopped.\n\n\n\n"
 },
 
 {
@@ -601,11 +593,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Solver-instance-1",
+    "location": "apireference.html#Optimizers-1",
     "page": "Reference",
-    "title": "Solver instance",
+    "title": "Optimizers",
     "category": "section",
-    "text": "optimize!\nfree!List of solver instance attributesRawSolver\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
+    "text": "AbstractOptimizer\noptimize!\nfree!List of attributes useful for optimizersRawSolver\nResultCount\nObjectiveFunction\nObjectiveValue\nObjectiveBound\nRelativeGap\nSolveTime\nSimplexIterations\nBarrierIterations\nNodeCount\nTerminationStatus\nPrimalStatus\nDualStatus"
 },
 
 {
@@ -613,7 +605,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.TerminationStatusCode",
     "category": "Type",
-    "text": "TerminationStatusCode\n\nAn Enum of possible values for the TerminationStatus attribute. This attribute is meant to explain the reason why the solver stopped executing.\n\nOK\n\nThese are generally OK statuses.\n\nSuccess: the algorithm ran successfully and has a result; this includes cases where the algorithm converges to an infeasible point (NLP) or converges to a solution of a homogeneous self-dual problem and has a certificate of primal/dual infeasibility\nInfeasibleNoResult: the algorithm stopped because it decided that the problem is infeasible but does not have a result to return\nUnboundedNoResult: the algorithm stopped because it decided that the problem is unbounded but does not have a result to return\nInfeasibleOrUnbounded: the algorithm stopped because it decided that the problem is infeasible or unbounded (no result is available); this occasionally happens during MIP presolve\n\nLimits\n\nThe solver stopped because of some user-defined limit. To be documented: IterationLimit, TimeLimit, NodeLimit, SolutionLimit, MemoryLimit, ObjectiveLimit, NormLimit, OtherLimit.\n\nProblematic\n\nThis group of statuses means that something unexpected or problematic happened.\n\nSlowProgress: the algorithm stopped because it was unable to continue making progress towards the solution\nAlmostSuccess should be used if there is additional information that relaxed convergence tolerances are satisfied\n\nTo be documented: NumericalError, InvalidInstance, InvalidOption, Interrupted, OtherError.\n\n\n\n"
+    "text": "TerminationStatusCode\n\nAn Enum of possible values for the TerminationStatus attribute. This attribute is meant to explain the reason why the optimizer stopped executing.\n\nOK\n\nThese are generally OK statuses.\n\nSuccess: the algorithm ran successfully and has a result; this includes cases where the algorithm converges to an infeasible point (NLP) or converges to a solution of a homogeneous self-dual problem and has a certificate of primal/dual infeasibility\nInfeasibleNoResult: the algorithm stopped because it decided that the problem is infeasible but does not have a result to return\nUnboundedNoResult: the algorithm stopped because it decided that the problem is unbounded but does not have a result to return\nInfeasibleOrUnbounded: the algorithm stopped because it decided that the problem is infeasible or unbounded (no result is available); this occasionally happens during MIP presolve\n\nLimits\n\nThe optimizer stopped because of some user-defined limit. To be documented: IterationLimit, TimeLimit, NodeLimit, SolutionLimit, MemoryLimit, ObjectiveLimit, NormLimit, OtherLimit.\n\nProblematic\n\nThis group of statuses means that something unexpected or problematic happened.\n\nSlowProgress: the algorithm stopped because it was unable to continue making progress towards the solution\nAlmostSuccess should be used if there is additional information that relaxed convergence tolerances are satisfied\n\nTo be documented: NumericalError, InvalidModel, InvalidOption, Interrupted, OtherError.\n\n\n\n"
 },
 
 {
@@ -621,7 +613,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Termination Status",
     "category": "section",
-    "text": "The TerminationStatus attribute indicates why the solver stopped executing. The value of the attribute is of type TerminationStatusCode.TerminationStatusCode"
+    "text": "The TerminationStatus attribute indicates why the optimizer stopped executing. The value of the attribute is of type TerminationStatusCode.TerminationStatusCode"
 },
 
 {
@@ -669,7 +661,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.VariableIndex",
     "category": "Type",
-    "text": "VariableIndex\n\nA type-safe wrapper for Int64 for use in referencing variables in an instance. To allow for deletion, indices need not be consecutive.\n\n\n\n"
+    "text": "VariableIndex\n\nA type-safe wrapper for Int64 for use in referencing variables in a model. To allow for deletion, indices need not be consecutive.\n\n\n\n"
 },
 
 {
@@ -677,7 +669,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ConstraintIndex",
     "category": "Type",
-    "text": "ConstraintIndex{F,S}\n\nA type-safe wrapper for Int64 for use in referencing F-in-S constraints in an instance. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint. To allow for deletion, indices need not be consecutive.\n\n\n\n"
+    "text": "ConstraintIndex{F,S}\n\nA type-safe wrapper for Int64 for use in referencing F-in-S constraints in a model. The parameter F is the type of the function in the constraint, and the parameter S is the type of set in the constraint. To allow for deletion, indices need not be consecutive.\n\n\n\n"
 },
 
 {
@@ -685,7 +677,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.candelete",
     "category": "Function",
-    "text": "candelete(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether the object referred to by index can be removed from the instance instance.\n\n\n\n"
+    "text": "candelete(model::ModelLike, index::Index)::Bool\n\nReturn a Bool indicating whether the object referred to by index can be removed from the model model.\n\n\n\n"
 },
 
 {
@@ -693,15 +685,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Function",
-    "text": "isvalid(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the instance instance.\n\n\n\n"
+    "text": "isvalid(model::ModelLike, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the model model.\n\n\n\n"
 },
 
 {
-    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.AbstractSolverInstance,Union{MathOptInterface.ConstraintIndex, MathOptInterface.VariableIndex}}",
+    "location": "apireference.html#Base.delete!-Tuple{MathOptInterface.ModelLike,Union{MathOptInterface.ConstraintIndex, MathOptInterface.VariableIndex}}",
     "page": "Reference",
     "title": "Base.delete!",
     "category": "Method",
-    "text": "delete!(instance::AbstractInstance, index::Index)\n\nDelete the referenced object from the instance.\n\ndelete!{R}(instance::AbstractInstance, indices::Vector{R<:Index})\n\nDelete the referenced objects in the vector indices from the instance. It may be assumed that R is a concrete type.\n\n\n\n"
+    "text": "delete!(model::ModelLike, index::Index)\n\nDelete the referenced object from the model.\n\ndelete!{R}(model::ModelLike, indices::Vector{R<:Index})\n\nDelete the referenced objects in the vector indices from the model. It may be assumed that R is a concrete type.\n\n\n\n"
 },
 
 {
@@ -709,7 +701,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Index types",
     "category": "section",
-    "text": "VariableIndex\nConstraintIndex\ncandelete\nisvalid\ndelete!(::AbstractSolverInstance,::Index)"
+    "text": "VariableIndex\nConstraintIndex\ncandelete\nisvalid\ndelete!(::ModelLike,::Index)"
 },
 
 {
@@ -717,7 +709,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canaddvariable",
     "category": "Function",
-    "text": "canaddvariable(instance::AbstractInstance)::Bool\n\nReturn a Bool indicating whether it is possible to add a variable to the instance instance.\n\n\n\n"
+    "text": "canaddvariable(model::ModelLike)::Bool\n\nReturn a Bool indicating whether it is possible to add a variable to the model model.\n\n\n\n"
 },
 
 {
@@ -725,7 +717,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addvariables!",
     "category": "Function",
-    "text": "addvariables!(instance::AbstractInstance, n::Int)::Vector{VariableIndex}\n\nAdd n scalar variables to the instance, returning a vector of variable indices.\n\n\n\n"
+    "text": "addvariables!(model::ModelLike, n::Int)::Vector{VariableIndex}\n\nAdd n scalar variables to the model, returning a vector of variable indices.\n\n\n\n"
 },
 
 {
@@ -733,7 +725,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addvariable!",
     "category": "Function",
-    "text": "addvariable!(instance::AbstractInstance)::VariableIndex\n\nAdd a scalar variable to the instance, returning a variable index.\n\n\n\n"
+    "text": "addvariable!(model::ModelLike)::VariableIndex\n\nAdd a scalar variable to the model, returning a variable index.\n\n\n\n"
 },
 
 {
@@ -749,7 +741,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.VariablePrimalStart",
     "category": "Type",
-    "text": "VariablePrimalStart()\n\nAn initial assignment of the variables that the solver may use to warm-start the solve.\n\n\n\n"
+    "text": "VariablePrimalStart()\n\nAn initial assignment of the variables that the optimizer may use to warm-start the solve.\n\n\n\n"
 },
 
 {
@@ -777,11 +769,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.AbstractSolverInstance,MathOptInterface.ConstraintIndex}",
+    "location": "apireference.html#MathOptInterface.isvalid-Tuple{MathOptInterface.ModelLike,MathOptInterface.ConstraintIndex}",
     "page": "Reference",
     "title": "MathOptInterface.isvalid",
     "category": "Method",
-    "text": "isvalid(instance::AbstractInstance, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the instance instance.\n\n\n\n"
+    "text": "isvalid(model::ModelLike, index::Index)::Bool\n\nReturn a Bool indicating whether this index refers to a valid object in the model model.\n\n\n\n"
 },
 
 {
@@ -789,7 +781,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canaddconstraint",
     "category": "Function",
-    "text": "canaddconstraint(instance::AbstractInstance, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether it is possible to add a constraint f(x) in mathcalS where f is of type F, and mathcalS is of type S.\n\n\n\n"
+    "text": "canaddconstraint(model::ModelLike, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether it is possible to add a constraint f(x) in mathcalS where f is of type F, and mathcalS is of type S.\n\n\n\n"
 },
 
 {
@@ -797,7 +789,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraint!",
     "category": "Function",
-    "text": "addconstraint!(instance::AbstractInstance, func::F, set::S)::ConstraintIndex{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\naddconstraint!(instance::AbstractInstance, v::VariableIndex, set::S)::ConstraintIndex{SingleVariable,S} where {S}\naddconstraint!(instance::AbstractInstance, vec::Vector{VariableIndex}, set::S)::ConstraintIndex{VectorOfVariables,S} where {S}\n\nAdd the constraint v in mathcalS where v is the variable (or vector of variables) referenced by v and mathcalS is defined by set.\n\n\n\n"
+    "text": "addconstraint!(model::ModelLike, func::F, set::S)::ConstraintIndex{F,S} where {F,S}\n\nAdd the constraint f(x) in mathcalS where f is defined by func, and mathcalS is defined by set.\n\naddconstraint!(model::ModelLike, v::VariableIndex, set::S)::ConstraintIndex{SingleVariable,S} where {S}\naddconstraint!(model::ModelLike, vec::Vector{VariableIndex}, set::S)::ConstraintIndex{VectorOfVariables,S} where {S}\n\nAdd the constraint v in mathcalS where v is the variable (or vector of variables) referenced by v and mathcalS is defined by set.\n\n\n\n"
 },
 
 {
@@ -805,7 +797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.addconstraints!",
     "category": "Function",
-    "text": "addconstraints!(instance::AbstractInstance, funcs::Vector{F}, sets::Vector{S})::Vector{ConstraintIndex{F,S}} where {F,S}\n\nAdd the set of constraints specified by each function-set pair in funcs and sets. F and S should be concrete types. This call is equivalent to addconstraint!.(instance, funcs, sets) but may be more efficient.\n\n\n\n"
+    "text": "addconstraints!(model::ModelLike, funcs::Vector{F}, sets::Vector{S})::Vector{ConstraintIndex{F,S}} where {F,S}\n\nAdd the set of constraints specified by each function-set pair in funcs and sets. F and S should be concrete types. This call is equivalent to addconstraint!.(model, funcs, sets) but may be more efficient.\n\n\n\n"
 },
 
 {
@@ -813,7 +805,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyconstraint!",
     "category": "Function",
-    "text": "Modify Function\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S}, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction,S} and v1 and v2 are VariableIndex objects,\n\nmodifyconstraint!(instance, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(instance, c, SingleVariable(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S}, set::S)\n\nChange the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintIndex{F,Interval}\n\nmodifyconstraint!(instance, c, Interval(0, 5))\nmodifyconstraint!(instance, c, NonPositives) # Error\n\nPartial Modifications\n\nmodifyconstraint!(instance::AbstractInstance, c::ConstraintIndex, change::AbstractFunctionModification)\n\nApply the modification specified by change to the function of constraint c.\n\nExamples\n\nmodifyconstraint!(instance, c, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "Modify Function\n\nmodifyconstraint!(model::ModelLike, c::ConstraintIndex{F,S}, func::F)\n\nReplace the function in constraint c with func. F must match the original function type used to define the constraint.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction,S} and v1 and v2 are VariableIndex objects,\n\nmodifyconstraint!(model, c, ScalarAffineFunction([v1,v2],[1.0,2.0],5.0))\nmodifyconstraint!(model, c, SingleVariable(v1)) # Error\n\nModify Set\n\nmodifyconstraint!(model::ModelLike, c::ConstraintIndex{F,S}, set::S)\n\nChange the set of constraint c to the new set set which should be of the same type as the original set.\n\nExamples\n\nIf c is a ConstraintIndex{F,Interval}\n\nmodifyconstraint!(model, c, Interval(0, 5))\nmodifyconstraint!(model, c, NonPositives) # Error\n\nPartial Modifications\n\nmodifyconstraint!(model::ModelLike, c::ConstraintIndex, change::AbstractFunctionModification)\n\nApply the modification specified by change to the function of constraint c.\n\nExamples\n\nmodifyconstraint!(model, c, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -821,7 +813,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canmodifyconstraint",
     "category": "Function",
-    "text": "Modify Function\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, ::Type{F})::Bool\n\nReturn a Bool indicating whether the function in constraint c can be replaced by another function of the same type F as the original function.\n\nModify Set\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S}, ::Type{S})::Bool\n\nReturn a Bool indicating whether the set in constraint c can be replaced by another set of the same type S as the original set.\n\nPartial Modifications\n\ncanmodifyconstraint(instance::AbstractInstance, c::ConstraintIndex, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(instance, c, ScalarConstantChange{Float64})\n\n\n\n"
+    "text": "Modify Function\n\ncanmodifyconstraint(model::ModelLike, c::ConstraintIndex{F,S}, ::Type{F})::Bool\n\nReturn a Bool indicating whether the function in constraint c can be replaced by another function of the same type F as the original function.\n\nModify Set\n\ncanmodifyconstraint(model::ModelLike, c::ConstraintIndex{F,S}, ::Type{S})::Bool\n\nReturn a Bool indicating whether the set in constraint c can be replaced by another set of the same type S as the original set.\n\nPartial Modifications\n\ncanmodifyconstraint(model::ModelLike, c::ConstraintIndex, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the function of constraint c.\n\nExamples\n\ncanmodifyconstraint(model, c, ScalarConstantChange{Float64})\n\n\n\n"
 },
 
 {
@@ -829,7 +821,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.transformconstraint!",
     "category": "Function",
-    "text": "Transform Constraint Set\n\ntransformconstraint!(instance::AbstractInstance, c::ConstraintIndex{F,S1}, newset::S2)::ConstraintIndex{F,S2}\n\nReplace the set in constraint c with newset. The constraint index c will no longer be valid, and the function returns a new constraint index with the correct type.\n\nSolvers may only support a subset of constraint transforms that they perform efficiently (for example, changing from a LessThan to GreaterThan set). In addition, set modification (where S1 = S2) should be performed via the modifyconstraint! function.\n\nTypically, the user should delete the constraint and add a new one.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\nc2 = transformconstraint!(instance, c, GreaterThan(0.0))\ntransformconstraint!(instance, c, LessThan(0.0)) # errors\n\n\n\n"
+    "text": "Transform Constraint Set\n\ntransformconstraint!(model::ModelLike, c::ConstraintIndex{F,S1}, newset::S2)::ConstraintIndex{F,S2}\n\nReplace the set in constraint c with newset. The constraint index c will no longer be valid, and the function returns a new constraint index with the correct type.\n\nSolvers may only support a subset of constraint transforms that they perform efficiently (for example, changing from a LessThan to GreaterThan set). In addition, set modification (where S1 = S2) should be performed via the modifyconstraint! function.\n\nTypically, the user should delete the constraint and add a new one.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\nc2 = transformconstraint!(model, c, GreaterThan(0.0))\ntransformconstraint!(model, c, LessThan(0.0)) # errors\n\n\n\n"
 },
 
 {
@@ -837,7 +829,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.cantransformconstraint",
     "category": "Function",
-    "text": "Transform Constraint Set\n\ncantransformconstraint(instance::AbstractInstance, c::ConstraintIndex{F,S1}, ::Type{S2})::Bool where S2<:AbstractSet\n\nReturn a Bool indicating whether the set of type S1 in constraint c can be replaced by a set of type S2.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(instance, c, GreaterThan(0.0)) # true\ncantransformconstraint(instance, c, ZeroOne())        # false\n\n\n\n"
+    "text": "Transform Constraint Set\n\ncantransformconstraint(model::ModelLike, c::ConstraintIndex{F,S1}, ::Type{S2})::Bool where S2<:AbstractSet\n\nReturn a Bool indicating whether the set of type S1 in constraint c can be replaced by a set of type S2.\n\nExamples\n\nIf c is a ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}},\n\ncantransformconstraint(model, c, GreaterThan(0.0)) # true\ncantransformconstraint(model, c, ZeroOne())        # false\n\n\n\n"
 },
 
 {
@@ -845,7 +837,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.supportsconstraint",
     "category": "Function",
-    "text": "supportsconstraint(instance::AbstractInstance, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether instance supports F-in-S constraints, that is, copy!(instance, src) does not return CopyUnsupportedConstraint when src contains F-in-S constraints. If F-in-S constraints are only not supported in specific circumstances, e.g. F-in-S constraints cannot be combined with another type of constraint, it should still return true.\n\n\n\n"
+    "text": "supportsconstraint(model::ModelLike, ::Type{F}, ::Type{S})::Bool where {F<:AbstractFunction,S<:AbstractSet}\n\nReturn a Bool indicating whether model supports F-in-S constraints, that is, copy!(model, src) does not return CopyUnsupportedConstraint when src contains F-in-S constraints. If F-in-S constraints are only not supported in specific circumstances, e.g. F-in-S constraints cannot be combined with another type of constraint, it should still return true.\n\n\n\n"
 },
 
 {
@@ -861,7 +853,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ConstraintPrimalStart",
     "category": "Type",
-    "text": "ConstraintPrimalStart()\n\nAn initial assignment of the constraint primal values that the solver may use to warm-start the solve.\n\n\n\n"
+    "text": "ConstraintPrimalStart()\n\nAn initial assignment of the constraint primal values that the optimizer may use to warm-start the solve.\n\n\n\n"
 },
 
 {
@@ -869,7 +861,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.ConstraintDualStart",
     "category": "Type",
-    "text": "ConstraintDualStart()\n\nAn initial assignment of the constraint duals that the solver may use to warm-start the solve.\n\n\n\n"
+    "text": "ConstraintDualStart()\n\nAn initial assignment of the constraint duals that the optimizer may use to warm-start the solve.\n\n\n\n"
 },
 
 {
@@ -917,7 +909,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "Constraints",
     "category": "section",
-    "text": "Functions for adding and modifying constraints.isvalid(::AbstractSolverInstance,::ConstraintIndex)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraint\nsupportsconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintIndex or a vector of ConstraintIndex{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
+    "text": "Functions for adding and modifying constraints.isvalid(::ModelLike,::ConstraintIndex)\ncanaddconstraint\naddconstraint!\naddconstraints!\nmodifyconstraint!\ncanmodifyconstraint\ntransformconstraint!\ncantransformconstraint\nsupportsconstraintList of attributes associated with constraints. [category AbstractConstraintAttribute] Calls to get and set! should include as an argument a single ConstraintIndex or a vector of ConstraintIndex{F,S} objects.ConstraintName\nConstraintPrimalStart\nConstraintDualStart\nConstraintPrimal\nConstraintDual\nConstraintBasisStatus\nConstraintFunction\nConstraintSet"
 },
 
 {
@@ -1261,7 +1253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.modifyobjective!",
     "category": "Function",
-    "text": "modifyobjective!(instance::AbstractInstance, change::AbstractFunctionModification)\n\nApply the modification specified by change to the objective function of instance. To change the function completely, call setobjective! instead.\n\nExamples\n\nmodifyobjective!(instance, ScalarConstantChange(10.0))\n\n\n\n"
+    "text": "modifyobjective!(model::ModekLike, change::AbstractFunctionModification)\n\nApply the modification specified by change to the objective function of model. To change the function completely, call setobjective! instead.\n\nExamples\n\nmodifyobjective!(model, ScalarConstantChange(10.0))\n\n\n\n"
 },
 
 {
@@ -1269,7 +1261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Reference",
     "title": "MathOptInterface.canmodifyobjective",
     "category": "Function",
-    "text": "canmodifyobjective(instance::AbstractInstance, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the objective function of instance instance.\n\nExamples\n\ncanmodifyobjective(instance, ScalarConstantChange{Float64})\n\n\n\n"
+    "text": "canmodifyobjective(model::ModelLike, ::Type{M})::Bool where M<:AbstractFunctionModification\n\nReturn a Bool indicating whether it is possible to apply a modification of type M to the objective function of model model.\n\nExamples\n\ncanmodifyobjective(model, ScalarConstantChange{Float64})\n\n\n\n"
 },
 
 {
@@ -1321,7 +1313,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "apireference.html#Attributes-1",
+    "location": "apireference.html#Attributes-2",
     "page": "Reference",
     "title": "Attributes",
     "category": "section",
